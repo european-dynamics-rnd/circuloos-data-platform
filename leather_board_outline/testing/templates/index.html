@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Matplotlib Plot with Control Buttons</title>
+    <script src="https://mpld3.github.io/js/d3.v5.min.js"></script>
+    <script src="https://mpld3.github.io/js/mpld3.v0.5.5.js"></script>
+</head>
+<body>
+    <div>
+        <h1>Matplotlib Plot</h1>
+        {{ html_plot | safe }}
+    </div>
+
+    <div>
+        <button onclick="zoomIn()">Zoom In</button>
+        <button onclick="zoomOut()">Zoom Out</button>
+        <button onclick="resetZoom()">Reset Zoom</button>
+    </div>
+
+    <script type="text/javascript">
+        function zoomIn() {
+            mpld3.get_element('ax').zoom(1.1);
+        }
+
+        function zoomOut() {
+            mpld3.get_element('ax').zoom(0.9);
+        }
+
+        function resetZoom() {
+            mpld3.get_element('ax').reset();
+        }
+    </script>
+</body>
+</html>

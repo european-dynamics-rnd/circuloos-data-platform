@@ -1,0 +1,43 @@
+version: "3.8"
+services:
+
+  prometheus:
+    image: prom/prometheus:v2.32.1  # Use the latest Prometheus version
+    hostname: prometheus
+    container_name: prometheus
+    volumes:
+      - prometheus-data:/prometheus # storing the logs NEEDS to be first 
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml  # Mount the configuration file
+      - ./monitoring/alert.rules.yml:/etc/prometheus/alert.rules.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=365d'
+      - '--storage.tsdb.retention.size=512MB'
+    networks:
+      - circuloos
+    ports:
+      - "9090:9090"  # Prometheus server port
+    depends_on:
+      - circuloos-orion  # Ensuring it starts after your service
+
+  alertmanager:
+    image: quay.io/prometheus/alertmanager
+    hostname: prometheus-alertmanager
+    container_name: prometheus-alertmanager
+    restart: unless-stopped
+    networks:
+      - circuloos
+    ports:
+      - "9093:9093"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - "./monitoring/alertmanager.yml:/config/alertmanager.yml"
+      - alertmanager-data:/data
+    command: --config.file=/config/alertmanager.yml --log.level=debug
+
+
+volumes:
+  prometheus-data:
+  alertmanager-data:

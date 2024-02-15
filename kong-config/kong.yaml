@@ -1,0 +1,60 @@
+    _format_version: "2.1"
+    _transform: true
+
+    services:
+      # keycloak Orion
+      - host: "circuloos-orion"
+        name: "orion-keycloak"
+        port: 1026
+        protocol: http
+
+        routes:
+          - name: orion-keycloak
+            paths:
+              - /keycloak-orion
+            strip_path: true
+
+        plugins:
+          - name: pep-plugin
+            config:
+              authorizationendpointtype: Keycloak
+              # authorizationendpointaddress: http://circuloos-keycloak:8080
+              authorizationendpointaddress : https://circuloos-keycloak:8443
+              keycloakrealm: fiware-server
+              keycloakclientid: orion-pep
+              keycloakclientsecret: yWv2aRCm3KKMGrj9lMXQcEXY4v80tcFk
+
+          - name: request-transformer
+            config:
+              remove:
+                headers:
+                  - Authorization
+                  - authorization
+              # keycloak Orion
+      - host: "circuloos-mintaka"
+        name: "mintaka-keycloak"
+        port: 8086
+        protocol: http
+
+        routes:
+          - name: mintaka-keycloak
+            paths:
+              - /keycloak-mintaka
+            strip_path: true
+
+        plugins:
+          - name: pep-plugin
+            config:
+              authorizationendpointtype: Keycloak
+              # authorizationendpointaddress: http://circuloos-keycloak:8080
+              authorizationendpointaddress : https://circuloos-keycloak:8443
+              keycloakrealm: fiware-server
+              keycloakclientid: mintaka-pep
+              keycloakclientsecret: zQXGjcxPWuF7YBpAiFtaIOEIOrCiWqeH
+
+          - name: request-transformer
+            config:
+              remove:
+                headers:
+                  - Authorization
+                  - authorization

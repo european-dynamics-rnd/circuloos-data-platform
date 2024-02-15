@@ -1,0 +1,24 @@
+version: "3.8"
+services:
+
+  csv-ngsild-agent:
+    build: ./csv_NGSILD_Agent
+    hostname: csv-ngsild-agent
+    container_name: csv-ngsild-agent
+    networks:
+      - circuloos
+    ports:
+      - "5000:5000"  # Prometheus server port
+    environment:
+      - NGSI_LD_CONTECT_BROKER_HOSTNAME=circuloos-orion
+      - NGSI_LD_CONTECT_BROKER_PORT=1026
+      - ORION_LD_TENANT=circuloos_demo 
+
+  leather_board_outline:
+    build: ./leather_board_outline
+    hostname: leather_board_outline
+    container_name: leather_board_outline
+    networks:
+      - circuloos
+    ports:
+      - "8501:8501"  # Prometheus server port

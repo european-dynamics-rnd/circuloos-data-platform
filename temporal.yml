@@ -1,0 +1,70 @@
+version: "3.8"
+services:
+
+  circuloos-mintaka:
+    labels:
+      org.eurodyn: 'circuloos'
+    image: quay.io/fiware/mintaka:${MINTAKA_VERSION}
+    hostname:  circuloos-mintaka
+    container_name:  circuloos-mintaka
+    restart: always
+    depends_on:
+      - circuloos-orion
+      - circuloos-timescale-db
+    environment:
+      - MICRONAUT_SERVER_PORT=${MINTAKA_PORT}
+      - DATASOURCES_DEFAULT_HOST=circuloos-timescale-db
+      - DATASOURCES_DEFAULT_USERNAME=${ORIONLD_TROE_USER}
+      - DATASOURCES_DEFAULT_PASSWORD=${ORIONLD_TROE_PWD}
+      - DATASOURCES_DEFAULT_DATABASE=orion
+      - DATASOURCES_DEFAULT_MAXIMUM_POOL_SIZE=2
+      - DATASOURCES_DEFAULT_PORT=${TIMESCALE_PORT}
+      - ENDPOINTS_INFO_ENABLED=true
+      - ENDPOINTS_INFO_SENSITIVE=false
+      - LOGGERS_LEVELS_ROOT=DEBUG
+      - CONTEXT_DEFAULT_URL=${CORE_CONTEXT} # if the VM does not have internet access Mintaka fails. Mintaka needs to download every time the context
+    ports:
+      - "127.0.0.1:${MINTAKA_PORT}:${MINTAKA_PORT}"
+    networks:
+      - circuloos
+
+  circuloos-timescale-db:
+    labels:
+      org.eurodyn: 'circuloos'
+    image: timescale/timescaledb-postgis:${TIMESCALE_VERSION}
+    hostname:  circuloos-timescale-db
+    container_name: circuloos-timescale-db
+    environment:
+      - POSTGRES_USER=${ORIONLD_TROE_USER}
+      - POSTGRES_PASSWORD=${ORIONLD_TROE_PWD}
+      # - POSTGRES_HOST_AUTH_METHOD=trust
+    command: ["postgres", "-c", "log_statement=none"]
+    ports:
+      - "${TIMESCALE_PORT}:${TIMESCALE_PORT}"
+    networks:
+      - circuloos
+    volumes:
+      - circuloos-timescale-db:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U circuloos" ]
+      interval: 15s
+      timeout: 15s
+      retries: 5
+      start_period: 60s
+
+  cloudbeaver: # cbadmin:JpzC7nRjZMbUbyx
+      image: dbeaver/cloudbeaver 
+      container_name: cloudbeaver
+      restart: always
+      networks:
+        - circuloos
+      ports:
+       - '8978:8978'
+      volumes: 
+       -  ${PWD}/cloudbeaver-data:/opt/cloudbeaver/workspace    
+
+volumes:
+  circuloos-timescale-db: 
+    # external: true 
+  cloudbeaver:
+

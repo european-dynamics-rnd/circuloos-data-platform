@@ -1,0 +1,3 @@
+id,type,observedat,origin,color,surfaceSize,thickness,thickness_unitCode,tannedProcess,type1,surfaceFinishWithCovering,hardness,recycledTimes
+urn:ngsi-ld:circuloos:leather:IDAS1313,leather,0,vegan,black,2,0.3,MMT,vegetable,split,TRUE,medium,2
+urn:ngsi-ld:circuloos:leather:IDAS142,leather,2024-01-01T01:00:00Z,vegan,red,5,0.4,MMT,vegetable,split,FALSE,medium,4

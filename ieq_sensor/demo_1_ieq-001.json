@@ -1,0 +1,30 @@
+[
+    {
+        "id": "urn:ngsi-ld:circuloos:demo_1:ieq-001",
+        "@context": "http://circuloos-ld-context/circuloos-context.jsonld",
+        "type": "ieq_sensor",
+        "pm25": {
+            "type": "Property",
+            "value": 31.1,
+            "unitCode": "GQ",
+            "observedAt": "2024-01-11T10:00:07.446Z"
+        },
+        "temperature": {
+            "type": "Property",
+            "value": 39,
+            "unitCode": "CEL",
+            "observedAt": "2024-01-11T10:00:07.446Z"
+        },
+        "relativeHumidity": {
+            "type": "Property",
+            "value": 16,
+            "unitCode": "P1",
+            "observedAt": "2024-01-11T10:00:07.446Z"
+        },
+        "hashValue": {
+            "type": "Property",
+            "value": "empty",
+            "observedAt": "2024-01-11T10:00:07.446Z"
+        }
+    }
+]

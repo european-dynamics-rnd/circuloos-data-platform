@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Matplotlib Plots with Toggle and Update</title>
+    <script src="https://mpld3.github.io/js/d3.v5.min.js"></script>
+    <script src="https://mpld3.github.io/js/mpld3.v0.5.5.js"></script>
+</head>
+<body>
+    <h1>Matplotlib Plots with Toggle and Update</h1>
+
+    <div>
+        <button onclick="togglePlot1()">Toggle Plot 1</button>
+        <button onclick="togglePlot2()">Toggle Plot 2</button>
+        <button onclick="updatePlot1()">Update Plot 1</button>
+    </div>
+
+    <div id="plot1">
+        {{ html_plot1 | safe }}
+    </div>
+
+    <div id="plot2">
+        {{ html_plot2 | safe }}
+    </div>
+
+    <script type="text/javascript">
+        // Initialize visibility flags
+        var plot1Visible = true;
+        var plot2Visible = true;
+
+        // Function to toggle visibility of Plot 1
+        function togglePlot1() {
+            plot1Visible = !plot1Visible;
+            document.getElementById("plot1").style.display = plot1Visible ? "block" : "none";
+        }
+
+        // Function to toggle visibility of Plot 2
+        function togglePlot2() {
+            plot2Visible = !plot2Visible;
+            document.getElementById("plot2").style.display = plot2Visible ? "block" : "none";
+        }
+
+        // Function to update Plot 1
+        function updatePlot1() {
+            fetch('/update_plot1')
+                .then(response => response.text())
+                .then(data => alert(data))
+                .then(() => location.reload());  // Reload the page to update the plot
+        }
+    </script>
+</body>
+</html>

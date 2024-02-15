@@ -1,0 +1,11 @@
+groups:
+- name: orion_alerts
+  rules:
+  - alert: LowIncomingTransactions
+    expr: rate(ngsildRequests[1m]) < 0.018
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Low incoming transactions in Orion"
+      description: "The rate of incoming transactions in Orion for ngsildRequests has been below 0.018 per minute."

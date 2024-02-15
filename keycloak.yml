@@ -1,0 +1,108 @@
+version: "3.8"
+
+volumes:
+  circuloos-keycloak-db:
+
+
+services:
+  keycloak-db:
+    image: postgres:14.1
+    #platform: linux/amd64
+    container_name: ${PROJECT_NAME:-circuloos}-keycloak-db
+    init: true
+    networks:
+      - circuloos
+    volumes:
+      - circuloos-keycloak-db:/var/lib/postgresql/data
+      # Populate Keycloak with the demo data
+      - ${PWD}/keycloak/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+    environment:
+      POSTGRES_DB: ${KEYCLOAK_DB}
+      POSTGRES_USER: ${KEYCLOAK_DB_USER}
+      POSTGRES_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+    restart: unless-stopped
+
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:20.0.3
+    platform: linux/amd64
+    container_name: ${PROJECT_NAME:-circuloos}-keycloak
+    depends_on:
+      - keycloak-db
+    init: true
+    command: start-dev
+    ports:
+      - "127.0.0.1:8080:8080"  # for testing !!! 
+      # - "127.0.0.1:${KEYCLOAK_TLS_PORT}:${KEYCLOAK_TLS_PORT}" # available to localhost
+      - "${KEYCLOAK_TLS_PORT}:${KEYCLOAK_TLS_PORT}"  # Public available to internet
+    networks:
+      - circuloos
+    environment:
+      # KC_HOSTNAME_URL : https://fiware-keycloak.freeddns.org:8443
+      KC_DB : postgres
+      KC_DB_URL_HOST : circuloos-keycloak-db
+      KC_DB_DATABASE: ${KEYCLOAK_DB:-keycloak}
+      KC_DB_USER: ${KEYCLOAK_DB_USER:-keycloak}
+      KC_DB_SCHEMA: public
+      KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+      KEYCLOAK_ADMIN: ${KEYCLOAK_USER}
+      KEYCLOAK_ADMIN_PASSWORD : ${KEYCLOAK_PASSWORD}
+      restart: unless-stopped
+      KC_HTTPS_CERTIFICATE_FILE: /etc/x509/https/tls.crt
+      KC_HTTPS_CERTIFICATE_KEY_FILE: /etc/x509/https/tls.key
+      KC_LOG_LEVEL: DEBUG 
+    volumes:
+      - $PWD/keycloak/circuloos-keycloak.crt:/etc/x509/https/tls.crt
+      - $PWD/keycloak/circuloos-keycloak.key:/etc/x509/https/tls.key
+
+  kong:
+    labels:
+      org.eurodyn: 'circuloos'
+    image: "quay.io/fiware/kong:0.5.7"
+    hostname: "kong"
+    user: "kong"
+    ports:
+      - ${KONG_PORT}:${KONG_PORT} # available to localhost
+    # - ${KONG_PORT}:${KONG_PORT} # Public available to internet
+    networks:
+      - circuloos
+    environment:
+      KONG_DATABASE: "off"
+      KONG_PROXY_LISTEN: "0.0.0.0:${KONG_PORT} ssl"
+      KONG_ADMIN_LISTEN: "0.0.0.0:8001"
+      KONG_ADMIN_ACCESS_LOG: "/dev/stdout"
+      KONG_ADMIN_ERROR_LOG: "/dev/stderr"
+      KONG_PROXY_ACCESS_LOG: "/dev/stdout"
+      KONG_PROXY_ERROR_LOG: "/dev/stderr"
+      KONG_ADMIN_GUI_ACCESS_LOG: "/dev/stdout"
+      KONG_ADMIN_GUI_ERROR_LOG: "/dev/stderr"
+      KONG_PORTAL_API_ACCESS_LOG: "/dev/stdout"
+      KONG_PORTAL_API_ERROR_LOG: "/dev/stderr"
+      KONG_DECLARATIVE_CONFIG: "/opt/kong/kong.yaml"
+      KONG_NGINX_WORKER_PROCESSES: "2"
+      KONG_NGINX_PROXY_LARGE_CLIENT_HEADER_BUFFERS: "16 128k"
+      KONG_NGINX_PROXY_HTTP2_MAX_FIELD_SIZE: "32k"
+      KONG_NGINX_PROXY_HTTP2_MAX_HEADER_SIZE: "32k"
+      KONG_LOG_LEVEL: "debug"
+      KONG_PLUGINS: "bundled,pep-plugin"
+      KONG_PLUGINSERVER_NAMES: "pep-plugin"
+      KONG_PLUGINSERVER_PEP_PLUGIN_START_CMD: "/go-plugins/pep-plugin"
+      KONG_PLUGINSERVER_PEP_PLUGIN_QUERY_CMD: "/go-plugins/pep-plugin -dump"
+      KONG_SSL_CERT: /ssl/domain.crt
+      KONG_SSL_CERT_KEY: /ssl/domain.key
+    restart: "always"
+    volumes:
+      - $PWD/kong-config:/opt/kong
+      - $PWD/keycloak/circuloos-keycloak.crt:/etc/ssl/certs/ca-certificates.crt:ro  # to solve tls: failed to verify certificate: x509: certificate signed by unknown authority
+      - $PWD/keycloak/self-signed-cert.pem:/ssl/domain.crt # need to have at least r access to all groups
+      - $PWD/keycloak/privatekey.pem:/ssl/domain.key # need to have at least r access to all groups
+    healthcheck:
+      test: [ "CMD", "kong", "health" ]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+# networks:
+#   circuloos:
+#     external: true
+#     name: circuloos
