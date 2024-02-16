@@ -26,7 +26,6 @@
       "cameraType": "https://smartdatamodels.org/dataModel.Device/cameraType",
       "cameraUsage": "https://smartdatamodels.org/dataModel.Device/cameraUsage",
       "category": "https://smartdatamodels.org/dataModel.Device/category",
-      "color": "https://smartdatamodels.org/color",
       "configuration": "https://smartdatamodels.org/dataModel.Device/configuration",
       "controlledAsset": "https://smartdatamodels.org/dataModel.Device/controlledAsset",
       "controlledProperty": "https://smartdatamodels.org/dataModel.Device/controlledProperty",
@@ -419,6 +418,14 @@
       "observationDateTime": "https://smartdatamodels.org/dataModel.Energy/observationDateTime",
       "powerFactor": "https://smartdatamodels.org/dataModel.Energy/powerFactor",
       "refPointOfInterest": "https://smartdatamodels.org/dataModel.Environment/refPointOfInterest",
-      "serialNumber": "https://smartdatamodels.org/dataModel.Device/serialNumber"
+      "serialNumber": "https://smartdatamodels.org/dataModel.Device/serialNumber",
+      "origin": "https://raw.githubusercontent.com/konstantinosGombakis/CIRCULOOS_Data_model/main/material/leather/schema.json#/origin",
+      "color": "https://raw.githubusercontent.com/konstantinosGombakis/CIRCULOOS_Data_model/main/material/leather/schema.json#/color",
+      "surfaceSize": "https://raw.githubusercontent.com/konstantinosGombakis/CIRCULOOS_Data_model/main/material/leather/schema.json#/surfaceSize",
+      "thickness": "https://raw.githubusercontent.com/konstantinosGombakis/CIRCULOOS_Data_model/main/material/leather/schema.json#/thickness",
+      "tannedProcess": "https://raw.githubusercontent.com/konstantinosGombakis/CIRCULOOS_Data_model/main/material/leather/schema.json#/tannedProcess",
+      "surfaceFinishWithCovering": "https://raw.githubusercontent.com/konstantinosGombakis/CIRCULOOS_Data_model/main/material/leather/schema.json#/surfaceFinishWithCovering",
+      "hardness": "https://raw.githubusercontent.com/konstantinosGombakis/CIRCULOOS_Data_model/main/material/leather/schema.json#/hardness",
+      "recycledTimes": "https://raw.githubusercontent.com/konstantinosGombakis/CIRCULOOS_Data_model/main/material/leather/schema.json#/recycledTimes",
     }
   }

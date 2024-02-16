@@ -49,7 +49,7 @@ def generate_ngsild_entity(entity):
         entity.pop('type',None),
         entity.pop('id',None),
         ctx=[
-            "http://circuloos-ld-context/merge_data_model.jsonld",
+            "http://circuloos-ld-context/circuloos-context.jsonld",
         ],
     )
     keys = list(entity.keys())
