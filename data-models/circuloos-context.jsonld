@@ -426,6 +426,6 @@
       "tannedProcess": "https://raw.githubusercontent.com/konstantinosGombakis/CIRCULOOS_Data_model/main/material/leather/schema.json#/tannedProcess",
       "surfaceFinishWithCovering": "https://raw.githubusercontent.com/konstantinosGombakis/CIRCULOOS_Data_model/main/material/leather/schema.json#/surfaceFinishWithCovering",
       "hardness": "https://raw.githubusercontent.com/konstantinosGombakis/CIRCULOOS_Data_model/main/material/leather/schema.json#/hardness",
-      "recycledTimes": "https://raw.githubusercontent.com/konstantinosGombakis/CIRCULOOS_Data_model/main/material/leather/schema.json#/recycledTimes",
+      "recycledTimes": "https://raw.githubusercontent.com/konstantinosGombakis/CIRCULOOS_Data_model/main/material/leather/schema.json#/recycledTimes"
     }
   }

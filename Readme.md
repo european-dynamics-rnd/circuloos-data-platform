@@ -34,9 +34,9 @@ You can use the following commands:
 4. ```./getMintakaVersionViaKong.sh``` : To get the version of the Mintaka using KONG as PEP (Policy Enforcement Point) proxy
 
 ## Add data to Orion-LD
-
+A simple Indoor Enviromental Quality sensor measurements have been encoding used NGSI-LD JSON ([demo_1_ieq-001_15min.json](./ieq_sensor/demo_1_ieq-001_15min.json)). With the following commands you can send/POST the measurements to the Orion CB.
 1. ```./addDataOrion.sh ../ieq_sensor/demo_1_ieq-001.json``` : Add data to the Orion-LD
-2. ```./addDataOrionViaKong.sh ../ieq_sensor/demo_1_ieq-001_15min.json``` :  Add data to the Orion-LD Orion-LD using KONG as PEP (Policy Enforcement Point) proxy **These will be used for external systems**
+2. ```./addDataOrionViaKong.sh ../ieq_sensor/demo_1_ieq-001_15min.json``` : Add data to the Orion-LD Orion-LD using KONG as PEP (Policy Enforcement Point) proxy **These will be used for external systems**
 3. ```./addDataOrionViaKong.sh ../ieq_sensor/demo_1_ieq-001_30min.json```
 
 ## Get the data from Orion-LD
@@ -53,7 +53,7 @@ Orion-LD keeps only the latest measurement of each entity.
 A custom agent have been created to transform a CSV to NGSI-LD entities and send/POST them to the Orion-LD.
 
 1. Create the csv file with the data that you want to add to the Orion-LD. **IMPORTANT** the first 2 columns **MUST BE** id,type. See [csv_NGSILD_Agent/leatherProducts.csv](csv_NGSILD_Agent/leatherProducts.csv) for a csv file with 2 entities. To add timestamp for the data add a column "observedat" with the date time into a ISO8601 format ("2024-01-31T12:03:02Z"), otherwise the timestamp will be set to current date/time.
-2. Go to localhost:5000, click on "Browre..." to select a csv file. Next click "Upload".
+2. Go to http://localhost:5000, click on "Browre..." to select a csv file. Next click "Upload".
 3. Click "Generate NGSI-LD entities". A JSON representation of the NGSI-LD of the csv entities will appear.
 4. Click "Post NGSI-LD entities to Orion-LD". The created NGSI-LD JSON will be send to the Orion-LD. A message with the IDs of the send to the Orion-LD will appear. 
 5. See the data send to the Orion-LD ```./getDataOrionSensors.sh leather```
