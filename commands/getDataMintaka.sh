@@ -15,7 +15,7 @@ else
     sensorID="$1"
 fi
 
-curl -s -G -X GET  'http://localhost:'"${MINTAKA_PORT}"'/temporal/entities/'"${sensorID}"'' \
+curl -s -G -X GET  'http://'"${HOST}"':'"${MINTAKA_PORT}"'/temporal/entities/'"${sensorID}"'' \
 -H 'NGSILD-Tenant: circuloos_demo' \
 -H 'Link: <'"${CONTEXT}"'>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"' \
 -d 'lastN=5' |jq  
