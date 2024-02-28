@@ -32,9 +32,9 @@ services:
     init: true
     command: start-dev
     ports:
-      - "127.0.0.1:8080:8080"  # for testing !!! 
+      - "8080:8080"  # for testing !!! 
       # - "127.0.0.1:${KEYCLOAK_TLS_PORT}:${KEYCLOAK_TLS_PORT}" # available to localhost
-      - "${KEYCLOAK_TLS_PORT}:${KEYCLOAK_TLS_PORT}"  # Public available to internet
+      # - "${KEYCLOAK_TLS_PORT}:${KEYCLOAK_TLS_PORT}"  # Public available to internet
     networks:
       - circuloos
     environment:
@@ -48,12 +48,14 @@ services:
       KEYCLOAK_ADMIN: ${KEYCLOAK_USER}
       KEYCLOAK_ADMIN_PASSWORD : ${KEYCLOAK_PASSWORD}
       restart: unless-stopped
-      KC_HTTPS_CERTIFICATE_FILE: /etc/x509/https/tls.crt
-      KC_HTTPS_CERTIFICATE_KEY_FILE: /etc/x509/https/tls.key
+      PROXY_ADDRESS_FORWARDING: "true"
+      PROXY: "edge"
+      # KC_HTTPS_CERTIFICATE_FILE: /etc/x509/https/tls.crt
+      # KC_HTTPS_CERTIFICATE_KEY_FILE: /etc/x509/https/tls.key
       KC_LOG_LEVEL: DEBUG 
-    volumes:
-      - $PWD/keycloak/circuloos-keycloak.crt:/etc/x509/https/tls.crt
-      - $PWD/keycloak/circuloos-keycloak.key:/etc/x509/https/tls.key
+    # volumes:
+    #   - $PWD/keycloak/circuloos-keycloak.crt:/etc/x509/https/tls.crt
+    #   - $PWD/keycloak/circuloos-keycloak.key:/etc/x509/https/tls.key
 
   kong:
     labels:
@@ -68,7 +70,7 @@ services:
       - circuloos
     environment:
       KONG_DATABASE: "off"
-      KONG_PROXY_LISTEN: "0.0.0.0:${KONG_PORT} ssl"
+      KONG_PROXY_LISTEN: "0.0.0.0:${KONG_PORT}"
       KONG_ADMIN_LISTEN: "0.0.0.0:8001"
       KONG_ADMIN_ACCESS_LOG: "/dev/stdout"
       KONG_ADMIN_ERROR_LOG: "/dev/stderr"
@@ -88,14 +90,14 @@ services:
       KONG_PLUGINSERVER_NAMES: "pep-plugin"
       KONG_PLUGINSERVER_PEP_PLUGIN_START_CMD: "/go-plugins/pep-plugin"
       KONG_PLUGINSERVER_PEP_PLUGIN_QUERY_CMD: "/go-plugins/pep-plugin -dump"
-      KONG_SSL_CERT: /ssl/domain.crt
-      KONG_SSL_CERT_KEY: /ssl/domain.key
-    restart: "always"
+      # KONG_SSL_CERT: /ssl/domain.crt
+      # KONG_SSL_CERT_KEY: /ssl/domain.key
+    # restart: "always"
     volumes:
       - $PWD/kong-config:/opt/kong
-      - $PWD/keycloak/circuloos-keycloak.crt:/etc/ssl/certs/ca-certificates.crt:ro  # to solve tls: failed to verify certificate: x509: certificate signed by unknown authority
-      - $PWD/keycloak/self-signed-cert.pem:/ssl/domain.crt # need to have at least r access to all groups
-      - $PWD/keycloak/privatekey.pem:/ssl/domain.key # need to have at least r access to all groups
+      # - $PWD/keycloak/circuloos-keycloak.crt:/etc/ssl/certs/ca-certificates.crt:ro  # to solve tls: failed to verify certificate: x509: certificate signed by unknown authority
+      # - $PWD/keycloak/self-signed-cert.pem:/ssl/domain.crt # need to have at least r access to all groups
+      # - $PWD/keycloak/privatekey.pem:/ssl/domain.key # need to have at least r access to all groups
     healthcheck:
       test: [ "CMD", "kong", "health" ]
       interval: 10s
