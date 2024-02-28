@@ -4,7 +4,7 @@ set -e
 export $(cat ../.env | grep "#" -v)
 
 
-curl -iL -X POST  'http://localhost:'"${ORION_LD_PORT}"'/ngsi-ld/v1/entityOperations/upsert' \
+curl -iL -X POST  'http://'"${HOST}"':'"${ORION_LD_PORT}"'/ngsi-ld/v1/entityOperations/upsert' \
 -H 'NGSILD-Tenant: circuloos_demo' \
 -H 'NGSILD-Path: /' \
 -H 'Content-Type: application/ld+json' \
