@@ -1,5 +1,4 @@
-cloudbeaver-data/.data/cb.h2v2.dat.mv.db
-cloudbeaver-data/.metadata/.log
+cloudbeaver-data/
 /commands/token.txt
 /commands/tokenMintaka.txt
 ssh
