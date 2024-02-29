@@ -8,3 +8,7 @@ ssh
 csv_NGSILD_Agent/uploaded_files/
 csv_NGSILD_Agent/__pycache__/
 /leather_board_outline/__pycache__/
+commands_reverse_proxy/tokenMintaka.txt
+commands_reverse_proxy/token.txt
+commands_reverse_proxy_URL/tokenMintaka.txt
+commands_reverse_proxy_URL/token.txt
