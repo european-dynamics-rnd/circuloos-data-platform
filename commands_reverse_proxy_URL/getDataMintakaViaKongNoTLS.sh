@@ -7,7 +7,7 @@
 set -e
 export $(cat ../.env | grep "#" -v)
 
-./getTokenForMintaka.sh
+./getTokenForMintakaNoTLS.sh
 
 token=$(cat "tokenMintaka.txt")
 
@@ -18,7 +18,7 @@ else
     sensorID="$1"
 fi
 
-KONG_URL='https://'"${HOST}"'/kong/keycloak-mintaka'
+KONG_URL='http://'"${HOST}"'/kong/keycloak-mintaka'
 
 curl -s -G -X GET  ''"${KONG_URL}"'/temporal/entities/'"${sensorID}"'' \
 -H 'NGSILD-Tenant: circuloos_demo' \

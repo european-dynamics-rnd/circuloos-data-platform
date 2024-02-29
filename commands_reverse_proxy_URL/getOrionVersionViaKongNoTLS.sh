@@ -3,12 +3,6 @@ set -e
 export $(cat ../.env | grep "#" -v)
 
 
-if [ "$HOST" == "localhost" ]; then
-  INSECURE=' --insecure '
-else
-  INSECURE=''
-fi
-
 ./getTokenForOrionNoTLS.sh
 token=$(cat "token.txt")
 

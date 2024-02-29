@@ -6,7 +6,7 @@
 set -e
 export $(cat ../.env | grep "#" -v)
 
-./getTokenForOrion.sh
+./getTokenForOrionNoTLS.sh
 token=$(cat "token.txt")
 
 
@@ -19,7 +19,7 @@ fi
 
 
 
-KONG_URL='https://'"${HOST}"'/kong/keycloak-orion'
+KONG_URL='http://'"${HOST}"'/kong/keycloak-orion'
 # echo $KONG_URL
 curl -s -G -X GET ''"${KONG_URL}"'/ngsi-ld/v1/entities' \
   -H 'NGSILD-Tenant: circuloos_demo' \
