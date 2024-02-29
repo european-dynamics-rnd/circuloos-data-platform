@@ -1,22 +1,21 @@
 version: "3.8"
 
 services:
-  # @context file is served from here
-  ld-context:
-    labels:
-      org.eurodyn: 'circuloos'
-    image: httpd:alpine
+# @context file is served from here and reverse proxy 
+  nginx:
+    image: nginx:latest
     hostname: circuloos-ld-context
     container_name: circuloos-ld-context
-    expose:
-        - "3004:80"
+    ports:
+      - "80:80"
+    volumes:
+      - ./reverse_proxy/nginx.conf:/etc/nginx/nginx.conf
+      - ./data-models:/usr/share/nginx/html
+    depends_on:
+      - keycloak
     networks:
       - circuloos
-    volumes:
-        - ./data-models:/usr/local/apache2/htdocs/
-    # healthcheck:
-    #   test: (wget --server-response --spider --quiet  http://ld-context/datamodels.context-ngsi.jsonld 2>&1 | awk 'NR==1{print $$2}'|  grep -q -e "200") || exit 1
- 
+
   circuloos-orion:
     labels:
       org.eurodyn: 'circuloos'
