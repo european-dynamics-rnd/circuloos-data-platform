@@ -39,24 +39,24 @@ services:
     networks:
       - circuloos
     environment:  # https://www.keycloak.org/server/all-config  Click on ">" to get Env
-      KC_HOSTNAME_URL : http://circuloos-platform-server.eurodyn.com:${KEYCLOAK_PORT}
+      # KC_HOSTNAME_URL : http://circuloos-platform-server.eurodyn.com:${KEYCLOAK_PORT}
       # KC_HOSTNAME_ADMIN_URL: http://circuloos-platform-server.eurodyn.com:${KEYCLOAK_PORT}/auth  # https://github.com/keycloak/keycloak/issues/10505#issuecomment-1384675920
-      KC_DB : postgres
-      KC_HOSTNAME_PORT: ${KEYCLOAK_PORT} 
-      KC_HTTP_PORT:  ${KEYCLOAK_PORT}
-      KC_DB_URL_HOST : circuloos-keycloak-db
-      KC_DB_DATABASE: ${KEYCLOAK_DB}
-      KC_DB_USER: ${KEYCLOAK_DB_USER}
-      KC_DB_SCHEMA: public
-      KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD} 
+      DB_VENDOR : postgres
+      # KC_HOSTNAME_PORT: ${KEYCLOAK_PORT} 
+      # KC_HTTP_PORT:  ${KEYCLOAK_PORT}
+      DB_ADDR : circuloos-keycloak-db
+      DB_DATABASE: ${KEYCLOAK_DB}
+      DB_USER: ${KEYCLOAK_DB_USER}
+      DB_SCHEMA: public
+      DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD} 
       KEYCLOAK_USER: ${KEYCLOAK_USER}   # Only for the initial start up AND empty DB !!! 
       KEYCLOAK_PASSWORD : ${KEYCLOAK_PASSWORD} # circuloosPa55w0rd Only for the initial start up AND empty DB !!! 
       restart: unless-stopped
-      PROXY_ADDRESS_FORWARDING: "true"
-      PROXY: "edge"
+      # PROXY_ADDRESS_FORWARDING: "true"
+      # PROXY: "edge"
       # KC_HTTPS_CERTIFICATE_FILE: /etc/x509/https/tls.crt
       # KC_HTTPS_CERTIFICATE_KEY_FILE: /etc/x509/https/tls.key
-      KC_LOG_LEVEL: DEBUG 
+      KEYCLOAK_LOGLEVEL: DEBUG 
     # volumes:
     #   - $PWD/keycloak/circuloos-keycloak.crt:/etc/x509/https/tls.crt
     #   - $PWD/keycloak/circuloos-keycloak.key:/etc/x509/https/tls.key
