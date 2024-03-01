@@ -15,7 +15,7 @@ services:
     volumes:
       - circuloos-keycloak-db:/var/lib/postgresql/data
       # Populate Keycloak with the demo data
-      - ${PWD}/keycloak/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+      # - ${PWD}/keycloak/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
     environment:
       POSTGRES_DB: ${KEYCLOAK_DB}
       POSTGRES_USER: ${KEYCLOAK_DB_USER}
@@ -23,15 +23,17 @@ services:
     restart: unless-stopped
 
   keycloak:
-    image: quay.io/keycloak/keycloak:23.0.3
+    image: quay.io/keycloak/keycloak:16.1.1
     platform: linux/amd64
     container_name: ${PROJECT_NAME:-circuloos}-keycloak
     depends_on:
       - keycloak-db
     init: true
-    command: start-dev
+    # command: start-dev
     ports:
-      - "${KEYCLOAK_PORT}:${KEYCLOAK_PORT}"  # for testing !!! 
+      - ${KEYCLOAK_PORT:-8090}:8080
+      - ${KEYCLOAK_ADMIN_PORT:-19990}:9990
+      # - "${KEYCLOAK_PORT}:${KEYCLOAK_PORT}"  # for testing !!! 
       # - "127.0.0.1:${KEYCLOAK_TLS_PORT}:${KEYCLOAK_TLS_PORT}" # available to localhost
       # - "${KEYCLOAK_TLS_PORT}:${KEYCLOAK_TLS_PORT}"  # Public available to internet
     networks:
@@ -47,8 +49,8 @@ services:
       KC_DB_USER: ${KEYCLOAK_DB_USER}
       KC_DB_SCHEMA: public
       KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD} 
-      # KEYCLOAK_ADMIN: ${KEYCLOAK_USER}   # Only for the initial start up AND empty DB !!! 
-      # KEYCLOAK_ADMIN_PASSWORD : ${KEYCLOAK_PASSWORD} # circuloosPa55w0rd Only for the initial start up AND empty DB !!! 
+      KEYCLOAK_USER: ${KEYCLOAK_USER}   # Only for the initial start up AND empty DB !!! 
+      KEYCLOAK_PASSWORD : ${KEYCLOAK_PASSWORD} # circuloosPa55w0rd Only for the initial start up AND empty DB !!! 
       restart: unless-stopped
       PROXY_ADDRESS_FORWARDING: "true"
       PROXY: "edge"
@@ -110,3 +112,40 @@ services:
 #   circuloos:
 #     external: true
 #     name: circuloos
+
+  # keycloak:
+  #   image: quay.io/keycloak/keycloak:16.1.1
+  #   platform: linux/amd64
+  #   container_name: ${PROJECT_NAME:-circuloos}-keycloak
+  #   depends_on:
+  #     - keycloak-db
+  #   init: true
+  #   # command: start-dev
+  #   ports:
+  #     - "${KEYCLOAK_PORT}:${KEYCLOAK_PORT}"  # for testing !!! 
+  #     # - "127.0.0.1:${KEYCLOAK_TLS_PORT}:${KEYCLOAK_TLS_PORT}" # available to localhost
+  #     # - "${KEYCLOAK_TLS_PORT}:${KEYCLOAK_TLS_PORT}"  # Public available to internet
+  #   networks:
+  #     - circuloos
+  #   environment:  # https://www.keycloak.org/server/all-config  Click on ">" to get Env
+  #     KC_HOSTNAME_URL : http://circuloos-platform-server.eurodyn.com:${KEYCLOAK_PORT}
+  #     # KC_HOSTNAME_ADMIN_URL: http://circuloos-platform-server.eurodyn.com:${KEYCLOAK_PORT}/auth  # https://github.com/keycloak/keycloak/issues/10505#issuecomment-1384675920
+  #     KC_DB : postgres
+  #     KC_HOSTNAME_PORT: ${KEYCLOAK_PORT} 
+  #     KC_HTTP_PORT:  ${KEYCLOAK_PORT}
+  #     KC_DB_URL_HOST : circuloos-keycloak-db
+  #     KC_DB_DATABASE: ${KEYCLOAK_DB}
+  #     KC_DB_USER: ${KEYCLOAK_DB_USER}
+  #     KC_DB_SCHEMA: public
+  #     KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD} 
+  #     # KEYCLOAK_ADMIN: ${KEYCLOAK_USER}   # Only for the initial start up AND empty DB !!! 
+  #     # KEYCLOAK_ADMIN_PASSWORD : ${KEYCLOAK_PASSWORD} # circuloosPa55w0rd Only for the initial start up AND empty DB !!! 
+  #     restart: unless-stopped
+  #     PROXY_ADDRESS_FORWARDING: "true"
+  #     PROXY: "edge"
+  #     # KC_HTTPS_CERTIFICATE_FILE: /etc/x509/https/tls.crt
+  #     # KC_HTTPS_CERTIFICATE_KEY_FILE: /etc/x509/https/tls.key
+  #     KC_LOG_LEVEL: DEBUG 
+  #   # volumes:
+  #   #   - $PWD/keycloak/circuloos-keycloak.crt:/etc/x509/https/tls.crt
+  #   #   - $PWD/keycloak/circuloos-keycloak.key:/etc/x509/https/tls.key
