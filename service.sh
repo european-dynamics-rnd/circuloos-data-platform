@@ -8,10 +8,10 @@ set -e
 export $(cat .env | grep "#" -v)
 command="$1"
 
-FINAL_DOCKER_YML="-f docker-compose.yml -f keycloak.yml -f temporal.yml"  #   -f monitoring.yml
+FINAL_DOCKER_YML="-f docker-compose.yml -f keycloak.yml -f temporal.yml "  #-f monitoring.yml
 
 CIRCULOOS_YML=" -f circuloos_custom_apps.yml"
-FINAL_DOCKER_YML="$FINAL_DOCKER_YML $CIRCULOOS_YML"
+#FINAL_DOCKER_YML="$FINAL_DOCKER_YML $CIRCULOOS_YML"
 
 dockerCmd="docker compose"
 
@@ -29,7 +29,7 @@ stoppingContainers () {
 	if [[ -n $CONTAINERS ]]; then 
 		echo "Stopping containers"
 		# docker rm -f $CONTAINERS
-		${dockerCmd}  $FINAL_DOCKER_YML -p $COMPOSE_PROJECT_NAME down --remove-orphans
+		${dockerCmd}  $FINAL_DOCKER_YML -p $COMPOSE_PROJECT_NAME --env-file .env --env-file .env.secrets down --remove-orphans
 	fi
 	# VOLUMES=$(docker volume ls -qf dangling=true) 
 	# if [[ -n $VOLUMES ]]; then 
@@ -44,7 +44,7 @@ stoppingContainersAndRemoveVolumes () {
 	if [[ -n $CONTAINERS ]]; then 
 		echo "Stopping containers"
 		# docker rm -f $CONTAINERS
-		${dockerCmd}  $FINAL_DOCKER_YML -p $COMPOSE_PROJECT_NAME down --remove-orphans --volumes
+		${dockerCmd}  $FINAL_DOCKER_YML -p $COMPOSE_PROJECT_NAME --env-file .env --env-file .env.secrets up down --remove-orphans --volumes
 	fi
 
 }
