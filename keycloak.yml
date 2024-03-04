@@ -54,7 +54,7 @@ services:
       KEYCLOAK_USER: ${KEYCLOAK_USER}   # Only for the initial start up AND empty DB !!! 
       KEYCLOAK_PASSWORD : ${KEYCLOAK_PASSWORD} # circuloosPa55w0rd Only for the initial start up AND empty DB !!! 
       PROXY_ADDRESS_FORWARDING: "true"
-      KEYCLOAK_FRONTEND_URL:  http://circuloos-platform-server.eurodyn.com:8090
+      KEYCLOAK_FRONTEND_URL:  http://circuloos-platform-server.eurodyn.com:8090/auth
       PROXY: "edge"
       # KC_HTTPS_CERTIFICATE_FILE: /etc/x509/https/tls.crt
       # KC_HTTPS_CERTIFICATE_KEY_FILE: /etc/x509/https/tls.key

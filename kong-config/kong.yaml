@@ -50,7 +50,7 @@
               # authorizationendpointaddress : https://circuloos-keycloak:8443
               keycloakrealm: fiware-server
               keycloakclientid: mintaka-pep
-              keycloakclientsecret: zQXGjcxPWuF7YBpAiFtaIOEIOrCiWqeH
+              keycloakclientsecret: 47qTsRNiiud05sx68hY6lt7IB5TDyXYz
 
           - name: request-transformer
             config:
