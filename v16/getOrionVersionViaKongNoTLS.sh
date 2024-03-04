@@ -8,7 +8,7 @@ token=$(cat "token.txt")
 
 
 
-KONG_URL='http://'"${HOST}"':443/keycloak-orion'
+KONG_URL='http://'"${HOST}"'/kong/keycloak-orion'
 echo $KONG_URL
 curl -s ''"${KONG_URL}"'/version' \
- --header 'Authorization: Bearer '"${token}"' '
+ --header 'Authorization: Bearer '"${token}"' ' | jq

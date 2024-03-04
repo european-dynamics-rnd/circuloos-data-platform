@@ -6,7 +6,8 @@ export $(cat ../.env | grep "#" -v)
 
 # token=$(curl --insecure --location --request POST 'http://localhost:8080/realms/fiware-server/protocol/openid-connect/token' \
 echo $HOST
-token=$(curl -s --location --request POST 'http://'"${HOST}"':8090/auth/realms/fiware-server/protocol/openid-connect/token' \
+# token=$(curl -s --location --request POST 'http://'"${HOST}"':8090/auth/realms/fiware-server/protocol/openid-connect/token' \
+token=$(curl -s --location --request POST 'http://'"${HOST}"'/idm/auth/realms/fiware-server/protocol/openid-connect/token' \
 --header 'Content-Type: application/x-www-form-urlencoded' \
 --data-urlencode 'username=admin-user' \
 --data-urlencode 'password=admin-user' \
