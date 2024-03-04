@@ -1,0 +1,1 @@
+docker exec  circuloos-keycloak-db pg_dump -U keycloak -d keycloak  > create_tables_1.6.sql
