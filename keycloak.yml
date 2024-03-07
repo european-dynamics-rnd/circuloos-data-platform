@@ -38,7 +38,7 @@ services:
       - circuloos
     environment:  # https://www.keycloak.org/server/all-config  Click on ">" to get Env
       KC_HOSTNAME_URL : http://circuloos-platform-server.eurodyn.com:${KEYCLOAK_PORT}
-      # KC_HOSTNAME_ADMIN_URL: http://circuloos-platform-server.eurodyn.com:${KEYCLOAK_PORT}/auth  # https://github.com/keycloak/keycloak/issues/10505#issuecomment-1384675920
+      KC_HOSTNAME_ADMIN_URL: http://circuloos-platform-server.eurodyn.com:${KEYCLOAK_PORT} # https://github.com/keycloak/keycloak/issues/10505#issuecomment-1384675920
       KC_DB : postgres
       KC_HOSTNAME_PORT: ${KEYCLOAK_PORT} 
       KC_HTTP_PORT:  ${KEYCLOAK_PORT}
