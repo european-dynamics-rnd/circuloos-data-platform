@@ -3,7 +3,6 @@ version: "3.8"
 volumes:
   circuloos-keycloak-db:
 
-
 services:
   keycloak-db:
     image: postgres:14.1
@@ -23,22 +22,23 @@ services:
     restart: unless-stopped
 
   keycloak:
-    image: quay.io/keycloak/keycloak:23.0.3
+    image: quay.io/keycloak/keycloak:23.0.2
     platform: linux/amd64
     container_name: ${PROJECT_NAME:-circuloos}-keycloak
     depends_on:
       - keycloak-db
     init: true
-    command: start-dev
+    command: start
     ports:
       - "${KEYCLOAK_PORT}:${KEYCLOAK_PORT}"  # for testing !!! 
       # - "127.0.0.1:${KEYCLOAK_TLS_PORT}:${KEYCLOAK_TLS_PORT}" # available to localhost
       # - "${KEYCLOAK_TLS_PORT}:${KEYCLOAK_TLS_PORT}"  # Public available to internet
     networks:
       - circuloos
+    restart: unless-stopped
     environment:  # https://www.keycloak.org/server/all-config  Click on ">" to get Env
       KC_HOSTNAME_URL : http://circuloos-platform-server.eurodyn.com:${KEYCLOAK_PORT}
-      KC_HOSTNAME_ADMIN_URL: http://circuloos-platform-server.eurodyn.com:${KEYCLOAK_PORT} # https://github.com/keycloak/keycloak/issues/10505#issuecomment-1384675920
+      # KC_HOSTNAME_ADMIN_URL: http://circuloos-platform-server.eurodyn.com:${KEYCLOAK_PORT} # https://github.com/keycloak/keycloak/issues/10505#issuecomment-1384675920
       KC_DB : postgres
       KC_HOSTNAME_PORT: ${KEYCLOAK_PORT} 
       KC_HTTP_PORT:  ${KEYCLOAK_PORT}
@@ -49,15 +49,11 @@ services:
       KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD} 
       # KEYCLOAK_ADMIN: ${KEYCLOAK_USER}   # Only for the initial start up AND empty DB !!! 
       # KEYCLOAK_ADMIN_PASSWORD : ${KEYCLOAK_PASSWORD} # circuloosPa55w0rd Only for the initial start up AND empty DB !!! 
-      restart: unless-stopped
-      PROXY_ADDRESS_FORWARDING: "true"
-      PROXY: "edge"
-      # KC_HTTPS_CERTIFICATE_FILE: /etc/x509/https/tls.crt
-      # KC_HTTPS_CERTIFICATE_KEY_FILE: /etc/x509/https/tls.key
+      KC_HTTP_ENABLED: true
+      KC_PROXY: edge
+      KC_HOSTNAME_STRICT: false
+      KC_HOSTNAME_STRICT_HTTPS: false
       KC_LOG_LEVEL: DEBUG 
-    # volumes:
-    #   - $PWD/keycloak/circuloos-keycloak.crt:/etc/x509/https/tls.crt
-    #   - $PWD/keycloak/circuloos-keycloak.key:/etc/x509/https/tls.key
 
   kong:
     labels:
@@ -106,7 +102,3 @@ services:
       timeout: 10s
       retries: 10
 
-# networks:
-#   circuloos:
-#     external: true
-#     name: circuloos
