@@ -8,3 +8,5 @@ ssh
 csv_NGSILD_Agent/uploaded_files/
 csv_NGSILD_Agent/__pycache__/
 /leather_board_outline/__pycache__/
+commands_URL/token.txt
+commands_URL/tokenMintaka.txt
