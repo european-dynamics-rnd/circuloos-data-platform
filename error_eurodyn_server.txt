@@ -1,0 +1,11 @@
+time=2024-02-28T14:57:58.533Z | lvl=ERROR | corr=N/A | trans=N/A | from=N/A | srv=N/A | subsrv=N/A | comp=Orion | op=orionldContextDownload.cpp[115]:orionldContextDownload | msg=orionldRequestSend failed (try number 1 out of 3. Timeout is: 5000ms): Internal CURL Error
+time=2024-02-28T14:58:03.535Z | lvl=ERROR | corr=N/A | trans=N/A | from=N/A | srv=N/A | subsrv=N/A | comp=Orion | op=orionldRequestSend.cpp[327]:orionldRequestSend | msg=Internal Error (curl_easy_perform returned error code 28)
+time=2024-02-28T14:58:03.535Z | lvl=ERROR | corr=N/A | trans=N/A | from=N/A | srv=N/A | subsrv=N/A | comp=Orion | op=orionldRequestSend.cpp[335]:orionldRequestSend | msg=curl_easy_perform error 28
+
+time=2024-02-28T14:58:03.535Z | lvl=ERROR | corr=N/A | trans=N/A | from=N/A | srv=N/A | subsrv=N/A | comp=Orion | op=orionldContextDownload.cpp[115]:orionldContextDownload | msg=orionldRequestSend failed (try number 2 out of 3. Timeout is: 5000ms): Internal CURL Error
+time=2024-02-28T14:58:08.536Z | lvl=ERROR | corr=N/A | trans=N/A | from=N/A | srv=N/A | subsrv=N/A | comp=Orion | op=orionldRequestSend.cpp[327]:orionldRequestSend | msg=Internal Error (curl_easy_perform returned error code 28)
+time=2024-02-28T14:58:08.536Z | lvl=ERROR | corr=N/A | trans=N/A | from=N/A | srv=N/A | subsrv=N/A | comp=Orion | op=orionldRequestSend.cpp[335]:orionldRequestSend | msg=curl_easy_perform error 28
+
+time=2024-02-28T14:58:08.536Z | lvl=ERROR | corr=N/A | trans=N/A | from=N/A | srv=N/A | subsrv=N/A | comp=Orion | op=orionldContextDownload.cpp[115]:orionldContextDownload | msg=orionldRequestSend failed (try number 3 out of 3. Timeout is: 5000ms): Internal CURL Error
+time=2024-02-28T14:58:08.536Z | lvl=WARN | corr=N/A | trans=N/A | from=N/A | srv=N/A | subsrv=N/A | comp=Orion | op=orionldContextCacheInit.cpp[161]:orionldContextCacheInit | msg=Unable to download the core context (Unable to download context: https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.6.jsonld)
+time=2024-02-28T14:58:08.536Z | lvl=WARN | corr=N/A | trans=N/A | from=N/A | srv=N/A | subsrv=N/A | comp=Orion | op=orionldContextCacheInit.cpp[185]:orionldContextCacheInit | msg=Falling back to Built-in Core Context (hard-coded copy of https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld)

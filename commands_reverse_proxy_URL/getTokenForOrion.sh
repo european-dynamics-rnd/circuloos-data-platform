@@ -12,8 +12,8 @@ token=$(curl -s --insecure --location --request POST 'https://'"${HOST}"'/idm/re
 --data-urlencode 'password=admin-user' \
 --data-urlencode 'grant_type=password' \
 --data-urlencode 'client_id=orion-pep' \
---data-urlencode 'client_secret=yWv2aRCm3KKMGrj9lMXQcEXY4v80tcFk' | jq .access_token )
+--data-urlencode 'client_secret=yWv2aRCm3KKMGrj9lMXQcEXY4v80tcFk'| jq .access_token  )
 # remove starting and tailing double quatas "
-# echo $token
+echo $token
 token=$(sed -e 's/^"//' -e 's/"$//' <<<"$token")
 echo -n "$token" > token.txt
