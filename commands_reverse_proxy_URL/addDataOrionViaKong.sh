@@ -11,7 +11,7 @@ token=$(cat "token.txt")
 
 KONG_URL='https://'"${HOST}"'/kong/keycloak-orion'
 
-curl -iL -X POST  ''"${KONG_URL}"'/ngsi-ld/v1/entityOperations/upsert' \
+curl -s -iL -X POST  ''"${KONG_URL}"'/ngsi-ld/v1/entityOperations/upsert' \
 -H 'NGSILD-Tenant: circuloos_demo' \
 -H 'NGSILD-Path: /' \
 -H 'Content-Type: application/ld+json' \
