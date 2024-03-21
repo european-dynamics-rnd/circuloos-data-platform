@@ -6,7 +6,11 @@ from shapely.geometry import Polygon
 import geojson
 import numpy as np
 
-def outline_detection_white_backround(image_path:str,width_real:int, heigh_real:int,showStatistics=True ):
+def outline_detection_full_image(image_path:str,width_real:int, heigh_real:int,showStatistics=True ):
+    """
+     It creates 2D coorinates of the remaining leather and the cut ones.
+     IMPORTANT The leather need to cover the entire image with the missing parts on white backround 
+    """
     image_white = io.imread(image_path)
     # Flip the image horizontally (along the vertical axis)
     image_white = np.fliplr(image_white)

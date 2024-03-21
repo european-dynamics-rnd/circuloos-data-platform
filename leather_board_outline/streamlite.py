@@ -38,7 +38,7 @@ if uploaded_jpg is not None:
 
 if uploaded_jpg is not None:
     with col2:
-        remaining_polygon, remaining_polygon_coorinates_real, shapes_coordinates_white, statistics= outline_detection.outline_detection_white_backround(uploaded_jpg, width_real, heigh_real)
+        remaining_polygon, remaining_polygon_coorinates_real, shapes_coordinates_white, statistics= outline_detection.outline_detection_full_image(uploaded_jpg, width_real, heigh_real)
         exported_coordinates=remaining_polygon_coorinates_real
     # Create the Matplotlib plots
         fig1, ax1 = plt.subplots()

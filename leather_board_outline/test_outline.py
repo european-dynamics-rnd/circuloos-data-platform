@@ -17,7 +17,7 @@ image_path_white = './CIRCOLOOS_leatherboard_white.jpg'
 width_real=100 # in cm
 heigh_real=100 # in cm
 
-remaining_polygon, remaining_polygon_coorinates_real, shapes_coordinates_white= outline_detection.outline_detection_white_backround(image_path_white, width_real, heigh_real)
+remaining_polygon, remaining_polygon_coorinates_real, shapes_coordinates_white= outline_detection.outline_detection_full_image(image_path_white, width_real, heigh_real)
 
 # print(f"remaining_polygon: {remaining_polygon}")
 # print(f"remaining_polygon_coorinates_real: {remaining_polygon_coorinates_real} in cm")
