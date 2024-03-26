@@ -11,7 +11,7 @@ export $(cat ./partner_variables.txt | grep "#" -v)
 ./getTokenForMintaka.sh
 
 token=$(cat "tokenMintaka.txt")
-
+# echo $token
 if [ $# -eq 0 ]; then
     sensorID="urn:ngsi-ld:circuloos:demo_1:ieq-001"
     echo "No type as input. Providing data for urn:ngsi-ld:circuloos:demo_1:ieq-001"
@@ -25,5 +25,5 @@ curl -s -G -X GET  ''"${KONG_URL}"'/temporal/entities/'"${sensorID}"'' \
 -H 'NGSILD-Tenant: circuloos_demo' \
 -H 'Link: <'"${CONTEXT}"'>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"' \
 -H 'Authorization: Bearer '"${token}"' ' \
--d 'lastN=5' |jq  
+-d 'lastN=1' | jq
 
