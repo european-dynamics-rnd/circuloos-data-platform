@@ -5,6 +5,11 @@ import json
 import os
 from datetime import datetime
 
+def find_key_observedat(d):
+    for key in d:
+        if key in ["observedat", "observedAt"]:
+            return key
+    return None  # Return None if the key is not found
 
 
 def return_lastest_csv(UPLOAD_FOLDER):
@@ -43,19 +48,20 @@ def load_csv_files_to_dict(csv_file):
             return [] # empty_dict
     return data
 
-def generate_ngsild_entity(entity):
+def generate_ngsild_entity(entity, context):
     # entity['type']
     entity_ngsild = Entity(
         entity.pop('type',None),
         entity.pop('id',None),
         ctx=[
-            "http://circuloos-ld-context/circuloos-context.jsonld",
+            context,
         ],
     )
     keys = list(entity.keys())
-    if "observedat" in keys:
-        iso_date_str=entity.pop("observedat",None)
-        keys.remove("observedat")
+    observedat_keyword=find_key_observedat(entity)
+    if observedat_keyword in keys:
+        iso_date_str=entity.pop(observedat_keyword,None)
+        keys.remove(observedat_keyword)
         #check if timeStamp is ISO8601
         try:
             date_obj = datetime.fromisoformat(iso_date_str)

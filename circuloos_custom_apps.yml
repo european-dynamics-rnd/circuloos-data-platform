@@ -10,9 +10,11 @@ services:
     ports:
       - "5000:5000"  # Prometheus server port
     environment:
+      - CSV_AGENT_PORT=5000
       - NGSI_LD_CONTECT_BROKER_HOSTNAME=circuloos-orion
       - NGSI_LD_CONTECT_BROKER_PORT=1026
-      - ORION_LD_TENANT=circuloos_demo 
+      - ORION_LD_TENANT=circuloos_demo
+      - CONTEXT_JSON=http://circuloos-ld-context/circuloos-context.jsonld
 
   leather_board_outline:
     build: ./leather_board_outline

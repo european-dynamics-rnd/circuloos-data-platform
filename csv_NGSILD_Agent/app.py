@@ -17,10 +17,12 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # NGSI_LD_CONTECT_BROKER_HOSTNAME="localhost"
 # NGSI_LD_CONTECT_BROKER_PORT=1026
 # ORION_LD_TENANT="circuloos_demo"
+# CONTEXT_JSON="http://circuloos-ld-context/circuloos-context.jsonld"
 
 NGSI_LD_CONTECT_BROKER_HOSTNAME=os.environ['NGSI_LD_CONTECT_BROKER_HOSTNAME']
 NGSI_LD_CONTECT_BROKER_PORT=int(os.environ['NGSI_LD_CONTECT_BROKER_PORT'])
 ORION_LD_TENANT=os.environ['ORION_LD_TENANT']
+CONTEXT_JSON=os.environ['CONTEXT_JSON']
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -33,9 +35,9 @@ def generate_ngsi_ld_entities():
     entity_ngsild_json_str=""
     entity_ngsild_json=[]
     for entity_dict in data:
-        entity_ngsild=utlis.generate_ngsild_entity(entity_dict)
+        entity_ngsild=utlis.generate_ngsild_entity(entity_dict,CONTEXT_JSON)
         # entity_ngsild.to_json()
-        entity_ngsild_json_str=entity_ngsild_json_str+'\n'+ str(len(entity_ngsild_json))+": \n"+ entity_ngsild.to_json( indent=4)
+        entity_ngsild_json_str=entity_ngsild_json_str+'\n,'+ entity_ngsild.to_json( indent=4) #str(len(entity_ngsild_json))+": \n"+ 
         entity_ngsild_json.append(entity_ngsild)
     return entity_ngsild_json_str, entity_ngsild_json
 
