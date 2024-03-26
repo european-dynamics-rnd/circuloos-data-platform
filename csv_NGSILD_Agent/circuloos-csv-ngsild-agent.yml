@@ -2,11 +2,9 @@ version: "3.8"
 services:
 
   csv-ngsild-agent:
-    build: ./csv_NGSILD_Agent
+    build: .
     hostname: csv-ngsild-agent
     container_name: csv-ngsild-agent
-    networks:
-      - circuloos
     ports:
       - "5000:5000"  # Prometheus server port
     environment:
@@ -18,12 +16,3 @@ services:
       - PARTNER_USERNAME=test-circuloos
       - PARTNER_PASSWORD=2UnGRKm7NW8Wxa9Z3N
       - ORION_PEP_SECRET=yWv2aRCm3KKMGrj9lMXQcEXY4v80tcFk
-
-  leather_board_outline:
-    build: ./leather_board_outline
-    hostname: leather_board_outline
-    container_name: leather_board_outline
-    networks:
-      - circuloos
-    ports:
-      - "8501:8501"  # Prometheus server port

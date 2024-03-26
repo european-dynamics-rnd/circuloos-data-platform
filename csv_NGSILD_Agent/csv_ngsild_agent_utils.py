@@ -4,6 +4,62 @@ import glob
 import json
 import os
 from datetime import datetime
+import urllib3
+import requests
+import sys
+
+
+
+def get_orion_token(config):
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    # Determine security mode based on the HOST
+    REALM_NAME='fiware-server'
+    CLIENT_ID='orion-pep'
+    secure=True
+    # Construct the request URL and data
+    url = f"https://{config['NGSI_LD_CONTECT_BROKER']['HOSTNAME']}/idm/realms/{REALM_NAME}/protocol/openid-connect/token"
+    data = {
+        'username': config['PARTNER_USERNAME'],
+        'password': config['PARTNER_PASSWORD'],
+        'grant_type': 'password',
+        'client_id': CLIENT_ID,
+        'client_secret': config['ORION_PEP_SECRET']
+    }
+
+    # Make the POST request to the Keycloak token endpoint
+    response = requests.post(url, data=data, verify=secure,  timeout=25)
+    response.raise_for_status()  # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
+    if response.status_code != 200:
+        error=str(datetime.now())+", Error : try to access:"+url+" response: "+response.text
+        raise ValueError(error)
+    # Extract the access token from the response
+    # print(response.json())
+    token = response.json().get('access_token')
+    return token
+
+def get_config():
+    # ORION_LD_TENANT="circuloos_demo"
+    # CONTEXT_JSON="http://circuloos-ld-context/circuloos-context.jsonld"
+    config={}
+    NGSI_LD_CONTECT_BROKER_HOSTNAME=os.getenv('NGSI_LD_CONTECT_BROKER_HOSTNAME','localhost')
+    NGSI_LD_CONTECT_BROKER_PORT=int(os.getenv('NGSI_LD_CONTECT_BROKER_PORT',-1))
+    server={}
+    server['HOSTNAME']=NGSI_LD_CONTECT_BROKER_HOSTNAME
+    config['NGSI_LD_CONTECT_BROKER']=server
+            
+    if NGSI_LD_CONTECT_BROKER_PORT>0:
+        config['NGSI_LD_CONTECT_BROKER']['PORT']=NGSI_LD_CONTECT_BROKER_PORT
+    else:
+        # CB runs on another place and it is under PEP Proxy (Wilma or Kong)
+        config['NGSI_LD_CONTECT_BROKER']['PORT']=443
+        
+    config['ORION_LD_TENANT']=os.getenv('ORION_LD_TENANT',"")
+    config['CONTEXT_JSON']=os.getenv('CONTEXT_JSON',"")
+    config['CSV_AGENT_PORT']=os.environ.get('CSV_AGENT_PORT', 5000)
+    config['PARTNER_USERNAME']=os.getenv('PARTNER_USERNAME',"")
+    config['PARTNER_PASSWORD']=os.getenv('PARTNER_PASSWORD',"")
+    config['ORION_PEP_SECRET']=os.getenv('ORION_PEP_SECRET',"")
+    return config
 
 def find_key_observedat(d):
     for key in d:
