@@ -67,6 +67,14 @@ A custom agent have been created to transform a CSV to NGSI-LD entities and send
 4. Click "Post NGSI-LD entities to Orion-LD". The created NGSI-LD JSON will be send to the Orion-LD. A message with the IDs of the send to the Orion-LD will appear. 
 5. See the data send to the Orion-LD ```./getDataOrionSensors.sh leather```
 
+## Send data to the CIRCULOOS CB 
+
+In order to send the data to the official CIRCULOOS platform the file 'csv_NGSILD_Agent/circuloos-csv-ngsild-agent.yml' needs to be updated with the partner's username and passowrd.
+1. Update csv_NGSILD_Agent/circuloos-csv-ngsild-agent.yml 
+2. Run the ``` docker compose -f circuloos-csv-ngsild-agent.yml up ``` inside folder csv_NGSILD_Agent
+3. Follow previous instructions 
+
+
 # Leather board outline
 A simple tool to calculate and transform to coordinates the remaining part of the leather board/sheet for recycling. 
 

@@ -11,13 +11,10 @@ services:
       - "5000:5000"  # Prometheus server port
     environment:
       - CSV_AGENT_PORT=5000
-      - NGSI_LD_CONTECT_BROKER_HOSTNAME=circuloos-platform.eurodyn.com
-      # - NGSI_LD_CONTECT_BROKER_PORT=1026 # if no port is given the CB is running behind a PEP proxy
+      - NGSI_LD_CONTECT_BROKER_HOSTNAME=localhost
+      - NGSI_LD_CONTECT_BROKER_PORT=1026 # if no port is given the CB is running behind a PEP proxy
       - ORION_LD_TENANT=circuloos_demo
       - CONTEXT_JSON=http://circuloos-ld-context/circuloos-context.jsonld
-      - PARTNER_USERNAME=test-circuloos
-      - PARTNER_PASSWORD=2UnGRKm7NW8Wxa9Z3N
-      - ORION_PEP_SECRET=yWv2aRCm3KKMGrj9lMXQcEXY4v80tcFk
 
   leather_board_outline:
     build: ./leather_board_outline
