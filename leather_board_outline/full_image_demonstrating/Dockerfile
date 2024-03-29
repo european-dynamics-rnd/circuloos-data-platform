@@ -5,8 +5,8 @@ FROM python:3.10-slim
 WORKDIR /app
 
 # Copy the Streamlit app script and any other necessary files
-COPY streamlite.py /app/
-COPY outline_detection.py /app/
+COPY streamlite_full_image.py /app/
+COPY outline_detection_full_image.py /app/
 COPY requirements.txt /app/
 
 # Install the required Python packages
@@ -16,4 +16,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 8501
 
 # Run the Streamlit app when the container starts
-CMD ["streamlit", "run", "streamlite.py"]
+CMD ["streamlit", "run", "streamlite_full_image.py"]

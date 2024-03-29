@@ -1,7 +1,7 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 import numpy as np
-import outline_detection
+import outline_detection_full_image
 from shapely.plotting import plot_polygon
 import random
 import matplotlib.pyplot as plt
@@ -22,7 +22,7 @@ with st.sidebar:
 
 
 # Create a Streamlit app
-st.title("CIRCOLOOS Leather outline")
+st.title("CIRCOLOOS Leather outline - Leather covering entire image")
 
 # Create a checkbox to toggle visibility of Plot 1
 plot1_visible = st.checkbox("Show remaining leather board", value=True)
@@ -38,7 +38,7 @@ if uploaded_jpg is not None:
 
 if uploaded_jpg is not None:
     with col2:
-        remaining_polygon, remaining_polygon_coorinates_real, shapes_coordinates_white, statistics= outline_detection.outline_detection_full_image(uploaded_jpg, width_real, heigh_real)
+        remaining_polygon, remaining_polygon_coorinates_real, shapes_coordinates_white, statistics= outline_detection_full_image.outline_detection_full_image(uploaded_jpg, width_real, heigh_real)
         exported_coordinates=remaining_polygon_coorinates_real
     # Create the Matplotlib plots
         fig1, ax1 = plt.subplots()

@@ -16,10 +16,10 @@ services:
       - ORION_LD_TENANT=circuloos_demo
       - CONTEXT_JSON=http://circuloos-ld-context/circuloos-context.jsonld
 
-  leather_board_outline:
-    build: ./leather_board_outline
-    hostname: leather_board_outline
-    container_name: leather_board_outline
+  leather_board_outline_full_image_demonstrating:
+    build: ./leather_board_outline/full_image_demonstrating
+    hostname: leather_board_outline_full_image_demonstrating
+    container_name: leather_board_outline_full_image_demonstrating
     networks:
       - circuloos
     ports:
