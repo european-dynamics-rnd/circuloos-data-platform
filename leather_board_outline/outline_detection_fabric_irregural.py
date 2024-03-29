@@ -1,196 +1,201 @@
+import cv2
+import numpy as np
+import random
+
 from skimage import io, color, measure
 from skimage.feature import canny
 import matplotlib.pyplot as plt
-from scipy import ndimage as ndi
 import numpy as np
 import matplotlib.pyplot as plt
 import random
-import shapely
 from shapely.geometry import Polygon
-from shapely.ops import unary_union
 from shapely.geometry import LineString
 from skimage.filters import threshold_otsu
 from skimage.measure import find_contours, approximate_polygon
+import geojson
+
+
 
 # Function to generate a random color
 def random_color():
     return [random.uniform(0, 1) for _ in range(3)]
 
-# Load the image
-# image_path = './fabric_1_no_ruller_no_aruco.jpg'
-image_path="./fabric_1_no_ruller_without_aruco_2.jpg"
+def calculate_average_pixel_to_cm_ratio(pixel_to_cm_ratio_dict):
+    print(f"pixel_to_cm_ratio: {pixel_to_cm_ratio_dict}")
+    sum=0
+    for index, pixel_to_cm_ratio in pixel_to_cm_ratio_dict.items():
+        sum=pixel_to_cm_ratio["pixel_to_cm_ratio"]+sum
+    return sum/len(pixel_to_cm_ratio_dict)
 
-image = io.imread(image_path)
-# Flip the image horizontally (along the vertical axis)
-image = np.fliplr(image)
+
+def polygon_to_geojson(outline_polygon,average_pixel_to_cm_ratio):
+    coordinates_np=outline_polygon[0]
+    # Find the minimum x and y coordinates
+    min_x = np.min(coordinates_np[:, 0])
+    min_y = np.min(coordinates_np[:, 1])
+
+    # Translate the polygon by subtracting the minimum coordinates
+    coordinates_np[:, 0] -= min_x
+    coordinates_np[:, 1] -= min_y
+
+    outline_polygon=average_pixel_to_cm_ratio*coordinates_np
+    coordinates = outline_polygon.tolist()
+    # Convert the Shapely polygon to a GeoJSON Feature
+    outline_polygon = geojson.Polygon([coordinates])
+    # print(f"outline_polygon:{outline_polygon}")
+    # Convert the Feature to a GeoJSON FeatureCollection (optional, but common)
+    return outline_polygon
+    
+    
+def outline_detection(image):
+    # image = io.imread(image_path)
+    # Flip the image horizontally (along the vertical axis)
+    # image = np.fliplr(image)
 # Convert the image to grayscale
-gray_image_white = color.rgb2gray(image)
+    gray_image_non_white = color.rgb2gray(image)
 
-# Binarize the image based on thresholding
-thresh_white = threshold_otsu(gray_image_white)
-print(f"thresh_white:{thresh_white}")
-binary_image_white = gray_image_white < thresh_white  # This time we invert the threshold for white shapes
-# Find contours at a constant value of 0.8
-contours_white = find_contours(binary_image_white, 0.9)
-shapes_coordinates_white = []
-# the polygon of the leather board to be recycled 
-# go thou all shapes that have been removed - indicated by white in the original image !!!
-for contour in contours_white:
-    # Approximate the contour to reduce the number of points
-    approx = approximate_polygon(contour, tolerance=0.1)
-    try:
-        area=Polygon(approx).area
-    except:
-        print(f"problematic polygon: {approx}")
-        continue
-    if (area>10):
-        print(f"Polygon:{contour}, area:{area}")
-        shapes_coordinates_white.append(approx)
+    # Binarize the image based on thresholding
+    thresh_non_white = threshold_otsu(gray_image_non_white)
+    print(f"thresh_non_white:{thresh_non_white}")
+    binary_image_non_white = gray_image_non_white < thresh_non_white  # This time we invert the threshold for white shapes
+    # Find contours at a constant value of 0.8
+    contours_non_white = find_contours(binary_image_non_white, 0.9)
+    shapes_coordinates_non_white = []
+    # the polygon of the leather board to be recycled 
+    # go thou all shapes that have been removed - indicated by white in the original image !!!
+    for contour in contours_non_white:
+        # Approximate the contour to reduce the number of points
+        approx = approximate_polygon(contour, tolerance=0.1)
+        try:
+            area=Polygon(approx).area
+        except:
+            print(f"problematic polygon: {approx}")
+            continue
+        if (area>10):
+            # print(f"Polygon :{contour}, area:{area}")
+            shapes_coordinates_non_white.append(approx)
 
-# Plot the image
-fig, ax = plt.subplots()
-ax.imshow(image, cmap='gray')
-
-# Plot each shape on top of the image
-for shape in shapes_coordinates_white:
-    ax.plot(shape[:, 1], shape[:, 0], linewidth=2, color=random_color())
-
-plt.show()
+            
+    return shapes_coordinates_non_white
 
 
+def aruco_pixel_to_cm(image, ARUCO_MARKER, real_marker_sizes):
+    # Define Aruco dictionary (Choose the one matching your markers)
+    dictionary = cv2.aruco.getPredefinedDictionary(ARUCO_MARKER)
+    # parameters = aruco.DetectorParameters_create()
+    parameters = cv2.aruco.DetectorParameters()
 
+    # Detect markers 
+    detector = cv2.aruco.ArucoDetector(dictionary, parameters) 
+    corners, ids, rejectedImgPoints = detector.detectMarkers(image) 
+    # Draw detected markers (optional)
+    cv2.aruco.drawDetectedMarkers(image, corners, ids)
+    if ids is None:
+        # no aruco makers have been found
+        raise ValueError("No Aruco marker found")
+    # Process information based on detected markers
+    if ids is not None:
+        for i in range(len(ids)):
+            # Get marker center by averaging corner points 
+            center = sum(corners[i][0]) / 4  
+            # Example: Print marker ID and center coordinates
+            print(f"Marker ID:{ids[i]}, Center: {center}")
+            # print(f"Coordinates: {corners}")
+            
+    # Initialize the conversion ratio
+    pixel_to_cm_ratio = None
 
+    # Initialize dictionary for conversion ratios
+    pixel_to_cm_ratios = {}
 
+    # Check that at least one ArUco marker was detected
+    if len(corners) > 0:
+        # Flatten the ArUco IDs list
+        ids_flatten = ids.flatten()
+       # Loop over the detected ArUco corners
+        for (markerCorner, markerID) in zip(corners, ids_flatten):
+            # Check if the markerID is in the dictionary of real marker sizes
+            if markerID in real_marker_sizes:
+                # Extract the marker corners
+                corners_local = markerCorner.reshape((4, 2))
+                (topLeft, topRight, bottomRight, bottomLeft) = corners_local
 
+                # Compute the width and height of the marker
+                markerWidth = np.linalg.norm(topRight - topLeft)
+                markerHeight = np.linalg.norm(topRight - bottomRight)
+                
+                # The pixel dimensions of the marker
+                markerDimensions = (markerWidth + markerHeight) / 2
 
+                # Calculate the conversion ratio (cm/pixel)
+                pixel_to_cm_ratio = real_marker_sizes[markerID] / markerDimensions
 
-# Determine the mean intensity of the grayscale image and set thresholds based on it
-# mean_intensity = np.mean(gray_image)
-# low_threshold = mean_intensity / 2
-# high_threshold = mean_intensity
+                # Store the conversion ratio in the dictionary
+                pixel_to_cm_ratios[markerID] = {"pixel_to_cm_ratio": pixel_to_cm_ratio,"markerWidth":markerWidth,"markerHeight":markerHeight}
 
-# # Apply Canny edge detection with the new thresholds
-# edges_threshold = canny(gray_image, low_threshold=low_threshold, high_threshold=high_threshold)
-# # print(f"edges_threshold:{edges_threshold}")
+                # Print the conversion ratio for each marker
+                print(f"Marker ID: {markerID}, Conversion Ratio: {pixel_to_cm_ratio:.5f} cm/pixel")
+                print(f"Marker ID: {markerID}: markerWidth:{markerWidth:.3f}, markerHeight:{markerHeight:.3f}")
+                # print(f"corners: {corners_local}")
+                
+    # Cover all the aruco with a white 
+    # Check that at least one ArUco marker was detected
+    buffer_size = 10
+    if len(corners) > 0:
+        # Flatten the ArUco IDs list
+        ids_flatten = ids.flatten()
 
-# # Find contours from the edges
-# contours = measure.find_contours(edges_threshold, level=0.8)
+        # Loop over the detected ArUco corners
+        for (markerCorner, markerID) in zip(corners, ids_flatten):
+            # Check if the markerID is in the dictionary of real marker sizes
+            if markerID in real_marker_sizes:
+                # Extract the marker corners
+                corners_local = markerCorner.reshape((-1, 2))
 
-# # Combine all LineString objects into a single geometry
-# combined_lines = unary_union([LineString(contour) for contour in contours])
+                # Add buffer around marker corners
+                buffer = np.array([[-buffer_size, -buffer_size],
+                                   [buffer_size, -buffer_size],
+                                   [buffer_size, buffer_size],
+                                   [-buffer_size, buffer_size]])
+                buffered_corners = corners_local + buffer
+                # print(f"buffered_corners:{buffered_corners}")
+                # Fill marker area with white color
+                cv2.fillPoly(image, [np.int32(buffered_corners)], (255, 255, 255))
+    return image,pixel_to_cm_ratios
 
-# # Attempt to create a polygon from the combined line strings
-# combined_polygon = None
-# try:
-#     # The polygonize function returns an iterator of Polygon objects
-#     polygons = list(polygonize([combined_lines]))
+def caclulation(filename:str):
+    # Define the real size of your markers (in cm), e.g., {markerID: sizeInCm}
+    real_marker_sizes = {0: 5.0, 1: 5.0}  # example sizes for marker IDs 0, 1
+    # Load the image
+    # filename="fabric_1_no_ruller.jpg"
+    image = io.imread(filename)
 
-#     # For simplicity, we'll just use the first polygon if multiple are found
-#     if polygons:
-#         combined_polygon = polygons[0]
-# except Exception as e:
-#     print(f"Error in forming polygon: {e}")
+    image_without_aruco,pixel_to_cm_ratio_dict=aruco_pixel_to_cm(image,cv2.aruco.DICT_7X7_100,real_marker_sizes)
+    average_pixel_to_cm_ratio=calculate_average_pixel_to_cm_ratio(pixel_to_cm_ratio_dict)
+    print(f"average_pixel_to_cm_ratio:{average_pixel_to_cm_ratio}")
 
-# # Plotting the result
-# fig, ax = plt.subplots()
-# # ax.imshow(image)
+    shapes_coordinates_non_white=outline_detection(image_without_aruco)
+    # print(f"shapes_coordinates_non_white:{shapes_coordinates_non_white} type{type(shapes_coordinates_non_white[0])}")
 
-# # If a polygon was successfully created, draw it
-# if combined_polygon:
-#     x, y = combined_polygon.exterior.xy
-#     ax.plot(x, y, color=random_color(), linewidth=2)
+    polygon_geojson=polygon_to_geojson(shapes_coordinates_non_white,average_pixel_to_cm_ratio)
+      
 
-# plt.show()
+    return polygon_geojson       
 
-
-# # ConvexHull does not work  
-# from scipy.spatial import ConvexHull
-# # Combine all the points in the polygons into a single array
-# all_points = np.vstack(polygons)
-
-# # Compute the convex hull
-# hull = ConvexHull(all_points)
-
-# # Extract the vertices of the convex hull
-# hull_vertices = all_points[hull.vertices]
-
-# # Plotting
-# fig, ax = plt.subplots()
-# ax.imshow(image, cmap=plt.cm.gray)
-
-# # Draw the convex hull
-# ax.plot(hull_vertices[:, 1], hull_vertices[:, 0], color='lime', lw=2)
-# ax.fill(hull_vertices[:, 1], hull_vertices[:, 0], color='lime', alpha=0.3)
-
-# ax.set_title('Image with Combined Convex Hull')
-# ax.axis('off')
-# plt.show()
-
-
-# #print polygon 
-# # Output the polygons
-# polygon_output = [polygon.tolist() for polygon in polygons]
-# print(f"polygon_output{polygon_output}")  # Display the first 5 polygons for preview (the full list may be very long)
-
-# # Draw the polygons on top of the image
-# fig, ax = plt.subplots()
-# ax.imshow(image, cmap=plt.cm.gray)
-
-# for polygon in polygons:
-#     # Draw the polygon
-#     ax.plot(polygon[:, 1], polygon[:, 0], color=random_color())
-
-# ax.set_title('Image with Polygon Outlines')
-# ax.axis('off')
-# plt.show()
-
-
-
-
-# Create an output image with a white background and the same size as the original
-# output_image_threshold = np.ones_like(image) * 255
-
-# # Set the edges to red on the output image using the thresholded edges
-# output_image_threshold[edges_threshold] = [255, 0, 0]  # Red
-
-# # Show the original, the previous edge-overlayed, and the new edge-overlayed images with threshold
-# fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(18, 6),
-#                          sharex=True, sharey=True)
-# ax = axes.ravel()
-
-# ax[0].imshow(image)
-# ax[0].set_title('Original Image')
-# ax[0].axis('off')
-
-# ax[1].imshow(output_image_threshold)
-# ax[1].set_title('Red Outline with Threshold')
-# ax[1].axis('off')
-
-# plt.tight_layout()
-# plt.show()
-
-
-
-
-
-
-
-
-# # Apply edge detection (Canny)
-# edges = canny(gray_image)
-
-# # Show the original and the edge-detected images
-# fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 5),
-#                          sharex=True, sharey=True)
-# ax = axes.ravel()
-
-# ax[0].imshow(image)
-# ax[0].set_title('Original Image')
-# ax[0].axis('off')
-
-# ax[1].imshow(edges, cmap=plt.cm.gray)
-# ax[1].set_title('Edge Detection')
-# ax[1].axis('off')
-
-# plt.tight_layout()
-# plt.show()
+            
+            
+            
+            
+            
+            
+            
+            
+# cv2.imwrite("fabric_1_no_ruller_without_aruco_2.jpg", image_without_aruco)
+# # Display the image (optional)
+# cv2.imshow("Image", image_without_aruco)
+# cv2.waitKey(10000)
+# cv2.destroyAllWindows()
+# # Display the image (optional)
+# cv2.imshow("Image", image_without_aruco)
+# cv2.waitKey(10000)
+# cv2.destroyAllWindows()

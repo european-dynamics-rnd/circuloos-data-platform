@@ -1,0 +1,16 @@
+{
+  "input": {
+    "Leather type": ["","animal", "vegan", "artificial"]    ,
+    "Kind of animal": ["","pig", "cow", "horse","other animals"],
+   "Kind of plant": ["","pineapple",	"cork",	"cactus",	"other vegan"],
+    "Leather Type/tanned":["","chrome", "tanned","vegetable", "tanned","non-tanned" ],
+    "Grainsided":["","grainside ","splited","imitation leather"],
+    "Leather type/covered":["","covered/finished","non-covered/finished"],
+    "Non-covered":["","nubuc","suede","natur"],
+    "Colour homogeneity":["","one color","multicolored"],
+    "Brightness":["","bright","matte","silky"],
+    "Hardness":["","soft ","medium","hard"],
+    "Colour":["","brown","black","white","red","pink","yellow","silver","gold","grey","green","other colour"]
+
+  }
+}
