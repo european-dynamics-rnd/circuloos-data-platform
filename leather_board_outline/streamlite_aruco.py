@@ -138,7 +138,7 @@ def main():
         if selection["colour"]=="other colour":
             selection["colour"]=st.color_picker('Select a color')
         selection["thickness"]=st.number_input("Tickness (mm)")
-        selection["2d-coordinates"]=outline['coordinates'][0]
+        selection["2d-coordinates"]=outline
         # adding the unitCode 
         selection["thickness_unitCode"]="MMT"
         # testing 
@@ -162,7 +162,7 @@ def main():
                     responses,_,_=utlis.post_ngsi_to_cb_with_token([st.session_state.entity_ngsild]) 
                     # print(responses,info,error) 
                     ui.alert_dialog(show=True, title="CIRCULOSS response", description=responses, confirm_label="OK", cancel_label="Cancel", key="alert_dialog1")
-                    selection={}
+                    # selection={}
                     
                     
     
