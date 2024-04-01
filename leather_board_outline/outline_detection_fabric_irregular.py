@@ -13,6 +13,8 @@ from shapely.geometry import LineString
 from skimage.filters import threshold_otsu
 from skimage.measure import find_contours, approximate_polygon
 import geojson
+from shapely.ops import cascaded_union
+
 
 
 
@@ -73,7 +75,12 @@ def outline_detection(image):
             continue
         if (area>10):
             # print(f"Polygon :{contour}, area:{area}")
-            shapes_coordinates_non_white.append(approx)
+            approx=Polygon(approx)
+            print(f"initial polygon number of :{len(approx.exterior.coords)}")
+            tolerance = 1 
+            simplified_polygon = approx.simplify(tolerance, preserve_topology=True)
+            print(f"approx polygon number of :{len(simplified_polygon.exterior.coords)}")
+            shapes_coordinates_non_white.append(np.array(approx.exterior.coords))
 
             
     return shapes_coordinates_non_white
@@ -181,13 +188,7 @@ def caclulation(filename:str):
       
 
     return polygon_geojson       
-
-            
-            
-            
-            
-            
-            
+          
             
             
 # cv2.imwrite("fabric_1_no_ruller_without_aruco_2.jpg", image_without_aruco)

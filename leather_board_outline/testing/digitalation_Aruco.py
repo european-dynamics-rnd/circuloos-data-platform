@@ -12,7 +12,7 @@ from shapely.geometry import Polygon
 from shapely.geometry import LineString
 from skimage.filters import threshold_otsu
 from skimage.measure import find_contours, approximate_polygon
-
+from shapely.ops import cascaded_union
 
 
 # Function to generate a random color
@@ -46,8 +46,13 @@ def outline(image):
         if (area>10):
             print(f"Polygon:{contour}, area:{area}")
             shapes_coordinates_white.append(approx)
+            approx=Polygon(approx)
+            print(f"initlapolygon number of :{len(approx.exterior.coords)}")
+            tolerance = 0.8 
+            simplified_polygon = approx.simplify(tolerance, preserve_topology=True)
+            print(f"approx polygon number of :{len(simplified_polygon.exterior.coords)}")
 
-    # Plot the image
+    # # Plot the image
     # fig, ax = plt.subplots()
     # ax.imshow(image, cmap='gray')
 
@@ -55,7 +60,7 @@ def outline(image):
     # for shape in shapes_coordinates_white:
     #     ax.plot(shape[:, 1], shape[:, 0], linewidth=2, color=random_color())
 
-    # plt.show()
+    plt.show()
 
 def aruco_pixel_to_cm(image, ACUCO_MARKER):
     # Define Aruco dictionary (Choose the one matching your markers)
