@@ -170,16 +170,18 @@ def aruco_pixel_to_cm(image, ARUCO_MARKER, real_marker_sizes):
                 cv2.fillPoly(image, [np.int32(buffered_corners)], (255, 255, 255))
     return image,pixel_to_cm_ratios
 
-def caclulation(filename:str):
+def caclulation(filename,ARUCO_MARKER,real_marker_sizes):
     # Define the real size of your markers (in cm), e.g., {markerID: sizeInCm}
-    real_marker_sizes = {0: 5.0, 1: 5.0}  # example sizes for marker IDs 0, 1
+    # ARUCO_MARKER= cv2.aruco.DICT_7X7_10
+        # real_marker_sizes = {0: 5.0, 1: 5.0}  # example sizes for marker IDs 0, 1?
+
     # Load the image
     # filename="fabric_1_no_ruller.jpg"
     image = io.imread(filename)
-
-    image_without_aruco,pixel_to_cm_ratio_dict=aruco_pixel_to_cm(image,cv2.aruco.DICT_7X7_100,real_marker_sizes)
+    
+    image_without_aruco,pixel_to_cm_ratio_dict=aruco_pixel_to_cm(image,ARUCO_MARKER,real_marker_sizes)
     average_pixel_to_cm_ratio=calculate_average_pixel_to_cm_ratio(pixel_to_cm_ratio_dict)
-    print(f"average_pixel_to_cm_ratio:{average_pixel_to_cm_ratio}")
+    print(f" average_pixel_to_cm_ratio:{average_pixel_to_cm_ratio}")
 
     shapes_coordinates_non_white=outline_detection(image_without_aruco)
     # print(f"shapes_coordinates_non_white:{shapes_coordinates_non_white} type{type(shapes_coordinates_non_white[0])}")

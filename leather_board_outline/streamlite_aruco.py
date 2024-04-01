@@ -1,5 +1,7 @@
 import streamlit as st
 from ngsildclient import Entity
+import cv2
+
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -28,8 +30,11 @@ def generate_ngsi_ld(selection):
     for keys,data in selection.items():
         if len(str(data)) == 0:
             empty_properties=empty_properties+keys+", "
+    if selection["thickness"] <0.01:
+        empty_properties=empty_properties+ "thickness is zero !!!"+", "
     # remove the last ", "
     if len(empty_properties)>0:
+        # remove the ", " from the end 
         empty_properties=empty_properties[:-2]
         empty_properties=empty_properties.replace("_"," ")
         print(f"empty_properties: {empty_properties}")
@@ -75,7 +80,9 @@ def main():
         with col2:
             error=None
             try:
-                outline=outline_detection_fabric_irregural.caclulation(uploaded_jpg)
+                ARUCO_MARKER= cv2.aruco.DICT_7X7_100
+                real_marker_sizes = {0: 5.0, 1: 5.0}
+                outline=outline_detection_fabric_irregular.caclulation(uploaded_jpg,ARUCO_MARKER,real_marker_sizes)
                 polygon = Polygon(outline['coordinates'][0])
                 # Get the area of the polygon
                 area = polygon.area
@@ -89,6 +96,7 @@ def main():
             except ValueError as e:
                 error=e
                 print(e)
+                uploaded_jpg = None
             
             if error is not None:
                 st.error(error)  
@@ -106,7 +114,7 @@ def main():
 
                
     if uploaded_jpg is not None:
-            # Read the JSON file
+        # Read the JSON file with option about the material's properties
         with open('streamlite_aruco_options.json', 'r') as f:
             streamlite_aruco_options = json.load(f)
         st.text(statistics)
@@ -130,6 +138,7 @@ def main():
         if selection["colour"]=="other colour":
             selection["colour"]=st.color_picker('Select a color')
         selection["thickness"]=st.number_input("Tickness (mm)")
+        selection["2d-coordinates"]=outline['coordinates'][0]
         # adding the unitCode 
         selection["thickness_unitCode"]="MMT"
         # testing 
@@ -150,7 +159,7 @@ def main():
                 if st.button('Send data to CIRCOLOOS platform'):
                     print(st.session_state.entity_ngsild) 
                     # post_ngsi_to_cb_with_token needs a list of entities 
-                    responses,info,error=utlis.post_ngsi_to_cb_with_token([st.session_state.entity_ngsild]) 
+                    responses,_,_=utlis.post_ngsi_to_cb_with_token([st.session_state.entity_ngsild]) 
                     # print(responses,info,error) 
                     ui.alert_dialog(show=True, title="CIRCULOSS response", description=responses, confirm_label="OK", cancel_label="Cancel", key="alert_dialog1")
                     selection={}
