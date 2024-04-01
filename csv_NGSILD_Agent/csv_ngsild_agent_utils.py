@@ -10,9 +10,11 @@ import sys
 
 
 def post_ngsi_to_cb_with_token(entity_ngsild_json):
+    # entity_ngsild_json a list of ngsildclient Entities
     config= get_config()
     error=""
     info=""
+    
     responses=[]
     headers = {
         'Content-Type': 'application/ld+json',
@@ -45,9 +47,9 @@ def post_ngsi_to_cb_with_token(entity_ngsild_json):
             error=error+error_l
             responses.append(error_l) 
         else:
-            info=f" Id: {ngsi_ld_json['id']} uploaded to Orion-LD: {config['NGSI_LD_CONTECT_BROKER']['HOSTNAME']} with response: {response}"
-            info=info+str(str(datetime.now())+info)
-            responses.append(info)
+            info_l=f" Id: {ngsi_ld_json['id']} uploaded to Orion-LD: {config['NGSI_LD_CONTECT_BROKER']['HOSTNAME']} with response: {response}"
+            info=info+str(str(datetime.now())+info_l)
+            responses.append(info_l)
     return responses,info,error
 
 def get_orion_token(config):
