@@ -76,15 +76,42 @@ In order to send the data to the official CIRCULOOS platform the file 'csv_NGSIL
 
 
 # Leather board outline
-A simple tool to calculate and transform to coordinates the remaining part of the leather board/sheet for recycling. 
+## Irregular leather board  
 
-1. Go to the http://localhost:8501
+A tool to calculate and transform the image of an irregular leather board to coordinates with the help of Aruco marker along side with the necessary metadata.\
+Print the aruco markers from the [pdf](./leather_board_outline/aruco_markers.pdf) and measure them. Update the configuration of the docker that you run ([local testing](./circuloos_custom_apps.yml) or [CIRCULOOS platform](./leather_board_outline/leather-board-outline-irregular.yml)) ```NUMBER_ARUCO_MARKERS``` with the number of markers that you are using and ```SIZE_IN_METERS_ARUCO_MARKERS``` the size of the printed markers in **meters**.\
+For the demo 2 aruco markers with dimensions of 0.045m (4.5cm) is used.\
+
+The leather/fabric **MUST** be photographed with a white background.\
+
+1. Go to http://localhost:8501
+2. Upload the image with the aruco markers and the leather board. For demo you can use the ```/leather_board_outline/fabric_1_no_ruller.jpg```
+3. Examine the generated outline
+4. Fill all the necessary metadata/NGSI-LD properties required for the leather board. The id have been filled with a random name, please update it **BUT** it needs to start with  **urn:ngsi-ld:leather:**. If the color in not present on the list please use the option ```other colour``` and a color selector will apera to select the required colour 
+5. Click ```Generate NGSI-LD JSON``` button. If any of the required data is not filled a error message will appear
+6. _optional_ Click ```Show NGSI-LD JSON``` button to see the generated NGSI-LD JSON with all the data
+6. _optional_ Click ```Download NGSI-LD JSON``` button to see the generated NGSI-LD JSON with all the data
+7. Click ```Send data to CIRCOLOOS platform``` button to send the NGSI-LD JSON to the local or CIRCULOOS platform. A popup message will inform you about the status of the operation
+
+![screenshoot](./leather_board_outline/Screenshot_leather-board-outline-irregular.png)
+
+
+
+
+## Rectangle leather board covering the entire image  
+A tool to calculate and transform to coordinates the remaining part of a rectangle leather board/sheet for recycling. Need to know the dimensions of the rectangle leather board
+
+1. Go to the http://localhost:8503
 2. Set the outside dimensions (width, height) of the leather board.
-3. Upload the image of the leather board. The removed/cut peaces **MUST** be with white colour. See folder [leather_board_outline](./leather_board_outline) for examples.
+3. Upload the image of the leather board. The removed/cut peaces **MUST** be with white colour. See folder [leather_board_outline/full_image_demonstrating](./leather_board_outline/full_image_demonstrating/) for examples.
 4. The image, remaining, removed material will appear and statistics will be printed.
 5. Click "Download Coordinates of remaining board" to download the coordinates. You can use them on with the previous tool to upload the data to the Orion-LD. See [leather_outline.csv](./leather_board_outline/leather_outline.csv) as example.
 
 ![screenshoot](./leather_board_outline/full_image_demonstrating/Screenshot_outline_full_image.png)
+
+
+
+
 
 ## Funding acknowledgement
 

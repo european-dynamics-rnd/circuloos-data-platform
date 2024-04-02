@@ -1,0 +1,19 @@
+version: "3.8"
+services:
+
+  leather_board_outline_irregular:
+    build: ./leather_board_outline/
+    hostname: leather_board_outline_irregular
+    container_name: leather_board_outline_irregular
+    ports:
+      - "8501:8501"  # Prometheus server port
+    environment:
+      - NGSI_LD_CONTECT_BROKER_HOSTNAME=circuloos-platform.eurodyn.com
+      # - NGSI_LD_CONTECT_BROKER_PORT=1026 # if no port is given the CB is running behind a PEP proxy
+      - ORION_LD_TENANT=circuloos_demo
+      - CONTEXT_JSON=http://circuloos-ld-context/circuloos-context.jsonld
+      - PARTNER_USERNAME=test-circuloos
+      - PARTNER_PASSWORD=2UnGRKm7NW8Wxa9Z3N
+      - ORION_PEP_SECRET=yWv2aRCm3KKMGrj9lMXQcEXY4v80tcFk
+      - NUMBER_ARUCO_MARKERS=2
+      - SIZE_IN_METERS_ARUCO_MARKERS=0.045
