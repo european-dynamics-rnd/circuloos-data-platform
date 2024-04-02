@@ -22,15 +22,15 @@ from shapely.ops import cascaded_union
 def random_color():
     return [random.uniform(0, 1) for _ in range(3)]
 
-def calculate_average_pixel_to_cm_ratio(pixel_to_cm_ratio_dict):
-    print(f"pixel_to_cm_ratio: {pixel_to_cm_ratio_dict}")
+def calculate_average_pixel_to_m_ratio(pixel_to_m_ratio_dict):
+    print(f"pixel_to_m_ratio: {pixel_to_m_ratio_dict}")
     sum=0
-    for index, pixel_to_cm_ratio in pixel_to_cm_ratio_dict.items():
-        sum=pixel_to_cm_ratio["pixel_to_cm_ratio"]+sum
-    return sum/len(pixel_to_cm_ratio_dict)
+    for index, pixel_to_m_ratio in pixel_to_m_ratio_dict.items():
+        sum=pixel_to_m_ratio["pixel_to_m_ratio"]+sum
+    return sum/len(pixel_to_m_ratio_dict)
 
 
-def polygon_to_geojson(outline_polygon,average_pixel_to_cm_ratio):
+def polygon_to_geojson(outline_polygon,average_pixel_to_m_ratio):
     coordinates_np=outline_polygon[0]
     # Find the minimum x and y coordinates
     min_x = np.min(coordinates_np[:, 0])
@@ -40,7 +40,7 @@ def polygon_to_geojson(outline_polygon,average_pixel_to_cm_ratio):
     coordinates_np[:, 0] -= min_x
     coordinates_np[:, 1] -= min_y
 
-    outline_polygon=average_pixel_to_cm_ratio*coordinates_np
+    outline_polygon=average_pixel_to_m_ratio*coordinates_np
     coordinates = outline_polygon.tolist()
     # Convert the Shapely polygon to a GeoJSON Feature
     outline_polygon = geojson.Polygon([coordinates])
@@ -76,17 +76,17 @@ def outline_detection(image):
         if (area>10):
             # print(f"Polygon :{contour}, area:{area}")
             approx=Polygon(approx)
-            print(f"initial polygon number of :{len(approx.exterior.coords)}")
+            print(f"initial polygon number of: {len(approx.exterior.coords)}")
             tolerance = 1 
             simplified_polygon = approx.simplify(tolerance, preserve_topology=True)
-            print(f"approx polygon number of :{len(simplified_polygon.exterior.coords)}")
+            print(f"approx polygon number of: {len(simplified_polygon.exterior.coords)}")
             shapes_coordinates_non_white.append(np.array(approx.exterior.coords))
 
             
     return shapes_coordinates_non_white
 
 
-def aruco_pixel_to_cm(image, ARUCO_MARKER, real_marker_sizes):
+def aruco_pixel_to_m(image, ARUCO_MARKER, real_marker_sizes):
     # Define Aruco dictionary (Choose the one matching your markers)
     dictionary = cv2.aruco.getPredefinedDictionary(ARUCO_MARKER)
     # parameters = aruco.DetectorParameters_create()
@@ -110,10 +110,10 @@ def aruco_pixel_to_cm(image, ARUCO_MARKER, real_marker_sizes):
             # print(f"Coordinates: {corners}")
             
     # Initialize the conversion ratio
-    pixel_to_cm_ratio = None
+    pixel_to_m_ratio = None
 
     # Initialize dictionary for conversion ratios
-    pixel_to_cm_ratios = {}
+    pixel_to_m_ratios = {}
 
     # Check that at least one ArUco marker was detected
     if len(corners) > 0:
@@ -134,14 +134,14 @@ def aruco_pixel_to_cm(image, ARUCO_MARKER, real_marker_sizes):
                 # The pixel dimensions of the marker
                 markerDimensions = (markerWidth + markerHeight) / 2
 
-                # Calculate the conversion ratio (cm/pixel)
-                pixel_to_cm_ratio = real_marker_sizes[markerID] / markerDimensions
+                # Calculate the conversion ratio (m/pixel)
+                pixel_to_m_ratio = real_marker_sizes[markerID] / markerDimensions
 
                 # Store the conversion ratio in the dictionary
-                pixel_to_cm_ratios[markerID] = {"pixel_to_cm_ratio": pixel_to_cm_ratio,"markerWidth":markerWidth,"markerHeight":markerHeight}
+                pixel_to_m_ratios[markerID] = {"pixel_to_m_ratio": pixel_to_m_ratio,"markerWidth":markerWidth,"markerHeight":markerHeight}
 
                 # Print the conversion ratio for each marker
-                print(f"Marker ID: {markerID}, Conversion Ratio: {pixel_to_cm_ratio:.5f} cm/pixel")
+                print(f"Marker ID: {markerID}, Conversion Ratio: {pixel_to_m_ratio:.5f} m/pixel")
                 print(f"Marker ID: {markerID}: markerWidth:{markerWidth:.3f}, markerHeight:{markerHeight:.3f}")
                 # print(f"corners: {corners_local}")
                 
@@ -168,10 +168,10 @@ def aruco_pixel_to_cm(image, ARUCO_MARKER, real_marker_sizes):
                 # print(f"buffered_corners:{buffered_corners}")
                 # Fill marker area with white color
                 cv2.fillPoly(image, [np.int32(buffered_corners)], (255, 255, 255))
-    return image,pixel_to_cm_ratios
+    return image,pixel_to_m_ratios
 
 def caclulation(filename,ARUCO_MARKER,real_marker_sizes):
-    # Define the real size of your markers (in cm), e.g., {markerID: sizeInCm}
+    # Define the real size of your markers (in m), e.g., {markerID: sizeInm}
     # ARUCO_MARKER= cv2.aruco.DICT_7X7_10
         # real_marker_sizes = {0: 5.0, 1: 5.0}  # example sizes for marker IDs 0, 1?
 
@@ -179,26 +179,13 @@ def caclulation(filename,ARUCO_MARKER,real_marker_sizes):
     # filename="fabric_1_no_ruller.jpg"
     image = io.imread(filename)
     
-    image_without_aruco,pixel_to_cm_ratio_dict=aruco_pixel_to_cm(image,ARUCO_MARKER,real_marker_sizes)
-    average_pixel_to_cm_ratio=calculate_average_pixel_to_cm_ratio(pixel_to_cm_ratio_dict)
-    print(f" average_pixel_to_cm_ratio:{average_pixel_to_cm_ratio}")
+    image_without_aruco,pixel_to_m_ratio_dict=aruco_pixel_to_m(image,ARUCO_MARKER,real_marker_sizes)
+    average_pixel_to_m_ratio=calculate_average_pixel_to_m_ratio(pixel_to_m_ratio_dict)
+    print(f" average_pixel_to_m_ratio:{average_pixel_to_m_ratio}")
 
     shapes_coordinates_non_white=outline_detection(image_without_aruco)
     # print(f"shapes_coordinates_non_white:{shapes_coordinates_non_white} type{type(shapes_coordinates_non_white[0])}")
 
-    polygon_geojson=polygon_to_geojson(shapes_coordinates_non_white,average_pixel_to_cm_ratio)
+    polygon_geojson=polygon_to_geojson(shapes_coordinates_non_white,average_pixel_to_m_ratio)
       
-
     return polygon_geojson       
-          
-            
-            
-# cv2.imwrite("fabric_1_no_ruller_without_aruco_2.jpg", image_without_aruco)
-# # Display the image (optional)
-# cv2.imshow("Image", image_without_aruco)
-# cv2.waitKey(10000)
-# cv2.destroyAllWindows()
-# # Display the image (optional)
-# cv2.imshow("Image", image_without_aruco)
-# cv2.waitKey(10000)
-# cv2.destroyAllWindows()
