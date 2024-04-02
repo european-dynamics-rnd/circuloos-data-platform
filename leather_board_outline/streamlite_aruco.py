@@ -18,17 +18,6 @@ def generate_dict(n, value):
     result = {i: value for i in range(n)}
     return result
 
-def json_to_markdown(json_data, indent=0):
-    markdown = ""
-    for key, value in json_data.items():
-        # print(key,value)
-        if isinstance(value, dict):
-            markdown += "  " * indent + "- **{}:**\n".format(key)
-            markdown += json_to_markdown(value, indent + 1)
-        else:
-            markdown += "  " * indent + "- **{}:** {} \n".format(key, value)
-    return markdown
-
 def generate_ngsi_ld(selection):
     # print(f"selection: {selection}")
     empty_properties=""
@@ -165,9 +154,7 @@ def main():
             if st.session_state.entity_ngsild.id != 'urn:ngsi-ld:leather:empty':
                 with st.popover("Show NGSI-LD JSON"):
                     # entity_ngsild is Entity type, to_json() return a string JSON 
-                    markdown=json_to_markdown(json.loads(st.session_state.entity_ngsild.to_json()))
-                    print(f"markdown:{markdown}")
-                    st.write(markdown)
+                    st.write(json.loads(st.session_state.entity_ngsild.to_json()))
                     
         if st.session_state.entity_ngsild is not None:
             if st.session_state.entity_ngsild.id != 'urn:ngsi-ld:leather:empty':
