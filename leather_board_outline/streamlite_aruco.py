@@ -122,29 +122,29 @@ def main():
         selection={}
         selection["id"]=st.text_input("id",st.session_state.id_random)
         selection["type"]=st.text_input("NGSI-LD type", "leather")
-        # selection["leather_type"]=st.selectbox("Leather type",streamlite_aruco_options["input"]["Leather type"])
-        # if selection["leather_type"]=="animal":
-        #     selection["kind_of_animal"]=st.selectbox("Kind of animal",streamlite_aruco_options["input"]["Kind of animal"])
-        # elif selection["leather_type"]=="vegan":
-        #     selection["kind_of_plant"]=st.selectbox("Kind of plant",streamlite_aruco_options["input"]["Kind of plant"])
-        # selection["leather_type_tanned"]=st.selectbox("Leather Type/tanned",streamlite_aruco_options["input"]["Leather Type/tanned"])
-        # selection["grainsided"]=st.selectbox("Grainsided",streamlite_aruco_options["input"]["Grainsided"])
-        # selection["leather_type_covered"]=st.selectbox("Leather type/covered",streamlite_aruco_options["input"]["Leather type/covered"])
-        # selection["non_covered"]=st.selectbox("Non-covered",streamlite_aruco_options["input"]["Non-covered"])
-        # selection["colour_homogeneity"]=st.selectbox("Colour homogeneity",streamlite_aruco_options["input"]["Colour homogeneity"])
-        # selection["brightness"]=st.selectbox("Brightness",streamlite_aruco_options["input"]["Brightness"])
-        # selection["hardness"]=st.selectbox("Hardness",streamlite_aruco_options["input"]["Hardness"])
-        # selection["colour"]=st.selectbox("Colour",streamlite_aruco_options["input"]["Colour"])
-        # if selection["colour"]=="other colour":
-        #     selection["colour"]=st.color_picker('Select a color')
+        selection["leather_type"]=st.selectbox("Leather type",streamlite_aruco_options["input"]["Leather type"])
+        if selection["leather_type"]=="animal":
+            selection["kind_of_animal"]=st.selectbox("Kind of animal",streamlite_aruco_options["input"]["Kind of animal"])
+        elif selection["leather_type"]=="vegan":
+            selection["kind_of_plant"]=st.selectbox("Kind of plant",streamlite_aruco_options["input"]["Kind of plant"])
+        selection["leather_type_tanned"]=st.selectbox("Leather Type/tanned",streamlite_aruco_options["input"]["Leather Type/tanned"])
+        selection["grainsided"]=st.selectbox("Grainsided",streamlite_aruco_options["input"]["Grainsided"])
+        selection["leather_type_covered"]=st.selectbox("Leather type/covered",streamlite_aruco_options["input"]["Leather type/covered"])
+        selection["non_covered"]=st.selectbox("Non-covered",streamlite_aruco_options["input"]["Non-covered"])
+        selection["colour_homogeneity"]=st.selectbox("Colour homogeneity",streamlite_aruco_options["input"]["Colour homogeneity"])
+        selection["brightness"]=st.selectbox("Brightness",streamlite_aruco_options["input"]["Brightness"])
+        selection["hardness"]=st.selectbox("Hardness",streamlite_aruco_options["input"]["Hardness"])
+        selection["colour"]=st.selectbox("Colour",streamlite_aruco_options["input"]["Colour"])
+        if selection["colour"]=="other colour":
+            selection["colour"]=st.color_picker('Select a color')
         selection["thickness"]=st.number_input("Tickness (mm)")
-        # selection["2d-coordinates"]=outline
+        selection["2d-coordinates"]=outline
         # adding the unitCode 
         selection["thickness_unitCode"]="MMT"
         # testing 
         # selection_json="""{"id": "urn:ngsi-ld:circuloos:leather:iwhqjqd3rm", "type": "leather", "leather_type": "animal", "kind_of_animal": "cow", "leather_type_tanned": "tanned", "grainsided": "grainside ", "leather_type_covered": "covered/finished", "non_covered": "natur", "colour_homogeneity": "multicolored", "brightness": "bright", "hardness": "medium", "colour": "red", "thickness": 0.08, "thickness_unitCode": "MMT"}"""
     
-        if st.button('Generate NGSI-LD data'):
+        if st.button('Generate NGSI-LD JSON'):
             # st.session_state.entity_ngsild=generate_ngsi_ld(json.loads(selection_json))
             print(selection)
             st.session_state.entity_ngsild=generate_ngsi_ld(selection)
@@ -158,7 +158,7 @@ def main():
                     
         if st.session_state.entity_ngsild is not None:
             if st.session_state.entity_ngsild.id != 'urn:ngsi-ld:leather:empty':
-                st.download_button("Download JSON file of remaining board", '['+st.session_state.entity_ngsild.to_json()+']', key='download_button_json', file_name='output.json')
+                st.download_button("Download NGSI-LD JSON", '['+st.session_state.entity_ngsild.to_json()+']', key='download_button_json', file_name='output.json')
 
         if st.session_state.entity_ngsild is not None:    
              if st.session_state.entity_ngsild.id != 'urn:ngsi-ld:leather:empty':
