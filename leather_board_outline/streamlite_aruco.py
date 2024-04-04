@@ -62,7 +62,7 @@ def main():
 
 
     # Create a Streamlit app
-    st.title("CIRCOLOOS Leather outline with ArUco markers")
+    st.title("CIRCULOOS Leather outline with ArUco markers")
 
     # Create a checkbox to toggle visibility of Plot 1
     plot1_visible = st.checkbox("Show remaining leather board", value=True)
@@ -162,7 +162,7 @@ def main():
 
         if st.session_state.entity_ngsild is not None:    
              if st.session_state.entity_ngsild.id != 'urn:ngsi-ld:leather:empty':
-                if st.button('Send data to CIRCOLOOS platform'):
+                if st.button('Send data to CIRCULOOS platform'):
                     print(st.session_state.entity_ngsild) 
                     # post_ngsi_to_cb_with_token needs a list of entities 
                     responses,_,_=utlis.post_ngsi_to_cb_with_token([st.session_state.entity_ngsild]) 
