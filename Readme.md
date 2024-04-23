@@ -13,10 +13,10 @@ The main components of the circuloos IoT LD platform are:
 
 # CILCULOOS Platform
 
-In the [commands_URL](./commands_URL) you can find commands to interact with the CIRCULOOS Platform located on European Dynamics Server, circuloos-platform.eurodyn.com.\
+In the [commands_URL](./commands_URL) you can find commands to interact with the CIRCULOOS Platform located on European Dynamics Server, circuloos-platform.eurodyn.com.
 You **need** to change the centennial in the **partner_variables.txt** that was send to you by email, **PARTNER_USERNAME** and **PARTNER_PASSWORD**. If you have not received your partner credentials, please e-mail konstantinos.gombakisATeurodyn.com \
 Moreover, a Postman collection of the same commands is [HERE](./commands_URL/ED CIRCULOOS Platform.postman_collection.json)\
-Please go throu the demo and then try to connect to the ED CIRCULOOS Platform.\
+Please go throu the demo and then try to connect to the ED CIRCULOOS Platform.
 To send **REAL data** from you pilot please chose a unique **NGSILD-Tenant** to ensure proper data separation form other partner data.
 
 
@@ -78,11 +78,17 @@ In order to send the data to the official CIRCULOOS platform the file 'csv_NGSIL
 # Leather board outline
 ## Irregular leather board  
 
-A tool to calculate and transform the image of an irregular leather board to coordinates with the help of Aruco marker along side with the necessary metadata.\
-Print the aruco markers from the [pdf](./leather_board_outline/aruco_markers.pdf) and measure them. Update the configuration of the docker that you run ([local testing](./circuloos_custom_apps.yml) or [CIRCULOOS platform](./leather_board_outline/leather-board-outline-irregular.yml)) ```NUMBER_ARUCO_MARKERS``` with the number of markers that you are using and ```SIZE_IN_METERS_ARUCO_MARKERS``` the size of the printed markers in **meters**.\
-For the demo 2 aruco markers with dimensions of 0.045m (4.5cm) is used.\
+A tool to calculate and transform the image of an irregular leather board to coordinates with the help of Aruco marker along side with the necessary metadata.
+Print the aruco markers from the [pdf](./leather_board_outline/aruco_markers.pdf) and measure them. Update the configuration of the docker that you run ([local testing](./circuloos_custom_apps.yml) or [CIRCULOOS platform](./leather_board_outline/leather-board-outline-irregular.yml)) ```NUMBER_ARUCO_MARKERS``` with the number of markers that you are using and ```SIZE_IN_METERS_ARUCO_MARKERS``` the size of the printed markers in **meters**.
+For the demo 2 aruco markers with dimensions of 0.045m (4.5cm) is used.
 
-The leather/fabric **MUST** be photographed with a white background.\
+The leather/fabric **MUST** be photographed with a white background. Moreover there should be as flat as possible with no visible shadows. The aruco markers can be glued or taped on the surface and a piece of glass can be put on top of the leather/fabric.
+
+### TO send the data to the CIRCULOOS platform
+
+1. Ensure that the platform for local development is down. Run ```./server stop``` on the main directory
+2. Edit the ```leather_board_outline/leather-board-outline-irregular.yml``` with the credentials that you have recieved. 
+4. ```cd 
 
 1. Go to http://localhost:8501
 2. Upload the image with the aruco markers and the leather board. For demo you can use the ```/leather_board_outline/fabric_1_no_ruller.jpg```

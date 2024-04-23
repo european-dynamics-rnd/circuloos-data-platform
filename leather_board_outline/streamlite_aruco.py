@@ -130,7 +130,8 @@ def main():
         selection["leather_type_tanned"]=st.selectbox("Leather Type/tanned",streamlite_aruco_options["input"]["Leather Type/tanned"])
         selection["grainsided"]=st.selectbox("Grainsided",streamlite_aruco_options["input"]["Grainsided"])
         selection["leather_type_covered"]=st.selectbox("Leather type/covered",streamlite_aruco_options["input"]["Leather type/covered"])
-        selection["non_covered"]=st.selectbox("Non-covered",streamlite_aruco_options["input"]["Non-covered"])
+        if selection["leather_type_covered"]== "non-covered/finished":
+            selection["non_covered"]=st.selectbox("Non-covered",streamlite_aruco_options["input"]["Non-covered"])
         selection["colour_homogeneity"]=st.selectbox("Colour homogeneity",streamlite_aruco_options["input"]["Colour homogeneity"])
         selection["brightness"]=st.selectbox("Brightness",streamlite_aruco_options["input"]["Brightness"])
         selection["hardness"]=st.selectbox("Hardness",streamlite_aruco_options["input"]["Hardness"])

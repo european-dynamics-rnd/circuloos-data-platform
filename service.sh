@@ -29,7 +29,7 @@ stoppingContainers () {
 	if [[ -n $CONTAINERS ]]; then 
 		echo "Stopping containers"
 		# docker rm -f $CONTAINERS
-		${dockerCmd}  $FINAL_DOCKER_YML -p $COMPOSE_PROJECT_NAME down --remove-orphans
+		${dockerCmd}  $FINAL_DOCKER_YML -p $COMPOSE_PROJECT_NAME --env-file .env --env-file .env.secrets down --remove-orphans
 	fi
 	# VOLUMES=$(docker volume ls -qf dangling=true) 
 	# if [[ -n $VOLUMES ]]; then 
@@ -44,7 +44,7 @@ stoppingContainersAndRemoveVolumes () {
 	if [[ -n $CONTAINERS ]]; then 
 		echo "Stopping containers"
 		# docker rm -f $CONTAINERS
-		${dockerCmd}  $FINAL_DOCKER_YML -p $COMPOSE_PROJECT_NAME down --remove-orphans --volumes
+		${dockerCmd}  $FINAL_DOCKER_YML -p $COMPOSE_PROJECT_NAME --env-file .env --env-file .env.secrets down --remove-orphans --volumes
 	fi
 
 }

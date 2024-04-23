@@ -2,7 +2,7 @@ version: "3.8"
 services:
 
   leather_board_outline_irregular:
-    build: ./leather_board_outline/
+    build: .
     hostname: leather_board_outline_irregular
     container_name: leather_board_outline_irregular
     ports:
