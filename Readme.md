@@ -84,14 +84,16 @@ For the demo 2 aruco markers with dimensions of 0.045m (4.5cm) is used.
 
 The leather/fabric **MUST** be photographed with a white background. Moreover there should be as flat as possible with no visible shadows. The aruco markers can be glued or taped on the surface and a piece of glass can be put on top of the leather/fabric.
 
-### TO send the data to the CIRCULOOS platform
+### Send the data to the CIRCULOOS platform
 
 1. Ensure that the platform for local development is down. Run ```./server stop``` on the main directory
-2. Edit the ```leather_board_outline/leather-board-outline-irregular.yml``` with the credentials that you have recieved. 
-4. ```cd 
+2. Edit the ```leather_board_outline/leather-board-outline-irregular.yml``` with the credentials that you have received. 
+3. Run the docker compose: ```docker compose -f leather_board_outline/leather-board-outline-irregular.yml up```
+4. Follow the instruction got as the local one (with ./service start)
 
+## Using the Leather board outline tool
 1. Go to http://localhost:8501
-2. Upload the image with the aruco markers and the leather board. For demo you can use the ```/leather_board_outline/fabric_1_no_ruller.jpg```
+2. Upload the image with the aruco markers and the leather board. For demo you can use the ```/leather_board_outline/imagesfabric_1_no_ruller.jpg```
 3. Examine the generated outline
 4. Fill all the necessary metadata/NGSI-LD properties required for the leather board. The id have been filled with a random name, please update it **BUT** it needs to start with  **urn:ngsi-ld:leather:**. If the color in not present on the list please use the option ```other colour``` and a color selector will apera to select the required colour 
 5. Click ```Generate NGSI-LD JSON``` button. If any of the required data is not filled a error message will appear
@@ -99,9 +101,7 @@ The leather/fabric **MUST** be photographed with a white background. Moreover th
 6. _optional_ Click ```Download NGSI-LD JSON``` button to see the generated NGSI-LD JSON with all the data
 7. Click ```Send data to CIRCOLOOS platform``` button to send the NGSI-LD JSON to the local or CIRCULOOS platform. A popup message will inform you about the status of the operation
 
-![screenshoot](./leather_board_outline/Screenshot_leather-board-outline-irregular.png)
-
-
+![screenshoot](./leather_board_outline/images/Screenshot_leather-board-outline-irregular.png)
 
 
 ## Rectangle leather board covering the entire image  
