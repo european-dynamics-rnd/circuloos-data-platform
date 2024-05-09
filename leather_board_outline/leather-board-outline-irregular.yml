@@ -6,7 +6,7 @@ services:
     hostname: leather_board_outline_irregular
     container_name: leather_board_outline_irregular
     ports:
-      - "8501:8501"  # Prometheus server port
+      - "8501:8501" 
     environment:
       - NGSI_LD_CONTECT_BROKER_HOSTNAME=circuloos-platform.eurodyn.com
       # - NGSI_LD_CONTECT_BROKER_PORT=1026 # if no port is given the CB is running behind a PEP proxy

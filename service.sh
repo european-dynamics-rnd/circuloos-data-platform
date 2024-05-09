@@ -62,6 +62,12 @@ case "${command}" in
 		export $(cat .env | grep "#" -v)
 		stoppingContainers
 		;;
+	"build")
+		export $(cat .env | grep "#" -v)
+		echo -e "Rebuildings containers"
+		echo ""
+        ${dockerCmd} $FINAL_DOCKER_YML -p $COMPOSE_PROJECT_NAME --env-file .env --env-file .env.secrets build 
+		;;
 	"restart")
 		echo -e "Restarting containers"
 		export $(cat .env | grep "#" -v)

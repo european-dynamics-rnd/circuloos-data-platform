@@ -150,6 +150,13 @@ def main():
             print(selection)
             st.session_state.entity_ngsild=generate_ngsi_ld(selection)
             
+        if st.button('Check connectivity with CIRCULOOS platform'):
+            print(st.session_state.entity_ngsild) 
+            # post_ngsi_to_cb_with_token needs a list of entities 
+            responses,_,_=utlis.get_cb_info_with_token() 
+            # print(responses,info,error) 
+            ui.alert_dialog(show=True, title="CIRCULOSS response", description=responses, confirm_label="OK", cancel_label="Cancel", key="alert_dialog1")
+            # selection={}     
         if st.session_state.entity_ngsild is not None:
             print(st.session_state.entity_ngsild)
             if st.session_state.entity_ngsild.id != 'urn:ngsi-ld:leather:empty':
@@ -160,7 +167,8 @@ def main():
         if st.session_state.entity_ngsild is not None:
             if st.session_state.entity_ngsild.id != 'urn:ngsi-ld:leather:empty':
                 st.download_button("Download NGSI-LD JSON", '['+st.session_state.entity_ngsild.to_json()+']', key='download_button_json', file_name='output.json')
-
+                
+                    
         if st.session_state.entity_ngsild is not None:    
              if st.session_state.entity_ngsild.id != 'urn:ngsi-ld:leather:empty':
                 if st.button('Send data to CIRCULOOS platform'):
@@ -170,6 +178,8 @@ def main():
                     # print(responses,info,error) 
                     ui.alert_dialog(show=True, title="CIRCULOSS response", description=responses, confirm_label="OK", cancel_label="Cancel", key="alert_dialog1")
                     # selection={}
+        
+
                     
                     
     

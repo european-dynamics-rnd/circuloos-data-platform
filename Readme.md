@@ -1,5 +1,5 @@
 # CIRCULOOS Platform
-The CIRCULOOS Platform utilizes FIWARE compoments, designed to be implemented on factory premises or on the cloud. It compatible with the [NGSI-LD](https://www.etsi.org/deliver/etsi_gs/CIM/001_099/009/01.07.01_60/gs_cim009v010701p.pdf) (Next Generation Service Interfaces) specifications. This platform setup serves as a template, equipped with minimal configurations to facilitate a smooth startup. Utilizing [FIWARE generic enablers](https://github.com/FIWARE/catalogue).
+The CIRCULOOS Platform utilizes FIWARE components, designed to be implemented on factory premises or on the cloud. It compatible with the [NGSI-LD](https://www.etsi.org/deliver/etsi_gs/CIM/001_099/009/01.07.01_60/gs_cim009v010701p.pdf) (Next Generation Service Interfaces) specifications. This platform setup serves as a template, equipped with minimal configurations to facilitate a smooth startup. Utilizing [FIWARE generic enablers](https://github.com/FIWARE/catalogue).
 
 ## Architecture 
 The main components of the circuloos IoT LD platform are:
@@ -15,7 +15,7 @@ The main components of the circuloos IoT LD platform are:
 
 In the [commands_URL](./commands_URL) you can find commands to interact with the CIRCULOOS Platform located on European Dynamics Server, circuloos-platform.eurodyn.com.
 You **need** to change the centennial in the **partner_variables.txt** that was send to you by email, **PARTNER_USERNAME** and **PARTNER_PASSWORD**. If you have not received your partner credentials, please e-mail konstantinos.gombakisATeurodyn.com \
-Moreover, a Postman collection of the same commands is [HERE](./commands_URL/ED CIRCULOOS Platform.postman_collection.json)\
+Moreover, a Postman collection of the same commands is [HERE](./commands_URL/ED CIRCULOOS Platform.postman_collection.json).
 Please go throu the demo and then try to connect to the ED CIRCULOOS Platform.
 To send **REAL data** from you pilot please chose a unique **NGSILD-Tenant** to ensure proper data separation form other partner data.
 
@@ -26,7 +26,7 @@ The demo have can run on every Linux system. The following tools needs to be ins
 jq is used for the formatting of the return json from Orion-LD and Mintaka.
 
 ## Docker
-To run circuloos use: ```./service start``` on the main folder. The first time will need to download all Docker images ~10minutes depending on internet speed. Then open another terminal to [continue](#demo).
+To run circuloos use: ```./service.sh start``` on the main folder. The first time will need to download all Docker images ~10minutes depending on internet speed. Then open another terminal to [continue](#demo).
 
 The main docker-compose file(docker-compose.yml) include additional compose files for specific services.
 1. temporal.yml. Service for Mintaka and TimescaleDB.
@@ -84,12 +84,14 @@ For the demo 2 aruco markers with dimensions of 0.045m (4.5cm) is used.
 
 The leather/fabric **MUST** be photographed with a white background. Moreover there should be as flat as possible with no visible shadows. The aruco markers can be glued or taped on the surface and a piece of glass can be put on top of the leather/fabric.
 
+**IMPORTANT** when you download/update (via git pull) rebuild the local docker images !!! ```./service.sh build``` or ```docker compose -f leather_board_outline/leather-board-outline-irregular.yml build```
+
 ### Send the data to the CIRCULOOS platform
 
 1. Ensure that the platform for local development is down. Run ```./server stop``` on the main directory
 2. Edit the ```leather_board_outline/leather-board-outline-irregular.yml``` with the credentials that you have received. 
 3. Run the docker compose: ```docker compose -f leather_board_outline/leather-board-outline-irregular.yml up```
-4. Follow the instruction got as the local one (with ./service start)
+4. Follow the instruction got as the local one (with ./service.sh start)
 
 ## Using the Leather board outline tool
 1. Go to http://localhost:8501
@@ -99,7 +101,8 @@ The leather/fabric **MUST** be photographed with a white background. Moreover th
 5. Click ```Generate NGSI-LD JSON``` button. If any of the required data is not filled a error message will appear
 6. _optional_ Click ```Show NGSI-LD JSON``` button to see the generated NGSI-LD JSON with all the data
 6. _optional_ Click ```Download NGSI-LD JSON``` button to see the generated NGSI-LD JSON with all the data
-7. Click ```Send data to CIRCOLOOS platform``` button to send the NGSI-LD JSON to the local or CIRCULOOS platform. A popup message will inform you about the status of the operation
+7. _optional_ Click ```Check connectivity with CIRCULOOS platform``` to check the connectivity with the CIRCULOOS platform.
+8. Click ```Send data to CIRCOLOOS platform``` button to send the NGSI-LD JSON to the local or CIRCULOOS platform. A popup message will inform you about the status of the operation
 
 ![screenshoot](./leather_board_outline/images/Screenshot_leather-board-outline-irregular.png)
 

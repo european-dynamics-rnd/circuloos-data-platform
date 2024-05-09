@@ -52,6 +52,46 @@ def post_ngsi_to_cb_with_token(entity_ngsild_json):
             responses.append(info_l)
     return responses,info,error
 
+
+def get_cb_info_with_token():
+    # entity_ngsild_json a list of ngsildclient Entities
+    config= get_config()
+    error=""
+    info=""
+    
+    responses=[]
+    headers = {}
+    if config['NGSI_LD_CONTECT_BROKER']['PORT']==443:
+        # the CB is behind a PEP proxy (wilma or KONG), need to get a token 
+        try:
+            token= get_orion_token(config)
+        except Exception as e:
+            error=str(e) 
+            responses=str(e)    
+            return responses,info,error
+        headers['Authorization']= 'Bearer ' + token + ' '
+        endpoint=f"https://{config['NGSI_LD_CONTECT_BROKER']['HOSTNAME']}/kong/keycloak-orion/version" 
+    else:
+        endpoint=f"http://{config['NGSI_LD_CONTECT_BROKER']['HOSTNAME']}:{config['NGSI_LD_CONTECT_BROKER']['PORT']}/version"
+    # cilculoss_orion_ld_client=Client(hostname=NGSI_LD_CONTECT_BROKER_HOSTNAME ,port=NGSI_LD_CONTECT_BROKER_PORT, tenant=ORION_LD_TENANT)
+        # response=cilculoss_orion_ld_client.upsert(ngsi_ld_json)
+    # app.logger.info(endpoint)
+    # app.logger.info(headers)
+    response = requests.get(endpoint,headers=headers)
+    try:
+        response.raise_for_status()  # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
+        if not response.status_code // 100 == 2:
+            error=str(datetime.now())+", Error: get on " + endpoint + response.text + "status_code" + str(response.status_code)
+            responses.append(error) 
+        else:
+            info=str("OK  "+str(datetime.now())+"  "+str(response.json()))
+            responses.append(info)
+    except Exception as e:
+            error=str(e) 
+            responses=str(e)    
+            return responses,info,error
+    return responses,info,error
+
 def get_orion_token(config):
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     # Determine security mode based on the HOST
