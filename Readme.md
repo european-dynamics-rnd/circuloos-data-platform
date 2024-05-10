@@ -4,7 +4,7 @@ The CIRCULOOS Platform utilizes FIWARE components, designed to be implemented on
 ## Architecture 
 The main components of the circuloos IoT LD platform are:
 1. [Orion-LD](https://github.com/FIWARE/context.Orion-LD) as Context Broker.
-2. [Mintaka](https://github.com/FIWARE/mintaka) as NGSI-LD temporal retrieval API.
+2. [Mintaka](https://github.com/FIWARE/mintaka) as NGSI-LD temporal retrieval API ([OpenAPI Specifications](./commands_URL/miktakaOpenAPISpecs.yaml)).
 3. [Keycloak](https://www.keycloak.org/) as single sign-on with identity and access management.
 4. [Kong](https://github.com/FIWARE/kong-plugins-fiware) as PEP (Policy Enforcement Point) proxy for Orion-LD and Mintaka.
 
