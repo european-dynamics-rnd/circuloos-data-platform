@@ -14,8 +14,9 @@ The main components of the circuloos IoT LD platform are:
 # CILCULOOS Platform
 
 In the [commands_URL](./commands_URL) you can find commands to interact with the CIRCULOOS Platform located on European Dynamics Server, circuloos-platform.eurodyn.com.
-You **need** to change the centennial in the **partner_variables.txt** that was send to you by email, **PARTNER_USERNAME** and **PARTNER_PASSWORD**. If you have not received your partner credentials, please e-mail konstantinos.gombakisATeurodyn.com \
-Moreover, a Postman collection of the same commands is [HERE](./commands_URL/ED CIRCULOOS Platform.postman_collection.json).
+You **need** to change the centennial in the **partner_variables.txt** that was send to you by email, **PARTNER_USERNAME** and **PARTNER_PASSWORD**. If you have not received your partner credentials, please e-mail konstantinos.gombakisATeurodyn.com.
+
+Moreover, a Postman collection of the same commands is [HERE](./commands_URL/ED%20CIRCULOOS%20Platform.postman_collection.json).
 Please go throu the demo and then try to connect to the ED CIRCULOOS Platform.
 To send **REAL data** from you pilot please chose a unique **NGSILD-Tenant** to ensure proper data separation form other partner data.
 
