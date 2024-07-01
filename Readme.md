@@ -89,7 +89,7 @@ The leather/fabric **MUST** be photographed with a white background. Moreover th
 
 ### Send the data to the CIRCULOOS platform
 
-1. Ensure that the platform for local development is down. Run ```./server stop``` on the main directory
+1. Ensure that the platform for local development is down. Run ```./service.sh stop``` on the main directory
 2. Edit the ```leather_board_outline/leather-board-outline-irregular.yml``` with the credentials that you have received. 
 3. Run the docker compose: ```docker compose -f leather_board_outline/leather-board-outline-irregular.yml up```
 4. Follow the instruction got as the local one (with ./service.sh start)

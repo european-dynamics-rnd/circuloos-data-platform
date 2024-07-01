@@ -1,0 +1,41 @@
+[{
+    "id": "urn:ngsi-ld:circuloos:demo_1:2408rtfgjslfg",
+    "type": "GRETA_SIMPLERESULT",
+    "@context": "https://raw.githubusercontent.com/konstantinosGombakis/CIRCULOOS_Data_model/main/material/leather/context.jsonld",
+    "lcdCategoty1": {
+        "type": "Property",
+        "value": 15.08,
+        "unitCode": "KGM",
+        "observedAt": "2024-01-11T10:00:07.446Z"
+    },
+    "lcdCategoty2": {
+        "type": "Property",
+        "value": 0.001,
+        "unitCode": "toBeDefenied",
+        "observedAt": "2024-01-11T10:00:07.446Z"
+    },
+    "lcdCategoty3": {
+        "type": "Property",
+        "value": 0.0001,
+        "unitCode": "KGM",
+        "observedAt": "2024-01-11T10:00:07.446Z"
+    },
+    "lcdCategoty4": {
+        "type": "Property",
+        "value": 0.00001,
+        "unitCode": "toBeDefenied",
+        "observedAt": "2024-01-11T10:00:07.446Z"
+    },
+    "lccCategoty4": {
+        "type": "Property",
+        "value": 0.000001,
+        "unitCode": "toBeDefenied",
+        "observedAt": "2024-01-11T10:00:07.446Z"
+    },
+    "lccCategoty5": {
+        "type": "Property",
+        "value": "0.0000001",
+        "unitCode": "toBeDefenied",
+        "observedAt": "2024-01-11T10:00:07.446Z"
+    }
+}]
