@@ -1,0 +1,132 @@
+<mxfile host="65bd71144e">
+    <diagram name="Page-1" id="Es02p8DRjkub2hjDWlHL">
+        <mxGraphModel dx="1493" dy="1684" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="34" value="ED SaaS&amp;nbsp;&lt;br&gt;Orion-LD" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;startSize=40;" vertex="1" parent="1">
+                    <mxGeometry x="120" y="-60" width="420" height="190" as="geometry">
+                        <mxRectangle x="60" y="160" width="80" height="80" as="alternateBounds"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="36" value="Orion-LD" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="34">
+                    <mxGeometry x="120" y="10" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="37" value="Keycloak" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="34">
+                    <mxGeometry x="283" y="10" width="120" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="41" value="" style="edgeStyle=none;html=1;startArrow=classic;startFill=1;" edge="1" parent="34" source="39" target="36">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="43" style="edgeStyle=none;html=1;exitX=1;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=1;entryDx=0;entryDy=0;startArrow=classic;startFill=1;" edge="1" parent="34" source="39" target="37">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="39" value="Kong Proxy" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="34">
+                    <mxGeometry x="50" y="120" width="120" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="42" style="edgeStyle=none;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;startArrow=classic;startFill=1;" edge="1" parent="34" source="40" target="36">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="40" value="Mintaka + TimescaleDB" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="34">
+                    <mxGeometry x="210" y="130" width="100" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="52" value="&lt;h2 style=&quot;border-color: var(--border-color); font-size: 13px;&quot; data-ved=&quot;2ahUKEwiqjumD2MqCAxUdgf0HHfErBAQQ3B0oAXoECFwQEQ&quot; data-attrid=&quot;title&quot; data-local-attribute=&quot;d3bn&quot; class=&quot;qrShPb pXs6bb PZPZlf q8U8x aTI8gc&quot;&gt;Supply Chain Digital Twin (SCDT Tool)&lt;/h2&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;" vertex="1" parent="1">
+                    <mxGeometry x="220" y="250" width="100" height="300" as="geometry"/>
+                </mxCell>
+                <mxCell id="65" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;" vertex="1" parent="52">
+                    <mxGeometry x="45" y="60" width="10" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="67" value="transform&amp;nbsp;&lt;br&gt;diagram" style="edgeStyle=orthogonalEdgeStyle;html=1;align=left;spacingLeft=2;endArrow=block;rounded=0;" edge="1" target="65" parent="52" source="52">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="110" y="140" as="sourcePoint"/>
+                        <Array as="points">
+                            <mxPoint x="110" y="80"/>
+                            <mxPoint x="110" y="110"/>
+                        </Array>
+                        <mxPoint x="115" y="160" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="53" value="&lt;span style=&quot;font-weight: 700; background-color: rgb(255, 255, 255);&quot;&gt;ED SaaS&amp;nbsp;&lt;/span&gt;&lt;br style=&quot;border-color: var(--border-color); font-weight: 700;&quot;&gt;&lt;span style=&quot;font-weight: 700; background-color: rgb(255, 255, 255);&quot;&gt;Orion-LD&lt;/span&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
+                    <mxGeometry x="100" y="250" width="100" height="300" as="geometry"/>
+                </mxCell>
+                <mxCell id="74" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;" vertex="1" parent="53">
+                    <mxGeometry x="45" y="190" width="10" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="54" value="&lt;h2 style=&quot;border-color: var(--border-color);&quot; data-ved=&quot;2ahUKEwiqjumD2MqCAxUdgf0HHfErBAQQ3B0oAXoECFwQEQ&quot; data-attrid=&quot;title&quot; data-local-attribute=&quot;d3bn&quot; class=&quot;qrShPb pXs6bb PZPZlf q8U8x aTI8gc&quot;&gt;GRETA&lt;/h2&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
+                    <mxGeometry x="364" y="260" width="100" height="300" as="geometry"/>
+                </mxCell>
+                <mxCell id="68" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;" vertex="1" parent="54">
+                    <mxGeometry x="45" y="130" width="10" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="55" value="&lt;h2 style=&quot;border-color: var(--border-color); font-size: 13px;&quot; data-ved=&quot;2ahUKEwiqjumD2MqCAxUdgf0HHfErBAQQ3B0oAXoECFwQEQ&quot; data-attrid=&quot;title&quot; data-local-attribute=&quot;d3bn&quot; class=&quot;qrShPb pXs6bb PZPZlf q8U8x aTI8gc&quot;&gt;Supply Chain Optimization (SCOPT Tool)&lt;/h2&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;" vertex="1" parent="1">
+                    <mxGeometry x="510" y="260" width="130" height="380" as="geometry"/>
+                </mxCell>
+                <mxCell id="71" value="Visualaze&amp;nbsp;&lt;br&gt;Supply chain" style="html=1;points=[];perimeter=orthogonalPerimeter;" vertex="1" parent="55">
+                    <mxGeometry x="60" y="210" width="10" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="56" value="&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;&lt;b&gt;Pilot&lt;/b&gt;&lt;/span&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
+                    <mxGeometry x="-170" y="250" width="100" height="300" as="geometry"/>
+                </mxCell>
+                <mxCell id="57" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;" vertex="1" parent="56">
+                    <mxGeometry x="45" y="60" width="10" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="73" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;" vertex="1" parent="56">
+                    <mxGeometry x="45" y="180" width="10" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="59" value="Upload MPMS diagram" style="html=1;verticalAlign=bottom;startArrow=none;startFill=0;endArrow=block;startSize=8;entryX=-0.276;entryY=0.063;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="56" target="64">
+                    <mxGeometry x="-0.0025" width="60" relative="1" as="geometry">
+                        <mxPoint x="320" y="360" as="sourcePoint"/>
+                        <mxPoint x="380" y="360" as="targetPoint"/>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="62" value="return" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;exitX=0;exitY=0.95;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-10" y="661" as="targetPoint"/>
+                        <mxPoint x="60" y="661" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="63" value="&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;&lt;b&gt;RAMP&lt;/b&gt;&lt;/span&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
+                    <mxGeometry x="-20" y="250" width="100" height="300" as="geometry"/>
+                </mxCell>
+                <mxCell id="64" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;" vertex="1" parent="63">
+                    <mxGeometry x="45" y="60" width="10" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="61" value="get Diagram" style="html=1;verticalAlign=bottom;endArrow=block;entryX=-0.24;entryY=0.063;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" target="65" parent="1" source="63">
+                    <mxGeometry x="0.4615" y="4" relative="1" as="geometry">
+                        <mxPoint x="40" y="340" as="sourcePoint"/>
+                        <mxPoint x="110" y="340" as="targetPoint"/>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="69" value="request LCA&amp;nbsp;" style="html=1;verticalAlign=bottom;endArrow=block;entryX=0;entryY=0;" edge="1" target="68" parent="1" source="52">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="339" y="390" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="70" value="return" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;exitX=0;exitY=0.95;" edge="1" source="68" parent="1" target="52">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="339" y="466" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="72" value="dispatch" style="html=1;verticalAlign=bottom;startArrow=oval;endArrow=block;startSize=8;" edge="1" target="71" parent="1" source="52">
+                    <mxGeometry x="0.2664" y="10" relative="1" as="geometry">
+                        <mxPoint x="510" y="470" as="sourcePoint"/>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="75" value="provide data for starting &lt;br&gt;the transfer of material" style="html=1;verticalAlign=bottom;endArrow=block;entryX=0;entryY=0;" edge="1" target="74" parent="1" source="73">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="75" y="440" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="79" value="update visalazation" style="html=1;verticalAlign=bottom;startArrow=oval;startFill=1;endArrow=block;startSize=8;exitX=1.16;exitY=0.968;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="74" target="71">
+                    <mxGeometry width="60" relative="1" as="geometry">
+                        <mxPoint x="150" y="510" as="sourcePoint"/>
+                        <mxPoint x="210" y="510" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
