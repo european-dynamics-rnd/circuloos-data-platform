@@ -1,5 +1,5 @@
 # CIRCULOOS Platform
-The CIRCULOOS Platform utilizes FIWARE components, designed to be implemented on factory premises or on the cloud. It compatible with the [NGSI-LD](https://www.etsi.org/deliver/etsi_gs/CIM/001_099/009/01.07.01_60/gs_cim009v010701p.pdf) (Next Generation Service Interfaces) specifications. This platform setup serves as a template, equipped with minimal configurations to facilitate a smooth startup. Utilizing [FIWARE generic enablers](https://github.com/FIWARE/catalogue).
+The CIRCULOOS Platform utilizes FIWARE components, designed to be implemented on factory premises or on the cloud. It compatible with the [NGSI-LD](https://www.etsi.org/deliver/etsi_gs/CIM/001_099/009/01.07.01_60/gs_cim009v010701p.pdf) (Next Generation Service Interfaces) specifications. This platform setup serves as a template, equipped with minimal configurations to facilitate a smooth startup. Utilizing [FIWARE generic enablers](https://github.com/FIWARE/catalogue). 
 
 ## Architecture 
 The main components of the circuloos IoT LD platform are:
@@ -20,6 +20,11 @@ Moreover, a Postman collection of the same commands is [HERE](./commands_URL/ED%
 Please go throu the demo and then try to connect to the ED CIRCULOOS Platform.
 To send **REAL data** from you pilot please chose a unique **NGSILD-Tenant** to ensure proper data separation form other partner data.
 
+# Providing Pilot data to the CIRCULOOS Data platform
+
+To provide/send data to the CIRCULOOS data platform you have 2 available options:
+- To provide your data by sending it as a valid NGSI-LD JSON to the Orion-LD. With these option you have to implement an mechanism to receive the Authedication token from the CIRCULOOS Keycload and provide the token along side your NGSI-LD JSON
+- Utilizing the NGSI-LD Federation scheme. With these scheme selected data received on your local Orion-LD will be forwarded to the CIRCULOOS Orion-LD. See [Readme_federation.md](./circuloos-registration-to-entities/Readme_federation.md) for more information.
 
 # Demo 
 

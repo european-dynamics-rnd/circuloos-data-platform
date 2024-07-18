@@ -1,0 +1,17 @@
+services:
+
+    registrationtoentities:
+      build: .
+      hostname: registrationtoentities
+      container_name: registrationtoentities
+      networks:
+        - circuloos
+      ports:
+        - "8888:8888"
+      environment:
+        - LOG_LEVEL=DEBUG  #  DEBUG INFO ERROR
+        - USERNAME=test-circuloos
+        - PASSWORD=2UnGRKm7NW8Wxa9Z3N
+        - CLIENT_SECRET=yWv2aRCm3KKMGrj9lMXQcEXY4v80tcFk
+        # - DEFAULT_CONTEXThttp://circuloos-ld-context/circuloos-context.jsonld
+        # - HTTP_SERVICES_BROKER_URL=https://circuloos-platform.eurodyn.com/kong/keycloak-orion/ngsi-ld/v1/entityOperations/upsert 
