@@ -16,6 +16,9 @@ The main components of the circuloos IoT LD platform are:
 In the [commands_URL](./commands_URL) you can find commands to interact with the CIRCULOOS Platform located on European Dynamics Server, circuloos-platform.eurodyn.com.
 You **need** to change the centennial in the **partner_variables.txt** that was send to you by email, **PARTNER_USERNAME** and **PARTNER_PASSWORD**. If you have not received your partner credentials, please e-mail konstantinos.gombakisATeurodyn.com.
 
+If you want to utilize the tools CSV to Orion-LD agent and Leather board outline to send data to the CIRCULOOS platform please use the .yml files inside their directories.
+
+
 Moreover, a Postman collection of the same commands is [HERE](./commands_URL/ED%20CIRCULOOS%20Platform.postman_collection.json).
 Please go throu the demo and then try to connect to the ED CIRCULOOS Platform.
 To send **REAL data** from you pilot please chose a unique **NGSILD-Tenant** to ensure proper data separation form other partner data.
@@ -91,6 +94,7 @@ For the demo 2 aruco markers with dimensions of 0.045m (4.5cm) is used.
 The leather/fabric **MUST** be photographed with a white background. Moreover there should be as flat as possible with no visible shadows. The aruco markers can be glued or taped on the surface and a piece of glass can be put on top of the leather/fabric.
 
 **IMPORTANT** when you download/update (via git pull) rebuild the local docker images !!! ```./service.sh build``` or ```docker compose -f leather_board_outline/leather-board-outline-irregular.yml build```
+
 
 ### Send the data to the CIRCULOOS platform
 
