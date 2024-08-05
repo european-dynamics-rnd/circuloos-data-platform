@@ -1,0 +1,26 @@
+[
+    {
+        "id": "urn:ngsi-ld:leather:apm5zima95",
+        "type": "leather",
+        "leather_type": {
+            "type": "Property",
+            "value": "animal",
+            "observedAt": "2024-08-02T09:26:35Z"
+        },
+        "kind_of_animal": {
+            "type": "Property",
+            "value": "pig",
+            "observedAt": "2024-08-02T09:26:35Z"
+        },
+        "leather_type_tanned": {
+            "type": "Property",
+            "value": "chrome",
+            "observedAt": "2024-08-02T09:26:35Z"
+        },
+        "ownedBy": {
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Company:001",
+            "observedAt": "2024-08-02T09:26:35Z"
+        }
+    }
+]

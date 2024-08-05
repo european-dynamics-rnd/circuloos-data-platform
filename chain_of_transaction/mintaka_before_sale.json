@@ -1,0 +1,28 @@
+{
+    "id": "urn:ngsi-ld:leather:apm5zima95",
+    "type": "leather",
+    "leather_type": {
+        "type": "Property",
+        "value": "animal",
+        "observedAt": "2024-08-02T09:26:35Z",
+        "instanceId": "urn:ngsi-ld:attribute:instance:e9e22614-52fb-11ef-b892-0242ac1d0009"
+    },
+    "leather_type_tanned": {
+        "type": "Property",
+        "value": "chrome",
+        "observedAt": "2024-08-02T09:26:35Z",
+        "instanceId": "urn:ngsi-ld:attribute:instance:e9e22740-52fb-11ef-b892-0242ac1d0009"
+    },
+    "kind_of_animal": {
+        "type": "Property",
+        "value": "pig",
+        "observedAt": "2024-08-02T09:26:35Z",
+        "instanceId": "urn:ngsi-ld:attribute:instance:e9e226b4-52fb-11ef-b892-0242ac1d0009"
+    },
+    "ownedBy": {
+        "object": "urn:ngsi-ld:Company:001",
+        "type": "Relationship",
+        "observedAt": "2024-08-02T09:26:35Z",
+        "instanceId": "urn:ngsi-ld:attribute:instance:e9e227f4-52fb-11ef-b892-0242ac1d0009"
+    }
+}

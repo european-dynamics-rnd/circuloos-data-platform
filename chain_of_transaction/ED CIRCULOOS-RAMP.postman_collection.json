@@ -1,0 +1,597 @@
+{
+	"info": {
+		"_postman_id": "a6f50c74-7721-43e3-a01d-94ae83714ed1",
+		"name": "ED CIRCULOOS-RAMP",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "9192452"
+	},
+	"item": [
+		{
+			"name": "Get Orion Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"ORION_TOKEN\",jsonData.access_token);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "{{PARTNER_USERNAME}}",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "{{PARTNER_PASSWORD}}",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "orion-pep",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "{{ORION_PEP_SECRET}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://circuloos-platform.eurodyn.com/idm/realms/fiware-server/protocol/openid-connect/token",
+					"protocol": "https",
+					"host": [
+						"circuloos-platform",
+						"eurodyn",
+						"com"
+					],
+					"path": [
+						"idm",
+						"realms",
+						"fiware-server",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Orion Version",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": " Bearer {{ORION_TOKEN}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{ORION_KONG_URL}}/version",
+					"host": [
+						"{{ORION_KONG_URL}}"
+					],
+					"path": [
+						"version"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Company 001",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "NGSILD-Tenant",
+						"value": "circuloos_demo"
+					},
+					{
+						"key": "NGSILD-Path",
+						"value": "/"
+					},
+					{
+						"key": "Link",
+						"value": "<http://circuloos-ld-context/circuloos-context.jsonld>; rel=\"http://www.w3.org/ns/json-ld#context\""
+					},
+					{
+						"key": "Accept",
+						"value": "application/ld+json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{ORION_TOKEN}}"
+					},
+					{
+						"key": "type",
+						"value": "application/ld+json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[{\r\n    \"id\": \"urn:ngsi-ld:Company:001\",\r\n    \"type\": \"Company\",\r\n    \"name\": {\r\n        \"type\": \"Property\",\r\n        \"value\": \"Leather Goods Co.\"\r\n    },\r\n    \"address\": {\r\n        \"type\": \"Property\",\r\n        \"value\": {\r\n            \"streetAddress\": \"123 Leather St.\",\r\n            \"addressLocality\": \"Athens\",\r\n            \"addressRegion\": \"Attica\",\r\n            \"addressCountry\": \"Greece\",\r\n            \"postalCode\": \"10431\"\r\n        }\r\n    },\r\n    \"location\": {\r\n        \"type\": \"GeoProperty\",\r\n        \"value\": {\r\n            \"type\": \"Point\",\r\n            \"coordinates\": [23.7275, 37.9838]  // Longitude, Latitude of Athens, Greece\r\n        }\r\n    },\r\n    \"description\": {\r\n        \"type\": \"Property\",\r\n        \"value\": \"A company specializing in high-quality leather goods.\"\r\n    },\r\n    \"category\": {\r\n        \"type\": \"Property\",\r\n        \"value\": [\"Retail\", \"Leather Goods\"]\r\n    },\r\n    \"contactPoint\": {\r\n        \"type\": \"Property\",\r\n        \"value\": {\r\n            \"telephone\": \"+30-210-1234567\",\r\n            \"email\": \"info@leathergoodsco.gr\"\r\n        }\r\n    },\r\n    \"openingHours\": {\r\n        \"type\": \"Property\",\r\n        \"value\": \"Mo-Fr 09:00-18:00\"\r\n    }\r\n}\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ORION_KONG_URL}}/ngsi-ld/v1/entityOperations/upsert",
+					"host": [
+						"{{ORION_KONG_URL}}"
+					],
+					"path": [
+						"ngsi-ld",
+						"v1",
+						"entityOperations",
+						"upsert"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Company 002",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "NGSILD-Tenant",
+						"value": "circuloos_demo"
+					},
+					{
+						"key": "NGSILD-Path",
+						"value": "/"
+					},
+					{
+						"key": "Link",
+						"value": "<http://circuloos-ld-context/circuloos-context.jsonld>; rel=\"http://www.w3.org/ns/json-ld#context\""
+					},
+					{
+						"key": "Accept",
+						"value": "application/ld+json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{ORION_TOKEN}}"
+					},
+					{
+						"key": "type",
+						"value": "application/ld+json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[{\r\n    \"id\": \"urn:ngsi-ld:Company:002\",\r\n    \"type\": \"Company\",\r\n    \"name\": {\r\n        \"type\": \"Property\",\r\n        \"value\": \"Polish Leather Co.\"\r\n    },\r\n    \"address\": {\r\n        \"type\": \"Property\",\r\n        \"value\": {\r\n            \"streetAddress\": \"456 Leather Blvd.\",\r\n            \"addressLocality\": \"Warsaw\",\r\n            \"addressRegion\": \"Mazovia\",\r\n            \"addressCountry\": \"Poland\",\r\n            \"postalCode\": \"00-001\"\r\n        }\r\n    },\r\n    \"location\": {\r\n        \"type\": \"GeoProperty\",\r\n        \"value\": {\r\n            \"type\": \"Point\",\r\n            \"coordinates\": [21.0122, 52.2297]  // Longitude, Latitude of Warsaw, Poland\r\n        }\r\n    },\r\n    \"description\": {\r\n        \"type\": \"Property\",\r\n        \"value\": \"A premier company in Poland providing top-notch leather products.\"\r\n    },\r\n    \"category\": {\r\n        \"type\": \"Property\",\r\n        \"value\": [\"Retail\", \"Leather Goods\"]\r\n    },\r\n    \"contactPoint\": {\r\n        \"type\": \"Property\",\r\n        \"value\": {\r\n            \"telephone\": \"+48-22-6543210\",\r\n            \"email\": \"contact@polishleatherco.pl\"\r\n        }\r\n    },\r\n    \"openingHours\": {\r\n        \"type\": \"Property\",\r\n        \"value\": \"Mo-Fr 08:00-17:00\"\r\n    }\r\n}\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ORION_KONG_URL}}/ngsi-ld/v1/entityOperations/upsert",
+					"host": [
+						"{{ORION_KONG_URL}}"
+					],
+					"path": [
+						"ngsi-ld",
+						"v1",
+						"entityOperations",
+						"upsert"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create leather urn:ngsi-ld:leather:apm5zima95",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "NGSILD-Tenant",
+						"value": "circuloos_demo"
+					},
+					{
+						"key": "NGSILD-Path",
+						"value": "/"
+					},
+					{
+						"key": "Link",
+						"value": "<http://circuloos-ld-context/circuloos-context.jsonld>; rel=\"http://www.w3.org/ns/json-ld#context\""
+					},
+					{
+						"key": "Accept",
+						"value": "application/ld+json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{ORION_TOKEN}}"
+					},
+					{
+						"key": "type",
+						"value": "application/ld+json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"id\": \"urn:ngsi-ld:leather:apm5zima95\",\r\n        \"type\": \"leather\",\r\n        \"leather_type\": {\r\n            \"type\": \"Property\",\r\n            \"value\": \"animal\",\r\n            \"observedAt\": \"2024-08-02T09:26:35Z\"\r\n        },\r\n        \"kind_of_animal\": {\r\n            \"type\": \"Property\",\r\n            \"value\": \"pig\",\r\n            \"observedAt\": \"2024-08-02T09:26:35Z\"\r\n        },\r\n        \"leather_type_tanned\": {\r\n            \"type\": \"Property\",\r\n            \"value\": \"chrome\",\r\n            \"observedAt\": \"2024-08-02T09:26:35Z\"\r\n        },\r\n        \"ownedBy\": {\r\n            \"type\": \"Relationship\",\r\n            \"object\": \"urn:ngsi-ld:Company:001\",\r\n            \"observedAt\": \"2024-08-02T09:26:35Z\"\r\n        }\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ORION_KONG_URL}}/ngsi-ld/v1/entityOperations/upsert",
+					"host": [
+						"{{ORION_KONG_URL}}"
+					],
+					"path": [
+						"ngsi-ld",
+						"v1",
+						"entityOperations",
+						"upsert"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get urn:ngsi-ld:leather:apm5zima95",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "NGSILD-Tenant",
+						"value": "circuloos_demo"
+					},
+					{
+						"key": "NGSILD-Path",
+						"value": "/"
+					},
+					{
+						"key": "Link",
+						"value": "<http://circuloos-ld-context/circuloos-context.jsonld>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\""
+					},
+					{
+						"key": "Accept",
+						"value": "application/ld+json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{ORION_TOKEN}}"
+					}
+				],
+				"url": {
+					"raw": "{{ORION_KONG_URL}}/ngsi-ld/v1/entities/urn:ngsi-ld:leather:apm5zima95",
+					"host": [
+						"{{ORION_KONG_URL}}"
+					],
+					"path": [
+						"ngsi-ld",
+						"v1",
+						"entities",
+						"urn:ngsi-ld:leather:apm5zima95"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Mintaka Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"MINTAKA_TOKEN\",jsonData.access_token);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "{{PARTNER_USERNAME}}",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "{{PARTNER_PASSWORD}}",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "mintaka-pep",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "{{MINKTAKA_PEP_SECRET}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://circuloos-platform.eurodyn.com/idm/realms/fiware-server/protocol/openid-connect/token",
+					"protocol": "https",
+					"host": [
+						"circuloos-platform",
+						"eurodyn",
+						"com"
+					],
+					"path": [
+						"idm",
+						"realms",
+						"fiware-server",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Mintaka Version",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": " Bearer {{MINTAKA_TOKEN}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{MINKTAKA_KONG_URL}}/info",
+					"host": [
+						"{{MINKTAKA_KONG_URL}}"
+					],
+					"path": [
+						"info"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Mintaka Sensor history - urn:ngsi-ld:leather:apm5zima95",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": " Bearer {{MINTAKA_TOKEN}}",
+						"type": "text"
+					},
+					{
+						"key": "NGSILD-Tenant",
+						"value": "circuloos_demo",
+						"type": "text"
+					},
+					{
+						"key": "Link",
+						"value": "<http://circuloos-ld-context/circuloos-context.jsonld>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{MINKTAKA_KONG_URL}}/temporal/entities/urn:ngsi-ld:leather:apm5zima95",
+					"host": [
+						"{{MINKTAKA_KONG_URL}}"
+					],
+					"path": [
+						"temporal",
+						"entities",
+						"urn:ngsi-ld:leather:apm5zima95"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sell leather to Company 002",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "NGSILD-Tenant",
+						"value": "circuloos_demo"
+					},
+					{
+						"key": "NGSILD-Path",
+						"value": "/"
+					},
+					{
+						"key": "Link",
+						"value": "<http://circuloos-ld-context/circuloos-context.jsonld>; rel=\"http://www.w3.org/ns/json-ld#context\""
+					},
+					{
+						"key": "Accept",
+						"value": "application/ld+json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{ORION_TOKEN}}"
+					},
+					{
+						"key": "type",
+						"value": "application/ld+json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"id\": \"urn:ngsi-ld:leather:apm5zima95\",\r\n        \"type\": \"leather\",\r\n        \"ownedBy\": {\r\n            \"type\": \"Relationship\",\r\n            \"object\": \"urn:ngsi-ld:Company:002\",\r\n            \"observedAt\": \"2024-08-05T10:22:35Z\"\r\n        }\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ORION_KONG_URL}}/ngsi-ld/v1/entityOperations/update?options=replace",
+					"host": [
+						"{{ORION_KONG_URL}}"
+					],
+					"path": [
+						"ngsi-ld",
+						"v1",
+						"entityOperations",
+						"update"
+					],
+					"query": [
+						{
+							"key": "options",
+							"value": "replace"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Mintaka Sensor history - urn:ngsi-ld:leather:apm5zima95 After sale",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": " Bearer {{MINTAKA_TOKEN}}",
+						"type": "text"
+					},
+					{
+						"key": "NGSILD-Tenant",
+						"value": "circuloos_demo",
+						"type": "text"
+					},
+					{
+						"key": "Link",
+						"value": "<http://circuloos-ld-context/circuloos-context.jsonld>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{MINKTAKA_KONG_URL}}/temporal/entities/urn:ngsi-ld:leather:apm5zima95",
+					"host": [
+						"{{MINKTAKA_KONG_URL}}"
+					],
+					"path": [
+						"temporal",
+						"entities",
+						"urn:ngsi-ld:leather:apm5zima95"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "PARTNER_USERNAME",
+			"value": "test-circuloos",
+			"type": "string"
+		},
+		{
+			"key": "PARTNER_PASSWORD",
+			"value": "2UnGRKm7NW8Wxa9Z3N",
+			"type": "string"
+		},
+		{
+			"key": "ORION_PEP_SECRET",
+			"value": "yWv2aRCm3KKMGrj9lMXQcEXY4v80tcFk",
+			"type": "string"
+		},
+		{
+			"key": "MINKTAKA_PEP_SECRET",
+			"value": "zQXGjcxPWuF7YBpAiFtaIOEIOrCiWqeH",
+			"type": "string"
+		},
+		{
+			"key": "ORION_TOKEN",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "MINTAKA_TOKEN",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "MINKTAKA_KONG_URL",
+			"value": "https://circuloos-platform.eurodyn.com/kong/keycloak-mintaka",
+			"type": "string"
+		},
+		{
+			"key": "ORION_KONG_URL",
+			"value": "https://circuloos-platform.eurodyn.com/kong/keycloak-orion",
+			"type": "string"
+		}
+	]
+}
