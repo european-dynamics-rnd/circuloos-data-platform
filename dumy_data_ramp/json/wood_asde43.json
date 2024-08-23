@@ -1,0 +1,52 @@
+[
+    {
+        "id": "ngsi-ld:wood:asde43",
+        "type": "wood",
+        "species": "Oak",
+        "density": {
+            "value": 0.75,
+            "unitCode": "23",
+            "observedAt": "2024-08-23T09:26:35Z"
+        },
+        "moistureContent": {
+            "value": 12,
+            "unitCode": "P1",
+            "observedAt": "2024-08-23T09:26:35Z"
+        },
+        "tensileStrength": {
+            "value": 90,
+            "unitCode": "MPA",
+            "observedAt": "2024-08-23T09:26:35Z"
+        },
+        "compressiveStrength": {
+            "value": 50,
+            "unitCode": "MPA",
+            "observedAt": "2024-08-23T09:26:35Z"
+        },
+        "bendingStrength": {
+            "value": 120,
+            "unitCode": "MPA",
+            "observedAt": "2024-08-23T09:26:35Z"
+        },
+        "thickness": {
+            "value": 12.0,
+            "unitCode": "MMT",
+            "observedAt": "2024-08-23T09:41:01Z"
+        },
+        "length": {
+            "value": 2.0,
+            "unitCode": "MMT",
+            "observedAt": "2024-08-23T09:41:01Z"
+        },
+        "width": {
+            "value": 24.0,
+            "unitCode": "MMT",
+            "observedAt": "2024-08-23T09:41:01Z"
+        },
+        "ownedBy": {
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Company:101",
+            "observedAt": "2024-08-23T09:26:35Z"
+        }
+    }
+]
