@@ -6,19 +6,32 @@ Current version of CIRCULOOS is multi-tenant so there is a separation of each te
 - run ```./service.sh start``` on the main directory
 - run ```addDataOrion.sh``` to load data to the Orion-LD and timescaleDB
 
-# See data via API
+With the ```getDataOrion.sh``` a new entity can be created. If you need to update any property for an existing entity use: ```addDataOrion_replace.sh```
 
-- run ```./getDataMintaka.sh sensorID NGSILDTenant```
+# See data from Orion-LD
+From Orion-LD you can get the **LASTEST** values of each entity. With mintaka you get a temporal representation.
+
+- run ```./getDataOrion.sh sensorID NGSILDTenant```
 ie
-```./getDataMintaka.sh urn:ngsi-ld:leather:apm5zima95 circuloos_leather```
-```./getDataMintaka.sh urn:ngsi-ld:leather:df4i9d circuloos_leather```
-```./getDataMintaka.sh ngsi-ld:wood:asde43 circuloos_wood```
+    - ```./getDataOrion.sh urn:ngsi-ld:leather:apm5zima95 circuloos_leather```
+    - ```./getDataOrion.sh urn:ngsi-ld:leather:df4i9d circuloos_leather```
+    - ```./getDataOrion.sh ngsi-ld:wood:asde43 circuloos_wood```
+
+
+# See data via Temporal API/mintaka
+
+- run ```./getDataMintaka.sh NGSI-LD_entity_id NGSILDTenant```
+ie
+    - ```./getDataMintaka.sh urn:ngsi-ld:leather:apm5zima95 circuloos_leather```
+    - ```./getDataMintaka.sh urn:ngsi-ld:leather:df4i9d circuloos_leather```
+    - ```./getDataMintaka.sh ngsi-ld:wood:asde43 circuloos_wood```
 
 ## When a product is sold from RAMP marketplace
-When a product is sold to new company RAMP will need to generate a json payload like dumy_data_ramp/json/leather_apm5zima95_sell_to_company_002.json and POST it to the CIRCULOOS Orion-LD
+When a product is sold to new company RAMP will need to generate a json payload like __dumy_data_ramp/json/leather_apm5zima95_sell_to_company_002.json__ and POST it to the CIRCULOOS Orion-LD on __/ngsi-ld/v1/entityOperations/update?options=replace__.
+See examples with: addDataOrion_replace.sh .
 
 ## see timescaleDB with dbeaver
-localhost:8978 
+dbeaver: localhost:8978 
 
 Add new database-> PostGresSQL
 - IP: circuloos-timescale-db:5432

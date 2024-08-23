@@ -1,22 +1,22 @@
 #!/bin/bash
 #
-
-#
-
 set -e
 export $(cat ../.env | grep "#" -v)
 
 # Check if the correct number of arguments is provided
 if [ "$#" -ne 2 ]; then
-    echo "Need 2 arguments: addDataOrion.sh NGSI-LD_entity_id NGSILD-Tenant"
+    echo "Need 2 arguments: addDataOrion.sh JSONDATA NGSILD-Tenant"
     exit 1
 else
-    sensorID="$1"
+    JSON_DATA="$1"
     NGSILDTenant="$2"
 fi
 
-curl -s -G -X GET  'http://'"${HOST}"':'"${MINTAKA_PORT}"'/temporal/entities/'"${sensorID}"'' \
--H 'NGSILD-Tenant: '"${NGSILDTenant}"'' \
--H 'Link: <'"${CONTEXT}"'>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"' \
--d 'lastN=5' |jq  
 
+curl -iL -X POST  'http://'"${HOST}"':'"${ORION_LD_PORT}"'/ngsi-ld/v1/entityOperations/update?options=replace' \
+-H 'NGSILD-Tenant: '"${NGSILDTenant}"'' \
+-H 'NGSILD-Path: /' \
+-H 'Link: <'"${CONTEXT}"'>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"' \
+-H 'Content-Type: application/json' \
+-d @$JSON_DATA
+echo -e
