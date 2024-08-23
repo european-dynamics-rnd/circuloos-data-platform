@@ -27,3 +27,5 @@ Add new database-> PostGresSQL
 On Database List-> Show all database
 
 Each different tenant will generate a different database with naming convention: orion_+NGSILD-Tenant ie orion_circuloos_leather for NGSILD-Tenant: circuloos_leather
+- On public.entities are stored all the entities and their update process
+- On public.attributes is stored the actual values/properties of each entity
