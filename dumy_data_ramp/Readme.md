@@ -4,14 +4,15 @@ Current version of CIRCULOOS is multi-tenant so there is a separation of each te
 
 # Add data to Orion-LD + timescaleDB
 - run ```./service.sh start``` on the main directory
-- run ```addDataOrion.sh``` to load data to the Orion-LD and timescaleDB
+- run ```./import_data.sh``` to load data to the Orion-LD and timescaleDB. A series of scripts are run to load the data.
 
-With the ```getDataOrion.sh``` a new entity can be created. If you need to update any property for an existing entity use: ```addDataOrion_replace.sh```
+With the ```addDataOrion.sh``` a new entity can be created. If you need to update any property for an existing entity use: ```addDataOrion_replace.sh```
 
 # See data from Orion-LD
 From Orion-LD you can get the **LASTEST** values of each entity. With mintaka you get a temporal representation.
 
 - run ```./getDataOrion.sh sensorID NGSILDTenant```
+
 ie
     - ```./getDataOrion.sh urn:ngsi-ld:leather:apm5zima95 circuloos_leather```
     - ```./getDataOrion.sh urn:ngsi-ld:leather:df4i9d circuloos_leather```
@@ -21,6 +22,7 @@ ie
 # See data via Temporal API/mintaka
 
 - run ```./getDataMintaka.sh NGSI-LD_entity_id NGSILDTenant```
+
 ie
     - ```./getDataMintaka.sh urn:ngsi-ld:leather:apm5zima95 circuloos_leather```
     - ```./getDataMintaka.sh urn:ngsi-ld:leather:df4i9d circuloos_leather```
