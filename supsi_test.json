@@ -37,5 +37,20 @@
         "value": "0.0000001",
         "unitCode": "toBeDefenied",
         "observedAt": "2024-01-11T10:00:07.446Z"
-    }
+    },
+    "climateChangeGlobalWarmingPotentialGWP100": {
+        "value": 250,
+        "unitCode": "Kg CO2 eq.",
+        "observedAt": "2024-08-23T09:26:35Z"
+      },
+      "acidificationAccumulatedExceedanceAE": {
+        "value": 1,
+        "unitCode": "mol H+-Eq",
+        "observedAt": "2024-08-23T09:26:35Z"
+      },
+      "landUseSoilQualityIndex": {
+        "value": 3.22,
+        "unitCode": "dimensionless",
+        "observedAt": "2024-08-23T09:26:35Z"
+      }
 }]
