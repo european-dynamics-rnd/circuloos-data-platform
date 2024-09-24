@@ -1,6 +1,6 @@
 [
     {
-        "id": "ngsi-ld:wood:asde43",
+        "id": "urn:ngsi-ld:wood:asde43",
         "type": "wood",
         "species": "Oak",
         "density": {

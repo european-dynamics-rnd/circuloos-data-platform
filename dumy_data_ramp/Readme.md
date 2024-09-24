@@ -18,7 +18,7 @@ From Orion-LD you can get the **LASTEST** values of each entity. With mintaka yo
 ie
     - ```./getDataOrion.sh urn:ngsi-ld:leather:apm5zima95 circuloos_ed_leather```
     - ```./getDataOrion.sh urn:ngsi-ld:leather:df4i9d circuloos_ed_leather```
-    - ```./getDataOrion.sh ngsi-ld:wood:asde43 circuloos_ed_wood```
+    - ```./getDataOrion.sh urn:ngsi-ld:wood:asde43 circuloos_ed_wood```
 
 # Get all entities of a specific NGSILD-Tenant
 
@@ -33,7 +33,7 @@ Run ```./queryOrionSensors.sh NGSILDTenant``` to get all entities of the specifi
 ie
     - ```./getDataMintaka.sh urn:ngsi-ld:leather:apm5zima95 circuloos_ed_leather```
     - ```./getDataMintaka.sh urn:ngsi-ld:leather:df4i9d circuloos_ed_leather```
-    - ```./getDataMintaka.sh ngsi-ld:wood:asde43 circuloos_ed_wood```
+    - ```./getDataMintaka.sh urn:ngsi-ld:wood:asde43 circuloos_ed_wood```
 
 ## When a product is sold from RAMP marketplace
 When a product is sold to new company RAMP will need to generate a json payload like __dumy_data_ramp/json/leather_apm5zima95_sell_to_company_002.json__ and POST it to the CIRCULOOS Orion-LD on __/ngsi-ld/v1/entityOperations/update?options=replace__.
