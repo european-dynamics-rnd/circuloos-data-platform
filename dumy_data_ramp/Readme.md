@@ -1,6 +1,8 @@
 Current version of CIRCULOOS is multi-tenant so there is a separation of each tenant data on the timescaleDB
 
-
+For the testing will use 2 different type of Tenands:
+- circuloos_leather
+- circuloos_wood
 
 # Add data to Orion-LD + timescaleDB
 - run ```./service.sh start``` on the main directory
