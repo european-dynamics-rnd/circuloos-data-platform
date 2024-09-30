@@ -80,9 +80,10 @@ A custom agent have been created to transform a CSV to NGSI-LD entities and send
 ## Send data to the CIRCULOOS CB 
 
 In order to send the data to the official CIRCULOOS platform the file 'csv_NGSILD_Agent/circuloos-csv-ngsild-agent.yml' needs to be updated with the partner's username and passowrd.
-1. Update csv_NGSILD_Agent/circuloos-csv-ngsild-agent.yml 
-2. Run the ``` docker compose -f circuloos-csv-ngsild-agent.yml up ``` inside folder csv_NGSILD_Agent
-3. Follow previous instructions 
+1. Stop any running CIRCULOOS dockers, by running ```./service.sh stop```
+2. Update csv_NGSILD_Agent/circuloos-csv-ngsild-agent.yml 
+3. Run the ``` docker compose -f circuloos-csv-ngsild-agent.yml up ``` inside folder csv_NGSILD_Agent
+4. Follow previous instructions 
 
 
 # Leather board outline
