@@ -33,6 +33,7 @@ To provide/send data to the CIRCULOOS data platform you have 2 available options
 
 The demo have can run on every Linux system. The following tools needs to be installed: ```docker-compose, curl, bash, jq``` 
 jq is used for the formatting of the return json from Orion-LD and Mintaka.
+For the installation of docker-compose, please see on the [official documentation of Docker](https://docs.docker.com/compose/install/linux/) 
 
 ## Docker
 To run circuloos use: ```./service.sh start``` on the main folder. The first time will need to download all Docker images ~10minutes depending on internet speed. Then open another terminal to [continue](#demo).
