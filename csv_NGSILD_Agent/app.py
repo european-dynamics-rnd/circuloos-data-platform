@@ -84,9 +84,13 @@ def handle_check_connectivity():
 # For button Post NGSI-LD entities to Orion-LD
 @app.route('/post-ngsi-ld', methods=['POST'])
 def handle_post_ngsi_ld():
+    if entity_ngsild_json_global is None:
+        responses="Please upload and push the button Generate NGSI-LD entities. Press Go back one"
+        info="empty entity_ngsild_json_global"
+        error="empty entity_ngsild_json_global"
+    else:
+        responses,info,error=utlis.post_ngsi_to_cb_with_token(entity_ngsild_json_global)
 
-    responses,info,error=utlis.post_ngsi_to_cb_with_token(entity_ngsild_json_global)
-    
     app.logger.info(info)
     if len(str(error))>0:
         app.logger.error(error)
