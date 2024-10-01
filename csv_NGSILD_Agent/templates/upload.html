@@ -1,14 +1,20 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Upload CSV File</title>
     <style>
         pre {
-            white-space: pre-wrap;       /* Since CSS 2.1 */
-            white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
-            white-space: -pre-wrap;      /* Opera 4-6 */
-            white-space: -o-pre-wrap;    /* Opera 7 */
-            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+            white-space: pre-wrap;
+            /* Since CSS 2.1 */
+            white-space: -moz-pre-wrap;
+            /* Mozilla, since 1999 */
+            white-space: -pre-wrap;
+            /* Opera 4-6 */
+            white-space: -o-pre-wrap;
+            /* Opera 7 */
+            word-wrap: break-word;
+            /* Internet Explorer 5.5+ */
             background-color: #f4f4f4;
             padding: 10px;
             border: 1px solid #ddd;
@@ -17,15 +23,15 @@
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $('form#fileUploadForm').submit(function(e) {
+        $(document).ready(function () {
+            $('form#fileUploadForm').submit(function (e) {
                 e.preventDefault();
                 var formData = new FormData(this);
                 $.ajax({
                     url: '/upload',
                     type: 'POST',
                     data: formData,
-                    success: function(data) {
+                    success: function (data) {
                         alert(data.message);
                     },
                     cache: false,
@@ -33,9 +39,32 @@
                     processData: false
                 });
             });
+
+            // Handle the Post NGSI-LD form submission with AJAX
+            $('form#checkConnectivity').submit(function (e) {
+                e.preventDefault(); // Prevent the form from submitting normally
+
+                $.ajax({
+                    url: '/check-connectivity',
+                    type: 'POST',
+                    success: function (response) {
+                        // Construct the message to display
+                        let message = 'Responsesss: ' + response.responses ;
+                        if (response.error) {
+                            message += '\nError: ' + response.error;
+                        }
+                        // Show the message in a popup
+                        alert(message);
+                    },
+                    error: function (xhr, status, error) {
+                        alert('An error occurred: ' + error);
+                    }
+                });
+            });
         });
     </script>
 </head>
+
 <body>
     <h2>Upload CSV File</h2>
     <form id="fileUploadForm" method="post" enctype="multipart/form-data">
@@ -47,14 +76,23 @@
     <form method="post" action="/generate-ngsi-ld">
         <input type="submit" value="Generate NGSI-LD entities">
     </form>
-        <!-- New button for generating NGSI-LD entities -->
-        <form method="post" action="/post-ngsi-ld">
-            <input type="submit" value="Post NGSI-LD entities to Orion-LD">
-        </form>
+
+    <!-- New button to check endpoint connectivity -->
+    <form id="checkConnectivity" method="post">
+        <input type="submit" value="Check Connectivity with CIRCULOOS Data Platform">
+    </form>
+
+    <!-- New button for generating NGSI-LD entities -->
+    <form method="post" action="/post-ngsi-ld">
+        <input type="submit" value="Post NGSI-LD entities to Orion-LD">
+    </form>
 
     {% if message %}
-        <p> <pre>{{ message }}</pre></p>
+    <p>
+    <pre>{{ message }}</pre>
+    </p>
     {% endif %}
 
 </body>
+
 </html>

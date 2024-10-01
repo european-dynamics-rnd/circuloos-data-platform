@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 import os
 from werkzeug.utils import secure_filename
 import os
@@ -59,8 +59,27 @@ def upload_file():
 @app.route('/generate-ngsi-ld', methods=['POST'])
 def handle_generate_ngsi_ld():
     global entity_ngsild_json_global
-    entity_ngsild_json_str, entity_ngsild_json_global  = generate_ngsi_ld_entities()
+    try:
+        entity_ngsild_json_str, entity_ngsild_json_global  = generate_ngsi_ld_entities()
+        
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        entity_ngsild_json_str=f"{e}. Please check if you have id and type"
     return render_template('upload.html', message=entity_ngsild_json_str)
+
+# For button Generate NGSI-LD entities    
+@app.route('/check-connectivity', methods=['POST'])
+def handle_check_connectivity():
+    
+    responses,info,error=utlis.get_cb_info_with_token()
+    
+    app.logger.info(info)
+    if len(str(error))>0:
+        app.logger.error(error)
+        
+    return jsonify({'error': str(error), 'responses': responses})
+
+
 
 # For button Post NGSI-LD entities to Orion-LD
 @app.route('/post-ngsi-ld', methods=['POST'])
