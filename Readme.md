@@ -32,11 +32,21 @@ To provide/send data to the CIRCULOOS data platform you have 2 available options
 # Demo 
 
 The demo have can run on every Linux system. The following tools needs to be installed: ```docker-compose, curl, bash, jq``` 
+
 jq is used for the formatting of the return json from Orion-LD and Mintaka.
-For the installation of docker-compose, please see on the [official documentation of Docker](https://docs.docker.com/compose/install/linux/) 
+
+For the installation of docker-compose, please see on the [official documentation of Docker](https://docs.docker.com/compose/install/linux/). Pleaase make sure that you run a [root-less docker](https://docs.docker.com/engine/install/linux-postinstall/)
+
+The Windows user can:
+- Install a virtual machine with [VirtualBox](https://www.virtualbox.org/). Install the latest [Ubuntu LTS image](https://ubuntu.com/download/desktop)
+
+**or**
+
+- Use the WSL (Windows Subsystem for Linux) to install an [Ubuntu](https://learn.microsoft.com/en-us/windows/wsl/install) (```wsl --install --distribution Ubuntu```) and **then** [docker](https://www.docker.com/)
+
 
 ## Docker
-To run circuloos use: ```./service.sh start``` on the main folder. The first time will need to download all Docker images ~10minutes depending on internet speed. Then open another terminal to [continue](#demo).
+Clone the current repo on your local development environment. To run the local CIRCULOOS Data platform use: ```./service.sh start``` on the main folder. The first time will need to download all Docker images ~10minutes depending on internet speed. Then open another terminal to [continue](#demo).
 
 The main docker-compose file(docker-compose.yml) include additional compose files for specific services.
 1. temporal.yml. Service for Mintaka and TimescaleDB.
