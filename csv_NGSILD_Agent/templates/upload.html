@@ -4,23 +4,126 @@
 <head>
     <title>Upload CSV File</title>
     <style>
+        /* General Styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f2f5;
+            /* Light grey background */
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 30px;
+            color: #00549F;
+            /* Deep blue from CIRCULOOS site */
+        }
+
+        /* Container */
+        .container {
+            width: 80%;
+            max-width: 800px;
+            margin: 30px auto;
+            background-color: #fff;
+            padding: 40px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            border: 1px solid #dcdcdc;
+        }
+
+        /* Form Styles */
+        form {
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .step-label {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: block;
+            color: #00549F;
+            /* Deep blue */
+        }
+
+        input[type="file"] {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            background-color: #e7f3ff;
+            /* Light blue background */
+        }
+
+        input[type="submit"] {
+            background-color: #FF6800;
+            /* Orange from CIRCULOOS site */
+            color: #ffffff;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 100%;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #ff7e29;
+            /* Lighter orange on hover */
+        }
+
+        /* Preformatted Text */
         pre {
             white-space: pre-wrap;
-            /* Since CSS 2.1 */
-            white-space: -moz-pre-wrap;
-            /* Mozilla, since 1999 */
-            white-space: -pre-wrap;
-            /* Opera 4-6 */
-            white-space: -o-pre-wrap;
-            /* Opera 7 */
             word-wrap: break-word;
-            /* Internet Explorer 5.5+ */
-            background-color: #f4f4f4;
-            padding: 10px;
-            border: 1px solid #ddd;
+            background-color: #f0f2f5;
+            /* Light grey */
+            padding: 15px;
             border-radius: 5px;
+            border: 1px solid #ced4da;
+            color: #212529;
+        }
+
+        /* Footer and Message */
+        .message {
+            font-size: 16px;
+            color: #00549F;
+            font-weight: bold;
+        }
+
+        /* Button Focus and Hover */
+        input[type="submit"]:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #ff7e29;
+            /* Orange shadow on focus */
+        }
+
+        /* Funding Text */
+        .funding-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 576px) {
+            .container {
+                padding: 20px;
+            }
+
+            input[type="submit"] {
+                font-size: 14px;
+            }
         }
     </style>
+    <!-- Include jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         $(document).ready(function () {
@@ -40,20 +143,17 @@
                 });
             });
 
-            // Handle the Post NGSI-LD form submission with AJAX
             $('form#checkConnectivity').submit(function (e) {
-                e.preventDefault(); // Prevent the form from submitting normally
+                e.preventDefault();
 
                 $.ajax({
                     url: '/check-connectivity',
                     type: 'POST',
                     success: function (response) {
-                        // Construct the message to display
                         let message = 'Responses: ' + response.responses;
                         if (response.error) {
                             message += '\nError: ' + response.error;
                         }
-                        // Show the message in a popup
                         alert(message);
                     },
                     error: function (xhr, status, error) {
@@ -67,35 +167,53 @@
 
 <body>
     <h2>Upload CSV File</h2>
-    <form id="fileUploadForm" method="post" enctype="multipart/form-data">
-        <div>
-            Step 1: <input type="file" name="file" accept=".csv">
+    <div class="container">
+        <form id="fileUploadForm" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label class="step-label">Step 1:</label>
+                <input type="file" name="file" accept=".csv">
+            </div>
+            <div class="form-group">
+                <label class="step-label">Step 2:</label>
+                <input type="submit" value="Upload">
+            </div>
+        </form>
+
+        <!-- Button for generating NGSI-LD entities -->
+        <form method="post" action="/generate-ngsi-ld">
+            <div class="form-group">
+                <label class="step-label">Step 3:</label>
+                <input type="submit" value="Generate NGSI-LD Entities">
+            </div>
+        </form>
+
+        <!-- Button to check endpoint connectivity -->
+        <form id="checkConnectivity" method="post">
+            <div class="form-group">
+                <label class="step-label">Step 4:</label>
+                <input type="submit" value="Check Connectivity with CIRCULOOS Data Platform">
+            </div>
+        </form>
+
+        <!-- Button for posting NGSI-LD entities -->
+        <form method="post" action="/post-ngsi-ld">
+            <div class="form-group">
+                <label class="step-label">Step 5:</label>
+                <input type="submit" value="Post NGSI-LD Entities to Orion-LD">
+            </div>
+        </form>
+
+        {% if message %}
+        <p class="message">{{ message }}</p>
+        {% endif %}
+
+        <div style="display: flex; align-items: center;">
+            <img src="static/images/EN_Co-fundedbytheEU_RGB_POS.png" alt="Co-funded by the EU"
+                style="margin-right: 10px; height: 50px;">
+            <p class="funding-text">This project has received funding from the European Union’s "Horizon Europe" programme
+                under grant agreement 101092295.</p>
         </div>
-        <div>
-            Step 2: <input type="submit" value="Upload">
-        </div>
-    </form>
-
-    <!-- New button for generating NGSI-LD entities -->
-    <form method="post" action="/generate-ngsi-ld" action="/">
-        Step 3: <input type="submit" value="Generate NGSI-LD entities">
-    </form>
-
-    <!-- New button to check endpoint connectivity -->
-    <form id="checkConnectivity" method="post">
-        Step 4: <input type="submit" value="Check Connectivity with CIRCULOOS Data Platform">
-    </form>
-
-    <!-- New button for generating NGSI-LD entities -->
-    <form method="post" action="/post-ngsi-ld">
-        Step 5: <input type="submit" value="Post NGSI-LD entities to Orion-LD">
-    </form>
-
-    {% if message %}
-    <p>
-    <pre>{{ message }}</pre>
-    </p>
-    {% endif %}
+    </div>
 
 </body>
 
