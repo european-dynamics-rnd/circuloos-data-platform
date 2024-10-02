@@ -9,13 +9,10 @@ import requests
 import sys
 
 
-def post_ngsi_to_cb_with_token(entity_ngsild_json):
+def post_ngsi_to_cb_with_token(entity_ngsild_json,logger):
     # entity_ngsild_json a list of ngsildclient Entities
     config= get_config()
-    error=""
-    info=""
     
-    responses=[]
     headers = {
         'Content-Type': 'application/ld+json',
         'Accept': 'application/json',
@@ -23,12 +20,7 @@ def post_ngsi_to_cb_with_token(entity_ngsild_json):
     }
     if config['NGSI_LD_CONTECT_BROKER']['PORT']==443:
         # the CB is behind a PEP proxy (wilma or KONG), need to get a token 
-        try:
-            token= get_orion_token(config)
-        except Exception as e:
-            error=str(e) 
-            responses=str(e)    
-            return responses,info,error
+        token= get_orion_token(config)
         headers['Authorization']= 'Bearer ' + token + ' '
         endpoint=f"https://{config['NGSI_LD_CONTECT_BROKER']['HOSTNAME']}/kong/keycloak-orion/ngsi-ld/v1/entityOperations/upsert" 
     else:
@@ -39,36 +31,24 @@ def post_ngsi_to_cb_with_token(entity_ngsild_json):
         ngsi_ld_json_payload='['+ngsi_ld_json.to_json()+']'
         # app.logger.info(endpoint)
         # app.logger.info(headers)
-        info=info+str(ngsi_ld_json_payload)
+        logger.debug(str(ngsi_ld_json_payload))
         response = requests.post(endpoint,headers=headers,data=ngsi_ld_json_payload)
         response.raise_for_status()  # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
         if not response.status_code // 100 == 2:
             error_l=str(datetime.now())+", Error: post on " + endpoint + response.text + "status_code" + str(response.status_code)
-            error=error+error_l
-            responses.append(error_l) 
+            raise ValueError(error_l)
         else:
-            info_l=f" Id: {ngsi_ld_json['id']} uploaded to Orion-LD: {config['NGSI_LD_CONTECT_BROKER']['HOSTNAME']} correctly with response: {response}"
-            info=info+str(str(datetime.now())+info_l)
-            responses.append(info_l)
-    return responses,info,error
+            return(f" Id: {ngsi_ld_json['id']} uploaded to Orion-LD: {config['NGSI_LD_CONTECT_BROKER']['HOSTNAME']} correctly with response: {response}")
 
 
-def get_cb_info_with_token():
+def get_cb_info_with_token(logger):
     # entity_ngsild_json a list of ngsildclient Entities
     config= get_config()
-    error=""
-    info=""
     
-    responses=[]
     headers = {}
     if config['NGSI_LD_CONTECT_BROKER']['PORT']==443:
         # the CB is behind a PEP proxy (wilma or KONG), need to get a token 
-        try:
-            token= get_orion_token(config)
-        except Exception as e:
-            error=str(e) 
-            responses=str(e)    
-            return responses,info,error
+        token= get_orion_token(config)
         headers['Authorization']= 'Bearer ' + token + ' '
         endpoint=f"https://{config['NGSI_LD_CONTECT_BROKER']['HOSTNAME']}/kong/keycloak-orion/version" 
     else:
@@ -78,19 +58,14 @@ def get_cb_info_with_token():
     # app.logger.info(endpoint)
     # app.logger.info(headers)
     response = requests.get(endpoint,headers=headers)
-    try:
-        response.raise_for_status()  # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
-        if not response.status_code // 100 == 2:
-            error=str(datetime.now())+", Error: get on " + endpoint + response.text + "status_code" + str(response.status_code)
-            responses.append(error) 
-        else:
-            info=str("OK  "+str(datetime.now())+"  "+str(response.json()))
-            responses.append(info)
-    except Exception as e:
-            error=str(e) 
-            responses=str(e)    
-            return responses,info,error
-    return responses,info,error
+
+    response.raise_for_status()  # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
+    if not response.status_code // 100 == 2:
+        error=str(datetime.now())+", Error: get on " + endpoint + response.text + "status_code" + str(response.status_code)
+        raise ValueError(error)
+    else:
+        return(str("OK  "+str(datetime.now())+"  "+str(response.json())))
+
 
 
 def get_orion_token(config):
