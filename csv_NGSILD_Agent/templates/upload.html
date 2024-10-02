@@ -49,7 +49,7 @@
                     type: 'POST',
                     success: function (response) {
                         // Construct the message to display
-                        let message = 'Responsesss: ' + response.responses ;
+                        let message = 'Responses: ' + response.responses;
                         if (response.error) {
                             message += '\nError: ' + response.error;
                         }
@@ -68,23 +68,27 @@
 <body>
     <h2>Upload CSV File</h2>
     <form id="fileUploadForm" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" accept=".csv">
-        <input type="submit" value="Upload">
+        <div>
+            Step 1: <input type="file" name="file" accept=".csv">
+        </div>
+        <div>
+            Step 2: <input type="submit" value="Upload">
+        </div>
     </form>
 
     <!-- New button for generating NGSI-LD entities -->
     <form method="post" action="/generate-ngsi-ld" action="/">
-        <input type="submit" value="Generate NGSI-LD entities">
+        Step 3: <input type="submit" value="Generate NGSI-LD entities">
     </form>
 
     <!-- New button to check endpoint connectivity -->
-    <form id="checkConnectivity" method="post" >
-        <input type="submit" value="Check Connectivity with CIRCULOOS Data Platform">
+    <form id="checkConnectivity" method="post">
+        Step 4: <input type="submit" value="Check Connectivity with CIRCULOOS Data Platform">
     </form>
 
     <!-- New button for generating NGSI-LD entities -->
     <form method="post" action="/post-ngsi-ld">
-        <input type="submit" value="Post NGSI-LD entities to Orion-LD">
+        Step 5: <input type="submit" value="Post NGSI-LD entities to Orion-LD">
     </form>
 
     {% if message %}
