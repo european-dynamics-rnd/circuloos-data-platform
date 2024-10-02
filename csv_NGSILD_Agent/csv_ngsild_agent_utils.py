@@ -151,7 +151,7 @@ def find_key_observedat(d):
     return None  # Return None if the key is not found
 
 
-def return_lastest_csv(UPLOAD_FOLDER):
+def return_lastest_csv(UPLOAD_FOLDER,logging):
     # Specify your folder path here
     # Get a list of all JSON files in the folder
     csv_files = glob.glob(os.path.join(UPLOAD_FOLDER, '*.csv'))
@@ -160,21 +160,20 @@ def return_lastest_csv(UPLOAD_FOLDER):
     csv_files.sort(key=lambda x: os.path.getmtime(x), reverse=True)
     if csv_files:
         latest_csv_file = csv_files[0]
-        print(f"Latest csv file: {latest_csv_file}")
+        logging.debug(f"Latest csv file: {latest_csv_file}")
         return latest_csv_file
     else:
-        print("No csv files found in the folder.")
-        csv_data = None
-        return None
+        raise ValueError("No uploaded csv files found.")
     return None
 
-def load_csv_files_to_dict(csv_file):
+def load_csv_files_to_dict(csv_file,logging):
     # Create an empty list to store the dictionaries
     data = []
-    with open(csv_file, mode='r', encoding='utf-8') as file:
+    with open(csv_file, mode='r', encoding='utf-8-sig') as file:
         # Read the first row to get the headers
         reader = csv.reader(file)
         headers = next(reader, None)
+        logging.debug(f"header for file:{csv_file} is {headers}")
         # Check if the first two headers are 'id' and 'type'
         if headers[:2] == ['id', 'type']:
             # Reset the file pointer to the start of the file
@@ -183,8 +182,7 @@ def load_csv_files_to_dict(csv_file):
             for row in csv_dict_reader:
                 data.append(row)
         else:
-            print("The first two headers are not 'id' and 'type'")
-            return [] # empty_dict
+            raise ValueError(f"The first two headers are not 'id' and 'type'. Header is:{headers}")
     return data
 
 def generate_ngsild_entity(entity, context):
@@ -218,7 +216,7 @@ def generate_ngsild_entity(entity, context):
                 entity_ngsild.prop(key,value, observedat=date_obj)
     # entity['a']='a'   # to test the error
     if len(entity) != 0:
-        print(f"error should be empty:{len(entity)}")
+        raise ValueError(f"You have {len(entity)} attributes {entity} remaining")
     return entity_ngsild
 
 def load_lastest_json_file(UPLOAD_FOLDER):

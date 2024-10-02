@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify
 import os
 from werkzeug.utils import secure_filename
 import os
+import glob
 import csv_ngsild_agent_utils as utlis
 import pprint
 import json
@@ -17,6 +18,11 @@ UPLOAD_FOLDER = 'uploaded_files'
 ALLOWED_EXTENSIONS = {'csv'}
 entity_ngsild_json_global= None
 
+# Get logging level from environment variable or default to INFO
+log_level = os.getenv("LOG_LEVEL", "INFO").upper()
+numeric_level = getattr(logging, log_level, logging.INFO)
+logging.basicConfig(level=numeric_level, format='%(asctime)s - %(levelname)s - %(message)s')
+
 
 
 def allowed_file(filename):
@@ -26,8 +32,8 @@ def allowed_file(filename):
 def generate_ngsi_ld_entities():
     # Your logic to generate NGSI-LD entities  
     config=utlis.get_config()
-    lastest_csv= utlis.return_lastest_csv(UPLOAD_FOLDER)
-    data=utlis.load_csv_files_to_dict(lastest_csv)
+    lastest_csv= utlis.return_lastest_csv(UPLOAD_FOLDER,logging)
+    data=utlis.load_csv_files_to_dict(lastest_csv,logging)
     entity_ngsild_json_str=""
     entity_ngsild_json=[]
     for entity_dict in data:
@@ -63,8 +69,12 @@ def handle_generate_ngsi_ld():
         entity_ngsild_json_str, entity_ngsild_json_global  = generate_ngsi_ld_entities()
         
     except Exception as e:
-        print(f"An error occurred: {e}")
-        entity_ngsild_json_str=f"{e}. Please check if you have id and type"
+        logging.error(f"An error occurred: {e}")
+        entity_ngsild_json_str=f"{e}. Please check if you have id and type"    
+    # cleaning the local storage
+    csv_files = glob.glob(os.path.join(UPLOAD_FOLDER, '*.csv'))
+    for csv_file in csv_files:
+        os.remove(csv_file)
     return render_template('upload.html', message=entity_ngsild_json_str)
 
 # For button Generate NGSI-LD entities    
@@ -94,7 +104,8 @@ def handle_post_ngsi_ld():
     app.logger.info(info)
     if len(str(error))>0:
         app.logger.error(error)
-        
+    # delete all csv files
+
     return responses
 
 
