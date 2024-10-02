@@ -64,7 +64,7 @@ def get_cb_info_with_token(logger):
         error=str(datetime.now())+", Error: get on " + endpoint + response.text + "status_code" + str(response.status_code)
         raise ValueError(error)
     else:
-        return(str("OK  "+str(datetime.now())+"  "+str(response.json())))
+        return(F"Successful\n{datetime.now()}\nResponse from {config['NGSI_LD_CONTECT_BROKER']['HOSTNAME']} \n {response.json()}")
 
 
 
