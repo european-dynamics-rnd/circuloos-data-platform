@@ -87,7 +87,7 @@ def handle_check_connectivity():
 @app.route('/post-ngsi-ld', methods=['POST'])
 def handle_post_ngsi_ld():
     if entity_ngsild_json_global is None:
-        responses="Please upload and push the button Generate NGSI-LD entities. Press Go back one"
+        responses="Please upload your .csv file and push the button Generate NGSI-LD entities. Press Go back one"
 
     else:
         try:
