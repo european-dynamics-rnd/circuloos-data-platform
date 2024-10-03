@@ -182,13 +182,20 @@ def generate_ngsild_entity(entity, context):
     else:
         date_obj=datetime.utcnow()
     for key in keys:
+        # TODO add Relationship, Polygon
         if  "_unitCode" not in key:
             value = entity.pop(key)
+            # create the entity with unitCode, pop both colmus from csv
             if key+"_unitCode" in keys:
                 unitCode= entity.pop(key+"_unitCode",None)
                 entity_ngsild.prop(key,value, observedat=date_obj, unitcode=unitCode)
             else:
-                entity_ngsild.prop(key,value, observedat=date_obj)
+                match key:
+                    case key if "_Relationship" in key:
+                        print("_Relationship")
+                        entity_ngsild.rel(key.replace("_Relationship", ""),value, observedat=date_obj)
+                    case _:
+                        entity_ngsild.prop(key,value, observedat=date_obj)
     # entity['a']='a'   # to test the error
     if len(entity) != 0:
         raise ValueError(f"You have {len(entity)} attributes {entity} remaining")
