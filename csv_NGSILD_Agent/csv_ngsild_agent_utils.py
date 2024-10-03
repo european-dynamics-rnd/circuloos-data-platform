@@ -192,8 +192,13 @@ def generate_ngsild_entity(entity, context):
             else:
                 match key:
                     case key if "_Relationship" in key:
-                        print("_Relationship")
                         entity_ngsild.rel(key.replace("_Relationship", ""),value, observedat=date_obj)
+                    case key if "_Polygon" in key:
+                        geojson_polygon = {
+                            "type": "Polygon",
+                            "coordinates": str(value.replace('"',''))
+                        }
+                        entity_ngsild.prop(key.replace("_Polygon", ""),geojson_polygon, observedat=date_obj)
                     case _:
                         entity_ngsild.prop(key,value, observedat=date_obj)
     # entity['a']='a'   # to test the error
