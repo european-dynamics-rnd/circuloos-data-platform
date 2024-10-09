@@ -26,6 +26,7 @@ def post_ngsi_to_cb_with_token(entity_ngsild_json,logger):
     else:
         endpoint=f"http://{config['NGSI_LD_CONTECT_BROKER']['HOSTNAME']}:{config['NGSI_LD_CONTECT_BROKER']['PORT']}/ngsi-ld/v1/entityOperations/upsert"
     # cilculoss_orion_ld_client=Client(hostname=NGSI_LD_CONTECT_BROKER_HOSTNAME ,port=NGSI_LD_CONTECT_BROKER_PORT, tenant=ORION_LD_TENANT)
+    return_response=[]
     for ngsi_ld_json in entity_ngsild_json:
         # response=cilculoss_orion_ld_client.upsert(ngsi_ld_json)
         ngsi_ld_json_payload='['+ngsi_ld_json.to_json()+']'
@@ -35,11 +36,11 @@ def post_ngsi_to_cb_with_token(entity_ngsild_json,logger):
         response = requests.post(endpoint,headers=headers,data=ngsi_ld_json_payload)
         response.raise_for_status()  # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
         if not response.status_code // 100 == 2:
-            error_l=str(datetime.now())+", Error: post on " + endpoint + response.text + "status_code" + str(response.status_code)
+            error_l=f"{datetime.now()} Error: post on endpoint {response.text}  status_code {response.status_code}"
             raise ValueError(error_l)
         else:
-            return(f" Id: {ngsi_ld_json['id']} uploaded to Orion-LD: {config['NGSI_LD_CONTECT_BROKER']['HOSTNAME']} correctly with response: {response}")
-
+            return_response.append(f" Id: {ngsi_ld_json['id']} uploaded to Orion-LD: {config['NGSI_LD_CONTECT_BROKER']['HOSTNAME']} correctly with response: {response.status_code} {response.text}")
+    return return_response
 
 def get_cb_info_with_token(logger):
     # entity_ngsild_json a list of ngsildclient Entities
@@ -61,10 +62,10 @@ def get_cb_info_with_token(logger):
 
     response.raise_for_status()  # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
     if not response.status_code // 100 == 2:
-        error=str(datetime.now())+", Error: get on " + endpoint + response.text + "status_code" + str(response.status_code)
+        error=f"{datetime.now()} Error: get on endpoint {response.text} status_code {response.status_code}"
         raise ValueError(error)
     else:
-        return(F"Successful\n{datetime.now()}\nResponse from {config['NGSI_LD_CONTECT_BROKER']['HOSTNAME']} \n {response.json()}")
+        return(f"Successful\n{datetime.now()}\nResponse from {config['NGSI_LD_CONTECT_BROKER']['HOSTNAME']} \n {response.json()}")
 
 
 
@@ -88,7 +89,7 @@ def get_orion_token(config):
     response = requests.post(url, data=data, verify=secure,  timeout=25)
     response.raise_for_status()  # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
     if response.status_code != 200:
-        error=str(datetime.now())+", Error : try to access:"+url+" response: "+response.text
+        error=f"{datetime.now()} Error : try to access: {url} response: {response.text}"
         raise ValueError(error)
     # Extract the access token from the response
     # print(response.json())
