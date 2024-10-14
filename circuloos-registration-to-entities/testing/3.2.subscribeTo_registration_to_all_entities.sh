@@ -10,7 +10,7 @@ curl -L -X POST 'http://localhost:'"${ORION_LD_A_PORT}"'/ngsi-ld/v1/subscription
   --data-raw '{
   "description": "Notify me of all changes in ieq",
   "type": "Subscription",
-  "entities": [{"type": "ieq"}],
+  "entities": [{"type": ".*"}],
   "notification": {
     "format": "normalized",
     "endpoint": {
@@ -29,7 +29,7 @@ curl -L -X POST 'http://localhost:'"${ORION_LD_A_PORT}"'/ngsi-ld/v1/subscription
   --data-raw '{
   "description": "Notify me of all changes in ieq",
   "type": "Subscription",
-  "entities": [{"type": "ieq"}],
+  "entities": [{"type": ".*"}],
   "notification": {
     "format": "normalized",
     "endpoint": {
