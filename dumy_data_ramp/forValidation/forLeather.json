@@ -1,0 +1,125 @@
+{
+    "id": "urn:ngsi-ld:leather:IDAS1313",
+    "type": "leather",
+    "@context": [
+        "https://TOBELater/context.jsonld"
+    ],
+    "----- forRAMP -------": "-----DO NOT USE THESE ATTRIBUTE-------",
+    "materialAdTitle": {
+        "type": "Property",
+        "value": "Unique peace of leather :)",
+        "observedAt": "2024-01-11T10:15:07.446000Z"
+    },
+    "materialTypeL0": {
+        "type": "Property",
+        "value": "Waste",
+        "observedAt": "2024-01-11T10:15:07.446000Z"
+    },
+    "materialTypeL1": {
+        "type": "Property",
+        "value": "leather",
+        "observedAt": "2024-01-11T10:15:07.446000Z"
+    },
+    "physicalFormCategory": {
+        "type": "Property",
+        "value": "bySurface",
+        "observedAt": "2024-01-11T10:15:07.446000Z"
+    },
+    "imageURL": {
+        "type": "Property",
+        "value": "https://ramp.eu/xxxxx",
+        "observedAt": "2024-01-11T10:15:07.446000Z"
+    },
+    "materialPrice": {
+        "type": "Property",
+        "value": "24.6",
+        "observedAt": "2024-01-11T10:15:07.446000Z"
+    },
+    "availableFrom": {
+        "type": "Property",
+        "value": "2024-01-20T10:15:07.446000Z",
+        "observedAt": "2024-01-11T10:15:07.446000Z"
+    },
+    "materialAdType": {
+        "type": "Property",
+        "value": "Sell",
+        "observedAt": "2024-01-11T10:15:07.446000Z"
+    },
+    "materialDescription": {
+        "type": "Property",
+        "value": "the leather peach was produced by",
+        "observedAt": "2024-01-11T10:15:07.446000Z"
+    },
+    "materialAdStatus": {
+        "type": "Property",
+        "value": "open",
+        "observedAt": "2024-01-11T10:15:07.446000Z"
+    },
+    "materialQuantity": {
+        "type": "Property",
+        "value": "3",
+        "observedAt": "2024-01-11T10:15:07.446000Z"
+    },
+    "----- forMaterial -------": "-----DO NOT USE THESE ATTRIBUTE-------",
+    "ownedBy": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:Company:001",
+        "observedAt": "2024-01-11T10:15:07.446000Z"
+    },
+    "location": {
+        "type": "GeoProperty",
+        "value": {
+            "type": "Point",
+            "coordinates": [
+                23.7261,
+                37.9714
+            ]
+        }
+    },
+    "origin": {
+        "type": "Property",
+        "value": "vegan",
+        "observedAt": "2024-01-11T10:15:07.446000Z"
+    },
+    "color": {
+        "type": "Property",
+        "value": "black",
+        "observedAt": "2024-01-11T10:15:07.446000Z"
+    },
+    "surfaceSize": {
+        "type": "Property",
+        "value": "2",
+        "observedAt": "2024-01-11T10:15:07.446000Z"
+    },
+    "thickness": {
+        "type": "Property",
+        "value": "0.3",
+        "unitCode": "MMT",
+        "observedAt": "2024-01-11T10:15:07.446000Z"
+    },
+    "tannedProcess": {
+        "type": "Property",
+        "value": "vegetable",
+        "observedAt": "2024-01-11T10:15:07.446000Z"
+    },
+    "type1": {
+        "type": "Property",
+        "value": "split",
+        "observedAt": "2024-01-11T10:15:07.446000Z"
+    },
+    "surfaceFinishWithCovering": {
+        "type": "Property",
+        "value": "true",
+        "observedAt": "2024-01-11T10:15:07.446000Z"
+    },
+    "hardness": {
+        "type": "Property",
+        "value": "medium",
+        "observedAt": "2024-01-11T10:15:07.446000Z"
+    },
+    "recycledTimes": {
+        "type": "Property",
+        "value": "2",
+        "observedAt": "2024-01-11T10:15:07.446000Z"
+    }
+}
