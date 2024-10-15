@@ -1,0 +1,9 @@
+HOST=circuloos-platform.eurodyn.com
+CONTEXT=http://circuloos-ld-context/circuloos-context.jsonld
+
+
+
+PARTNER_USERNAME=test-circuloos
+PARTNER_PASSWORD=2UnGRKm7NW8Wxa9Z3N
+ORION_PEP_SECRET=yWv2aRCm3KKMGrj9lMXQcEXY4v80tcFk
+MIKTAKA_PEP_SECRET=zQXGjcxPWuF7YBpAiFtaIOEIOrCiWqeH

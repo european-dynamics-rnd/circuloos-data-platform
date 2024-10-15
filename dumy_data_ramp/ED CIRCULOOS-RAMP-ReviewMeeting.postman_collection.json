@@ -1,0 +1,223 @@
+{
+	"info": {
+		"_postman_id": "0188f8df-2822-4450-bc88-c6d786da0aab",
+		"name": "ED CIRCULOOS-RAMP-ReviewMeeting",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "9192452"
+	},
+	"item": [
+		{
+			"name": "Get Orion Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"ORION_TOKEN\",jsonData.access_token);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "{{PARTNER_USERNAME}}",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "{{PARTNER_PASSWORD}}",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "orion-pep",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "{{ORION_PEP_SECRET}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://circuloos-platform.eurodyn.com/idm/realms/fiware-server/protocol/openid-connect/token",
+					"protocol": "https",
+					"host": [
+						"circuloos-platform",
+						"eurodyn",
+						"com"
+					],
+					"path": [
+						"idm",
+						"realms",
+						"fiware-server",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Orion Version",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": " Bearer {{ORION_TOKEN}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{ORION_KONG_URL}}/version",
+					"host": [
+						"{{ORION_KONG_URL}}"
+					],
+					"path": [
+						"version"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all entities of specific tenant",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "NGSILD-Tenant",
+						"value": "circuloos_ed_leather"
+					},
+					{
+						"key": "NGSILD-Path",
+						"value": "/"
+					},
+					{
+						"key": "Link",
+						"value": "<http://circuloos-ld-context/circuloos-context.jsonld>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\""
+					},
+					{
+						"key": "Accept",
+						"value": "application/ld+json"
+					},
+					{
+						"key": "Authorization",
+						"value": " Bearer {{ORION_TOKEN}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "{{ORION_KONG_URL}}/ngsi-ld/v1/entities?idPattern=urn:ngsi-ld:.*",
+					"host": [
+						"{{ORION_KONG_URL}}"
+					],
+					"path": [
+						"ngsi-ld",
+						"v1",
+						"entities"
+					],
+					"query": [
+						{
+							"key": "idPattern",
+							"value": "urn:ngsi-ld:.*"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl -s -G -X GET  'http://'\"${HOST}\"':'\"${ORION_LD_PORT}\"'/ngsi-ld/v1/entities' \\\r\n-H 'NGSILD-Tenant: '\"${NGSILDTenant}\"'' \\\r\n-H 'NGSILD-Path: /' \\\r\n-H 'Link: <'\"${CONTEXT}\"'>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"' \\\r\n-H 'Accept: application/ld+json' \\\r\n-d 'idPattern=urn:ngsi-ld:.*'|jq  "
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "PARTNER_USERNAME",
+			"value": "test-circuloos",
+			"type": "string"
+		},
+		{
+			"key": "PARTNER_PASSWORD",
+			"value": "2UnGRKm7NW8Wxa9Z3N",
+			"type": "string"
+		},
+		{
+			"key": "ORION_PEP_SECRET",
+			"value": "yWv2aRCm3KKMGrj9lMXQcEXY4v80tcFk",
+			"type": "string"
+		},
+		{
+			"key": "MINKTAKA_PEP_SECRET",
+			"value": "zQXGjcxPWuF7YBpAiFtaIOEIOrCiWqeH",
+			"type": "string"
+		},
+		{
+			"key": "ORION_TOKEN",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "MINTAKA_TOKEN",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "MINKTAKA_KONG_URL",
+			"value": "https://circuloos-platform.eurodyn.com/kong/keycloak-mintaka",
+			"type": "string"
+		},
+		{
+			"key": "ORION_KONG_URL",
+			"value": "https://circuloos-platform.eurodyn.com/kong/keycloak-orion",
+			"type": "string"
+		}
+	]
+}
