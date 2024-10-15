@@ -1,0 +1,133 @@
+{
+    "id": "urn:ngsi-ld:wood:asdfaf3242",
+    "type": "wood",
+    "@context": [
+        "https://TOBELater/context.jsonld"
+    ],
+    "----- forRAMP -------": "-----DO NOT USE THESE ATTRIBUTE-------",
+    "materialAdTitle": {
+        "type": "Property",
+        "value": "Unique peace of wood :)",
+        "observedAt": "2024-10-15T13:03:05Z"
+    },
+    "materialTypeL0": {
+        "type": "Property",
+        "value": "Waste",
+        "observedAt": "2024-10-15T13:03:05Z"
+    },
+    "materialTypeL1": {
+        "type": "Property",
+        "value": "wood",
+        "observedAt": "2024-10-15T13:03:05Z"
+    },
+    "physicalFormCategory": {
+        "type": "Property",
+        "value": "byDimensions",
+        "observedAt": "2024-10-15T13:03:05Z"
+    },
+    "imageURL": {
+        "type": "Property",
+        "value": "https://ramp.eu/xxxxx",
+        "observedAt": "2024-10-15T13:03:05Z"
+    },
+    "materialPrice": {
+        "type": "Property",
+        "value": "4.6",
+        "observedAt": "2024-10-15T13:03:05Z"
+    },
+    "availableFrom": {
+        "type": "Property",
+        "value": "2024-04-20T10:15:07.446000Z",
+        "observedAt": "2024-10-15T13:03:05Z"
+    },
+    "materialAdType": {
+        "type": "Property",
+        "value": "Sell",
+        "observedAt": "2024-10-15T13:03:05Z"
+    },
+    "materialDescription": {
+        "type": "Property",
+        "value": "the wood peach was produced by",
+        "observedAt": "2024-10-15T13:03:05Z"
+    },
+    "materialAdStatus": {
+        "type": "Property",
+        "value": "open",
+        "observedAt": "2024-10-15T13:03:05Z"
+    },
+    "materialQuantity": {
+        "type": "Property",
+        "value": "3",
+        "observedAt": "2024-10-15T13:03:05Z"
+    },
+    "----- forMaterial -------": "-----DO NOT USE THESE ATTRIBUTE-------",
+    "ownedBy": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:Company:101",
+        "observedAt": "2024-10-15T13:03:05Z"
+    },
+    "location": {
+        "type": "GeoProperty",
+        "value": {
+            "type": "Point",
+            "coordinates": [
+                23.7261,
+                37.9714
+            ]
+        }
+    },
+    "productType": {
+        "type": "Property",
+        "value": "table top",
+        "observedAt": "2024-10-15T13:03:05Z"
+    },
+    "woodType": {
+        "type": "Property",
+        "value": "blond",
+        "observedAt": "2024-10-15T13:03:05Z"
+    },
+    "origin": {
+        "type": "Property",
+        "value": "untreated",
+        "observedAt": "2024-10-15T13:03:05Z"
+    },
+    "color": {
+        "type": "Property",
+        "value": "light wood",
+        "observedAt": "2024-10-15T13:03:05Z"
+    },
+    "surfaceSize": {
+        "type": "Property",
+        "value": "2.4",
+        "unitCode": "MMQ",
+        "observedAt": "2024-10-15T13:03:05Z"
+    },
+    "thickness": {
+        "type": "Property",
+        "value": "35",
+        "unitCode": "MMT",
+        "observedAt": "2024-10-15T13:03:05Z"
+    },
+    "length": {
+        "type": "Property",
+        "value": "2400",
+        "unitCode": "MMT",
+        "observedAt": "2024-10-15T13:03:05Z"
+    },
+    "witdh": {
+        "type": "Property",
+        "value": "1000",
+        "unitCode": "MMT",
+        "observedAt": "2024-10-15T13:03:05Z"
+    },
+    "availableTill": {
+        "type": "Property",
+        "value": "2026-01-03T18:02:00Z",
+        "observedAt": "2024-10-15T13:03:05Z"
+    },
+    "recycledTimes": {
+        "type": "Property",
+        "value": "0",
+        "observedAt": "2024-10-15T13:03:05Z"
+    }
+}
