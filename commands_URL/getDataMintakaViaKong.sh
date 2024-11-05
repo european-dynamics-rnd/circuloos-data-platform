@@ -22,8 +22,8 @@ fi
 KONG_URL='https://'"${HOST}"'/kong/keycloak-mintaka'
 
 curl -s -G -X GET  ''"${KONG_URL}"'/temporal/entities/'"${sensorID}"'' \
--H 'NGSILD-Tenant: '"${NGSILD_TENANT}"''' \
+-H 'NGSILD-Tenant: '"${NGSILD_TENANT}"' ' \
 -H 'Link: <'"${CONTEXT}"'>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"' \
 -H 'Authorization: Bearer '"${token}"' ' \
--d 'lastN=1' | jq
+-d 'lastN=10' |jq
 

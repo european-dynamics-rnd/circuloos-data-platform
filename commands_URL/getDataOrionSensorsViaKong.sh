@@ -23,7 +23,7 @@ fi
 KONG_URL='https://'"${HOST}"'/kong/keycloak-orion'
 # echo $KONG_URL
 curl -s -G -X GET ''"${KONG_URL}"'/ngsi-ld/v1/entities' \
-  -H 'NGSILD-Tenant: '"${NGSILD_TENANT}"''' \
+  -H 'NGSILD-Tenant: '"${NGSILD_TENANT}"'' \
   -H 'NGSILD-Path: /' \
   -H 'Link: <'"${CONTEXT}"'>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"' \
   -H 'Accept: application/ld+json' \
