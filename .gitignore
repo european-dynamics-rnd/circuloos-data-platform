@@ -5,13 +5,10 @@ ssh
 .vscode/task.json
 .$CILCULOOS.drawio.bkp
 
-csv_NGSILD_Agent/__pycache__/
-/leather_board_outline/__pycache__
+**/__pycache__/
+
 commands_URL/token.txt
 commands_URL/tokenMintaka.txt
-leather_board_outline/__pycache__/outline_detection.cpython-311.pyc
 
-csv_NGSILD_Agent/__pycache__/csv_ngsild_agent_utils.cpython-311.pyc
 .vscode/*
 dumy_data_ramp/to_CIRCULOOS_Platform/token.txt
-csv_NGSILD_Agent/__pycache__/csv_ngsild_agent_utils.cpython-311.pyc
