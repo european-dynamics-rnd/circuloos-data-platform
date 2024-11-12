@@ -1,10 +1,20 @@
 version: "3.8"
 
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "1m"
+    max-file: "1"
+    tag: "{{.Name}}"
+
 services:
   # @context file is served from here
   ld-context:
     labels:
       org.eurodyn: 'circuloos'
+      logging: "promtail"
+      logging_jobname: "containerlogs"
     image: httpd:alpine
     hostname: circuloos-ld-context
     container_name: circuloos-ld-context
@@ -14,12 +24,16 @@ services:
       - circuloos
     volumes:
         - ./data-models:/usr/local/apache2/htdocs/
+    logging: *default-logging
+
     # healthcheck:
     #   test: (wget --server-response --spider --quiet  http://ld-context/datamodels.context-ngsi.jsonld 2>&1 | awk 'NR==1{print $$2}'|  grep -q -e "200") || exit 1
  
   circuloos-orion:
     labels:
       org.eurodyn: 'circuloos'
+      logging: "promtail"
+      logging_jobname: "containerlogs"
     platform: linux/amd64
     image: quay.io/fiware/orion-ld:${ORION_LD_VERSION}
     hostname: circuloos-orion
@@ -47,11 +61,14 @@ services:
     healthcheck:
       test: curl --fail -s http://circuloos-orion:${ORION_LD_PORT}/version || exit 1
       interval: 10s
+    logging: *default-logging
 
   # Databases
   circuloos-mongo-db:
     labels:
       org.eurodyn: 'circuloos'
+      logging: "promtail"
+      logging_jobname: "containerlogs"
     image: mongo:${MONGO_DB_VERSION}
     hostname: circuloos-mongo-db
     container_name: circuloos-mongo-db
@@ -67,6 +84,7 @@ services:
         host=`hostname --ip-address || echo '127.0.0.1'`; 
         mongo --quiet $host/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1    
       interval: 5s
+    logging: *default-logging
 
 networks:
   circuloos:

@@ -1,0 +1,84 @@
+version: '3.8'
+
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "1m"
+    max-file: "1"
+    tag: "{{.Name}}"
+
+volumes:
+  circuloos-loki:
+  circuloos-promtail:
+  circuloos-grafana:
+  circuloos-grafana-provisioning:
+
+services:
+  nginx-app:
+    container_name: nginx-app
+    image: nginx
+    labels:
+      org.eurodyn: 'circuloos'
+      logging: "promtail"
+      logging_jobname: "containerlogs"
+    ports:
+      - 8082:80
+    networks:
+      - circuloos
+    logging: *default-logging
+
+  grafana:
+    labels:
+      org.eurodyn: 'circuloos'
+    image: grafana/grafana:11.0.0
+    container_name: grafana
+    ports:
+      - 3000:3000
+    volumes:
+      - ./config_log_monitoring/grafana/datasources/grafana.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+      - ./config_log_monitoring/grafana/plugins/app.yaml:/etc/grafana/provisioning/plugins/app.yaml
+      - circuloos-grafana:/var/lib/grafana
+      - circuloos-grafana-provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_FEATURE_TOGGLES_ENABLE=accessControlOnCall lokiLogsDataplane exploreLogsShardSplitting
+      - GF_INSTALL_PLUGINS=https://storage.googleapis.com/integration-artifacts/grafana-lokiexplore-app/grafana-lokiexplore-app-latest.zip;grafana-lokiexplore-app
+    networks:
+      - circuloos
+    logging: *default-logging
+
+  loki:
+    labels:
+      org.eurodyn: 'circuloos'
+    image: grafana/loki:3.0.0
+    container_name: loki
+    ports:
+      - 3100:3100
+    command: -config.file=/etc/loki/loki.yaml
+    volumes:
+      - ./config_log_monitoring/loki/loki.yaml:/etc/loki/loki.yaml
+      - circuloos-loki:/etc/loki
+    networks:
+      - circuloos
+    logging: *default-logging
+
+  promtail:
+    labels:
+      org.eurodyn: 'circuloos'
+    image:  grafana/promtail:3.0.0
+    container_name: promtail
+    volumes:
+      - ./config_log_monitoring/promtail/promtail.yaml:/etc/promtail/docker-config.yaml
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - circuloos-promtail:/etc/promtail
+    command: -config.file=/etc/promtail/docker-config.yaml
+    depends_on:
+      - loki
+    networks:
+      - circuloos
+    logging: *default-logging
+
+
+networks:
+  circuloos:

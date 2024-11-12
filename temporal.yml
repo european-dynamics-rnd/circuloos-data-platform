@@ -1,9 +1,21 @@
 version: "3.8"
+
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "1m"
+    max-file: "1"
+    tag: "{{.Name}}"
+
+
 services:
 
   circuloos-mintaka:
     labels:
       org.eurodyn: 'circuloos'
+      logging: "promtail"
+      logging_jobname: "containerlogs"
     image: quay.io/fiware/mintaka:${MINTAKA_VERSION}
     hostname:  circuloos-mintaka
     container_name:  circuloos-mintaka
@@ -27,10 +39,14 @@ services:
       - "127.0.0.1:${MINTAKA_PORT}:${MINTAKA_PORT}"
     networks:
       - circuloos
+    logging: *default-logging
+
 
   circuloos-timescale-db:
     labels:
       org.eurodyn: 'circuloos'
+      logging: "promtail"
+      logging_jobname: "containerlogs"
     image: timescale/timescaledb-postgis:${TIMESCALE_VERSION}
     hostname:  circuloos-timescale-db
     container_name: circuloos-timescale-db
@@ -51,6 +67,8 @@ services:
       timeout: 15s
       retries: 5
       start_period: 60s
+    logging: *default-logging
+
 
   cloudbeaver: # cbadmin:JpzC7nRjZMbUbyx
       image: dbeaver/cloudbeaver 

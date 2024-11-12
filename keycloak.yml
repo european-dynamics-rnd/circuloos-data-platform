@@ -1,14 +1,25 @@
 version: "3.8"
 
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "1m"
+    max-file: "1"
+    tag: "{{.Name}}"
+
 volumes:
   circuloos-keycloak-db:
-
 
 services:
   keycloak-db:
     image: postgres:14.1
     #platform: linux/amd64
     container_name: ${PROJECT_NAME:-circuloos}-keycloak-db
+    labels:
+      org.eurodyn: 'circuloos'
+      logging: "promtail"
+      logging_jobname: "containerlogs"
     init: true
     networks:
       - circuloos
@@ -21,6 +32,8 @@ services:
       POSTGRES_USER: ${KEYCLOAK_DB_USER}
       POSTGRES_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
     restart: unless-stopped
+    logging: *default-logging
+
 
 
   keycloak:
@@ -30,6 +43,10 @@ services:
     depends_on:
       - keycloak-db
     init: true
+    labels:
+      org.eurodyn: 'circuloos'
+      logging: "promtail"
+      logging_jobname: "containerlogs"
     command: start-dev
     ports:
       - "127.0.0.1:8080:8080"  # for testing !!! 
@@ -54,10 +71,14 @@ services:
     volumes:
       - $PWD/keycloak/circuloos-keycloak.crt:/etc/x509/https/tls.crt
       - $PWD/keycloak/circuloos-keycloak.key:/etc/x509/https/tls.key
+    logging: *default-logging
+
 
   kong:
     labels:
       org.eurodyn: 'circuloos'
+      logging: "promtail"
+      logging_jobname: "containerlogs"
     image: "quay.io/fiware/kong:0.5.7"
     hostname: "kong"
     user: "kong"
@@ -101,6 +122,8 @@ services:
       interval: 10s
       timeout: 10s
       retries: 10
+    logging: *default-logging
+
 
 # networks:
 #   circuloos:
