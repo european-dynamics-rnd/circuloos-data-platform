@@ -31,7 +31,7 @@ services:
   grafana:
     labels:
       org.eurodyn: 'circuloos'
-    image: grafana/grafana:11.0.0
+    image: grafana/grafana:11.3.0
     container_name: grafana
     ports:
       - 3000:3000
@@ -50,7 +50,7 @@ services:
   loki:
     labels:
       org.eurodyn: 'circuloos'
-    image: grafana/loki:3.0.0
+    image: grafana/loki:3.2.1
     container_name: loki
     ports:
       - 3100:3100
@@ -65,7 +65,7 @@ services:
   promtail:
     labels:
       org.eurodyn: 'circuloos'
-    image:  grafana/promtail:3.0.0
+    image:  grafana/promtail:3.1.2
     container_name: promtail
     volumes:
       - ./config_log_monitoring/promtail/promtail.yaml:/etc/promtail/docker-config.yaml
