@@ -54,10 +54,13 @@ services:
       - ORIONLD_TROE_USER=${ORIONLD_TROE_USER}
       - ORIONLD_TROE_PWD=${ORIONLD_TROE_PWD}
       - ORIONLD_TROE_HOST=circuloos-timescale-db
+      - ORIONLD_MONGOCONLY=TRUE
       - ORIONLD_MONGO_HOST=circuloos-mongo-db
+      - ORIONLD_MONGO_POOL_SIZE=20
       - ORIONLD_MULTI_SERVICE=TRUE
       - ORIONLD_DISABLE_FILE_LOG=TRUE
-    command: -logLevel DEBUG  -troePoolSize 10 -forwarding
+      - ORIONLD_FORWARDING=TRUE
+    command: -logLevel DEBUG  -troePoolSize 10 -lmtmp
     healthcheck:
       test: curl --fail -s http://circuloos-orion:${ORION_LD_PORT}/version || exit 1
       interval: 10s
