@@ -56,6 +56,10 @@ The main docker-compose file(docker-compose.yml) include additional compose file
 **IMPORTANT** all commands can be found on commands folder
 
 ## Check Orion and Mintaka are online 
+**ALL commands need to be run inside the folder commands** so
+```
+cd commands
+```
 You can use the following commands:
 1. ```./getOrionVersion.sh``` : To get the version of the Orion-LD
 2. ```./getOrionVersionViaKong.sh``` : To get the version of the Orion-LD using KONG as PEP (Policy Enforcement Point) proxy
