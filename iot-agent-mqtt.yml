@@ -1,0 +1,50 @@
+version: "3.8"
+services:
+    iot-agent-mqtt:
+          # image: quay.io/fiware/iotagent-ul:${JSON_VERSION}
+      image: quay.io/fiware/iotagent-json:${JSON_VERSION}
+      hostname: iot-agent-mqtt
+      container_name: ${PROJECT_NAME:-ramp_iot}-iot-agent-mqtt
+      ports:   # for communication outside docker environment BUT only localhost
+        - "127.0.0.1:${IOTA_MQTT_NORTH_PORT}:${IOTA_MQTT_NORTH_PORT}"
+        - "127.0.0.1:${IOTA_MQTT_SOUTH_PORT}:${IOTA_MQTT_SOUTH_PORT}" 
+      networks:
+        - ramp_iot-network
+      environment:
+        - IOTA_CB_HOST=${ORION_HOST_NAME} # name of the context broker to update context
+        - IOTA_CB_PORT=${ORION_LD_PORT} # port the context broker listens on to update context
+        - IOTA_NORTH_PORT=${IOTA_MQTT_NORTH_PORT}
+        - IOTA_REGISTRY_TYPE=mongodb #Whether to hold IoT device info in memory or in a database
+        - IOTA_LOG_LEVEL=DEBUG # The log level of the IoT Agent
+        - IOTA_TIMESTAMP=true # Supply timestamp information with each measurement
+        # - IOTA_AUTOCAST=true # Ensure Ultralight number values are read as numbers not strings
+        - IOTA_MONGO_HOST=${MONGO_HOST} # The host name of MongoDB
+        - IOTA_MONGO_PORT=${MONGO_DB_PORT} # The port mongoDB is listening on
+        - IOTA_MONGO_DB=iotagentmqtt # The name of the database used in mongoDB
+        # - IOTA_HTTP_PORT=${IOTA_MQTT_SOUTH_PORT} # The port used for device traffic over HTTP
+        - IOTA_PROVIDER_URL=http://iot-agent-mqtt:${IOTA_MQTT_NORTH_PORT}
+        - IOTA_MQTT_HOST=${IOTA_MQTT_HOST} # The host name of the MQTT Broker
+        - IOTA_MQTT_PORT=${IOTA_MQTT_PORT} # The port the MQTT Broker is listening on to receive topics
+        - IOTA_MQTT_USERNAME=${IOTA_MQTT_USERNAME}
+        - IOTA_MQTT_PASSWORD=${IOTA_MQTT_PASSWORD}
+        - IOTA_DEFAULT_RESOURCE= # Default is blank. I'm using MQTT so I don't need a resource
+
+        - IOTA_CB_NGSI_VERSION=ld # use NGSI-LD when sending updates for active attributes
+        - IOTA_JSON_LD_CONTEXT=${CONTEXT}
+        - IOTA_FALLBACK_TENANT=openiot
+        - "IOTA_AMPQ_DISABLED=true"
+      healthcheck:
+        interval: 10s
+
+  # Other services
+    mosquitto:
+      image: eclipse-mosquitto:latest
+      hostname: mosquitto
+      container_name: mosquitto
+      ports:
+        - "${IOTA_MQTT_PORT}:${IOTA_MQTT_PORT}"
+        # - "9001:9001"
+      volumes:
+        - $PWD/mosquitto:/mosquitto/config
+      networks:
+        - ramp_iot-network

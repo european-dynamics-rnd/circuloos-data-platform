@@ -10,7 +10,8 @@ command="$1"
 
 FINAL_DOCKER_YML="-f docker-compose.yml -f keycloak.yml -f temporal.yml"  #   -f monitoring.yml
 
-CIRCULOOS_YML=" -f circuloos_custom_apps.yml"
+# CIRCULOOS_YML=" -f circuloos_custom_apps.yml"
+CIRCULOOS_YML=" -f iot-agent-mqtt.yml"
 # CIRCULOOS_YML="$CIRCULOOS_YML -f circuloos-registration-to-entities/federation.yml"
 FINAL_DOCKER_YML="$FINAL_DOCKER_YML $CIRCULOOS_YML"
 

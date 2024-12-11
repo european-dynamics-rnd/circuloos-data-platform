@@ -1,0 +1,59 @@
+{
+    "services": [
+        {
+            "apikey": "2u44verf434sffsdf",
+            "entity_type": "BME680",
+            "cbroker": "http://orion:1026",
+            "resource": "/iot/json",
+            "timezone": "Europe/Athens",
+            "attributes": [
+                {
+                    "object_id": "bme_temp",
+                    "name": "temperature",
+                    "type": "Float",
+                    "metadata": {
+                        "unitCode": {
+                            "type": "Property",
+                            "value": "CEL"
+                        }
+                    }
+                },
+                {
+                    "object_id": "bme_rh",
+                    "name": "relativeHumidity",
+                    "type": "Float",
+                    "metadata": {
+                        "unitCode": {
+                            "type": "Property",
+                            "value": "P1"
+                        }
+                    }
+                },
+                {
+                    "object_id": "bme_pres",
+                    "name": "airpresure",
+                    "type": "Float",
+                    "metadata": {
+                        "unitCode": {
+                            "type": "Property",
+                            "value": "A97"
+                        }
+                    }
+                }
+                ,
+                {
+                    "object_id": "bme_gas_res",
+                    "name": "gas_resistance",
+                    "type": "Float",
+                    "metadata": {
+                        "unitCode": {
+                            "type": "Property",
+                            "value": "OHM"
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
+
