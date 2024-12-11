@@ -1,0 +1,94 @@
+# Use multi-arch Node.js base image for arm64 compatibility
+ARG NODE_VERSION=16
+FROM --platform=$TARGETPLATFORM node:${NODE_VERSION} AS builder
+ARG GITHUB_ACCOUNT
+ARG GITHUB_REPOSITORY
+ARG DOWNLOAD
+ARG SOURCE_BRANCH
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+# Install necessary packages and dependencies
+RUN \
+    apt-get update -y && \
+    apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends unzip && \
+    if [ "${DOWNLOAD}" = "latest" ] ; then \
+        RELEASE="${SOURCE_BRANCH}"; \
+        echo "INFO: Building Latest Development from ${SOURCE_BRANCH} branch."; \
+    elif [ "${DOWNLOAD}" = "stable" ]; then \
+        RELEASE=$(curl -s https://api.github.com/repos/"${GITHUB_ACCOUNT}"/"${GITHUB_REPOSITORY}"/releases/latest | grep 'tag_name' | cut -d\" -f4); \
+        echo "INFO: Building Latest Stable Release: ${RELEASE}"; \
+    else \
+        RELEASE="${DOWNLOAD}"; \
+        echo "INFO: Building Release: ${RELEASE}"; \
+    fi && \
+    RELEASE_CONCAT=$(echo "${RELEASE}" | tr / -); \
+    curl -s -L https://github.com/"${GITHUB_ACCOUNT}"/"${GITHUB_REPOSITORY}"/archive/"${RELEASE}".zip > source.zip && \
+    unzip source.zip -x "*/test/**" "*/rpm/**" "*/ghpages/**" "*/docs/**" "*/.*" && \
+    rm source.zip && \
+    mv "${GITHUB_REPOSITORY}-${RELEASE_CONCAT}" /opt/iotagent-json && \
+    apt-get clean && \
+    apt-get remove -y unzip && \
+    apt-get -y autoremove && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /opt/iotagent-json
+
+# Install Node.js dependencies
+RUN \
+    apt-get install -y --no-install-recommends git && \
+    echo "INFO: npm install --production..." && \
+    npm install --only=prod --no-package-lock --no-optional && \
+    apt-get clean && \
+    apt-get remove -y git && \
+    apt-get -y autoremove
+
+########################################################################################
+# PM2 Installation Stage
+########################################################################################
+FROM --platform=$TARGETPLATFORM node:${NODE_VERSION}-slim AS pm2
+ARG GITHUB_ACCOUNT
+ARG GITHUB_REPOSITORY
+
+COPY --from=builder /opt/iotagent-json /opt/iotagent-json
+RUN npm install pm2@4.4.0 -g --no-package-lock --no-optional
+
+USER node
+ENV NODE_ENV=production
+EXPOSE ${IOTA_NORTH_PORT:-4041} ${IOTA_HTTP_PORT:-7896}
+CMD ["pm2-runtime", "/opt/iotagent-json/bin/iotagent-json", "-- ", "config.js"]
+
+########################################################################################
+# Distroless Production Image
+########################################################################################
+FROM --platform=$TARGETPLATFORM gcr.io/distroless/nodejs:${NODE_VERSION} AS distroless
+ARG GITHUB_ACCOUNT
+ARG GITHUB_REPOSITORY
+
+COPY --from=builder /opt/iotagent-json /opt/iotagent-json
+WORKDIR /opt/iotagent-json
+
+USER nobody
+ENV NODE_ENV=production
+EXPOSE ${IOTA_NORTH_PORT:-4041} ${IOTA_HTTP_PORT:-7896}
+CMD ["./bin/iotagent-json", "-- ", "config.js"]
+HEALTHCHECK  --interval=30s --timeout=3s --start-period=10s \
+  CMD ["/nodejs/bin/node", "./bin/healthcheck"]
+
+########################################################################################
+# Slim Node.js Production Image
+########################################################################################
+FROM --platform=$TARGETPLATFORM node:${NODE_VERSION}-slim AS slim
+ARG GITHUB_ACCOUNT
+ARG GITHUB_REPOSITORY
+
+COPY --from=builder /opt/iotagent-json /opt/iotagent-json
+WORKDIR /opt/iotagent-json
+
+USER node
+ENV NODE_ENV=production
+EXPOSE ${IOTA_NORTH_PORT:-4041} ${IOTA_HTTP_PORT:-7896}
+CMD ["node", "/opt/iotagent-json/bin/iotagent-json", "-- ", "config.js"]
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s \
+   CMD ["npm", "run", "healthcheck"]
