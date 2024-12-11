@@ -9,16 +9,16 @@ services:
         - "127.0.0.1:${IOTA_MQTT_NORTH_PORT}:${IOTA_MQTT_NORTH_PORT}"
         - "127.0.0.1:${IOTA_MQTT_SOUTH_PORT}:${IOTA_MQTT_SOUTH_PORT}" 
       networks:
-        - ramp_iot-network
+        - circuloos
       environment:
-        - IOTA_CB_HOST=${ORION_HOST_NAME} # name of the context broker to update context
+        - IOTA_CB_HOST=circuloos-orion # name of the context broker to update context
         - IOTA_CB_PORT=${ORION_LD_PORT} # port the context broker listens on to update context
         - IOTA_NORTH_PORT=${IOTA_MQTT_NORTH_PORT}
         - IOTA_REGISTRY_TYPE=mongodb #Whether to hold IoT device info in memory or in a database
         - IOTA_LOG_LEVEL=DEBUG # The log level of the IoT Agent
         - IOTA_TIMESTAMP=true # Supply timestamp information with each measurement
         # - IOTA_AUTOCAST=true # Ensure Ultralight number values are read as numbers not strings
-        - IOTA_MONGO_HOST=${MONGO_HOST} # The host name of MongoDB
+        - IOTA_MONGO_HOST=circuloos-mongo-db # The host name of MongoDB
         - IOTA_MONGO_PORT=${MONGO_DB_PORT} # The port mongoDB is listening on
         - IOTA_MONGO_DB=iotagentmqtt # The name of the database used in mongoDB
         # - IOTA_HTTP_PORT=${IOTA_MQTT_SOUTH_PORT} # The port used for device traffic over HTTP
@@ -47,4 +47,4 @@ services:
       volumes:
         - $PWD/mosquitto:/mosquitto/config
       networks:
-        - ramp_iot-network
+        - circuloos
