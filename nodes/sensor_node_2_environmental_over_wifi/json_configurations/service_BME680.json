@@ -1,9 +1,10 @@
 {
     "services": [
         {
-            "apikey": "2u44verf434sffsdf",
+            "apikey": "BME680KEYas32r",
             "entity_type": "BME680",
-            "cbroker": "http://orion:1026",
+            "explicitAttrs": true,
+            "autoprovision": false,
             "resource": "/iot/json",
             "timezone": "Europe/Athens",
             "attributes": [

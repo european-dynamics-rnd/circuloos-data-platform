@@ -4,7 +4,6 @@
             "device_id": "node-002",
             "entity_name": "urn:ngsi-ld:BME680:node-002",
             "entity_type": "BME680",
-            "cbroker": "http://orion:1026",
             "protocol":    "/iot/json",
             "transport":   "MQTT",
             "timezone": "Europe/Athens"
