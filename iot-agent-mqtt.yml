@@ -1,8 +1,10 @@
 version: "3.8"
 services:
     iot-agent-mqtt:
-          # image: quay.io/fiware/iotagent-ul:${JSON_VERSION}
-      image: quay.io/fiware/iotagent-json:${JSON_VERSION}
+      build:
+        context: arm64_dockerfiles
+        dockerfile: Dockerfile-iotaagent-json
+      platform: linux/arm64
       hostname: iot-agent-mqtt
       container_name: ${PROJECT_NAME:-ramp_iot}-iot-agent-mqtt
       ports:   # for communication outside docker environment BUT only localhost

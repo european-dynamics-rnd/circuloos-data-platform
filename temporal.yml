@@ -4,7 +4,10 @@ services:
   circuloos-mintaka:
     labels:
       org.eurodyn: 'circuloos'
-    image: quay.io/fiware/mintaka:${MINTAKA_VERSION}
+    build:
+      context: arm64_dockerfiles
+      dockerfile: Dockerfile-mintaka
+    platform: linux/arm64
     hostname:  circuloos-mintaka
     container_name:  circuloos-mintaka
     restart: always
