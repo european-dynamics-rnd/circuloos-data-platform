@@ -1,10 +1,10 @@
 # Use multi-arch Node.js base image for arm64 compatibility
 ARG NODE_VERSION=16
 FROM --platform=$TARGETPLATFORM node:${NODE_VERSION} AS builder
-ARG GITHUB_ACCOUNT
-ARG GITHUB_REPOSITORY
-ARG DOWNLOAD
-ARG SOURCE_BRANCH
+ARG GITHUB_ACCOUNT=telefonicaid
+ARG GITHUB_REPOSITORY=iotagent-json
+ARG DOWNLOAD=latest
+ARG SOURCE_BRANCH=master
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -12,7 +12,8 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN \
     apt-get update -y && \
     apt-get upgrade -y && \
-    apt-get install -y --no-install-recommends unzip && \
+    apt-get install -y --no-install-recommends unzip
+RUN \
     if [ "${DOWNLOAD}" = "latest" ] ; then \
         RELEASE="${SOURCE_BRANCH}"; \
         echo "INFO: Building Latest Development from ${SOURCE_BRANCH} branch."; \

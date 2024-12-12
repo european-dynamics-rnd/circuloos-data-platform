@@ -1,0 +1,31 @@
+# FROM openjdk:17-jdk-slim AS maven-build
+FROM maven:3.8.7-openjdk-18-slim AS maven-build 
+#
+# Pin to specific release 
+
+# Install curl
+RUN apt-get update && apt-get install -y unzip curl
+WORKDIR /workspace
+RUN \
+    curl -s -L https://github.com/FIWARE/mintaka/archive/0.6.18.zip > source.zip && \  
+    unzip source.zip 
+
+# Set the working directory
+WORKDIR /workspace/mintaka-0.6.18
+# # Update the version in the Maven project
+RUN mvn versions:set -DnewVersion=0.6.18
+
+# Build the project without running tests
+RUN mvn clean install -DskipTests
+
+# Use Debian 11 slim as the base for the final image
+FROM eclipse-temurin:21
+
+# Install Java runtime
+WORKDIR /usr/src
+# Copy the generated JAR file from the build stage
+COPY --from=maven-build /workspace/mintaka-0.6.18/target/mintaka-0.6.18.jar .
+
+# CMD ["mintaka-0.6.18.jar"]
+# Specify the command to run the JAR file
+CMD ["java", "-jar", "mintaka-0.6.18.jar"]
