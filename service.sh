@@ -8,7 +8,7 @@ set -e
 export $(cat .env | grep "#" -v)
 command="$1"
 
-FINAL_DOCKER_YML="-f docker-compose.yml -f keycloak.yml -f temporal.yml"  #   -f monitoring.yml
+FINAL_DOCKER_YML="-f docker-compose.yml -f temporal.yml"  #   -f monitoring.yml  -f keycloak.yml 
 
 # CIRCULOOS_YML=" -f circuloos_custom_apps.yml"
 CIRCULOOS_YML=" -f iot-agent-mqtt.yml"

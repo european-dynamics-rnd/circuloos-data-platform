@@ -34,7 +34,7 @@ services:
   circuloos-timescale-db:
     labels:
       org.eurodyn: 'circuloos'
-    image: timescale/timescaledb-postgis:${TIMESCALE_VERSION}
+    image: timescale/timescaledb:${TIMESCALE_VERSION}
     hostname:  circuloos-timescale-db
     container_name: circuloos-timescale-db
     environment:

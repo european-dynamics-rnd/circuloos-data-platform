@@ -52,7 +52,8 @@ services:
   circuloos-mongo-db:
     labels:
       org.eurodyn: 'circuloos'
-    image: mongo:${MONGO_DB_VERSION}
+    # image: mongo:${MONGO_DB_VERSION}
+    image: mongodb-raspberrypi4-unofficial-r6.0.13
     hostname: circuloos-mongo-db
     container_name: circuloos-mongo-db
     expose:
