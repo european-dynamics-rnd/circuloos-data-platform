@@ -18,3 +18,4 @@ csv_NGSILD_Agent/__pycache__/csv_ngsild_agent_utils.cpython-311.pyc
 arm64_dockerfiles/mongodb.ce.pi4.r6.0.13-mongodb-raspberrypi-docker-unofficial.tar.gz
 rs485_to_ngsild/lib/waveshare_RS485_RS232_HAT/__pycache__/
 rs485_to_ngsild/lib/waveshare_RS485_RS232_HAT/*.pyc
+rs485_to_ngsild/__pycache__/*
