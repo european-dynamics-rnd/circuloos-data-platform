@@ -1,7 +1,7 @@
 import logging
 from ngsildclient import Entity
 import requests
-from datetime import datetime
+from datetime import datetime,timedelta
 import os
 import urllib3
 
@@ -10,6 +10,8 @@ class NGSILDAgent:
     def __init__(self, logger=None):
         self.logger = logger or self._setup_logger()
         self.config = self._get_config()
+        self.date_time_token_expire=datetime.strptime('01/01/2020 00:00:00', '%m/%d/%Y %H:%M:%S')
+        self.token=""
 
     @staticmethod
     def _setup_logger():
@@ -30,7 +32,6 @@ class NGSILDAgent:
             'PARTNER_PASSWORD': os.getenv('PARTNER_PASSWORD', ''),
             'ORION_PEP_SECRET': os.getenv('ORION_PEP_SECRET', ''),
         }
-       
        
         
     def post_ngsi_to_cb_with_token(self, entity_ngsild):
@@ -92,22 +93,32 @@ class NGSILDAgent:
 
     def _get_orion_token(self):
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-        realm_name = 'fiware-server'
-        client_id = 'orion-pep'
-        url = (
-            f"https://{self.config['NGSI_LD_CONTECT_BROKER']['HOSTNAME']}/idm/realms/{realm_name}/protocol/openid-connect/token"
-        )
-        data = {
-            'username': self.config['PARTNER_USERNAME'],
-            'password': self.config['PARTNER_PASSWORD'],
-            'grant_type': 'password',
-            'client_id': client_id,
-            'client_secret': self.config['ORION_PEP_SECRET'],
-        }
-
-        response = requests.post(url, data=data, verify=True, timeout=25)
-        response.raise_for_status()
-        return response.json().get('access_token')
+        now_time = datetime.now()  # when the token was issue
+        if self.date_time_token_expire<now_time:
+            realm_name = 'fiware-server'
+            client_id = 'orion-pep'
+            url = (
+                f"https://{self.config['NGSI_LD_CONTECT_BROKER']['HOSTNAME']}/idm/realms/{realm_name}/protocol/openid-connect/token"
+            )
+            data = {
+                'username': self.config['PARTNER_USERNAME'],
+                'password': self.config['PARTNER_PASSWORD'],
+                'grant_type': 'password',
+                'client_id': client_id,
+                'client_secret': self.config['ORION_PEP_SECRET'],
+            }
+            response = requests.post(url, data=data, verify=True,  timeout=25)
+            response.raise_for_status()  # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
+            if response.status_code != 200:
+                error=str(datetime.now())+", Error : try to access:"+url+" response: "+response.text
+                raise ValueError(error)
+            # Extract the access token from the response
+            # print(f"{self.cPilot} token: {response.text}")
+            self.token=response.json().get('access_token')
+            expires_in=response.json().get('expires_in')
+            self.date_time_token_expire= now_time + timedelta(seconds=expires_in)
+            
+        return self.token
     
 
 
