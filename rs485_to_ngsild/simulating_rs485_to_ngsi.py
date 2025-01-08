@@ -41,9 +41,9 @@ _logger = logging.getLogger(__name__)
 
 agent = NGSILDAgent(_logger)
 
-serial_data_incoming =  "#1;342.60;43;51;37;66;44;23;154;59;7#"
+serial_data_incoming =  "asdasd#1;342.60;43;51;37;66;44;23;154;59;7#daf33q"
 
-
+# print(decode_serial_data.parse_input_type1(serial_data_incoming))
 post_data_to_orion(decode_serial_data.parse_input_type1(serial_data_incoming))
             
 

@@ -16,6 +16,17 @@ class type1_serial_data:
 
 # Function to parse the input string
 def parse_input_type1(input_string):
+    
+    occurrences = input_string.count('#')
+    
+    if not occurrences == 2:
+        raise ValueError("Input string must have 2 #.")
+    
+    first_hash = input_string.find('#')
+    last_hash = input_string.rfind('#')
+    
+    input_string=input_string[first_hash :last_hash+1]
+    print(input_string)
     # Ensure the string starts with #1 and ends with #
     if not input_string.startswith("#1") or not input_string.endswith("#"):
         raise ValueError("Input string must start with '#1' and end with '#'.")
