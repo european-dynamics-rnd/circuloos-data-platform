@@ -19,7 +19,7 @@ libdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'lib')
 if os.path.exists(libdir):
     sys.path.append(libdir)
    
-# import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 import time
 from waveshare_RS485_RS232_HAT import config
 
@@ -63,7 +63,7 @@ sensor_ngsilf_id= os.getenv('RS', "urn:ngsi-ld:circuloos:serial:id1")
 RS485EN = 22
 ser = config.config(Baudrate = 9600 , dev = "/dev/ttySC0")
 serial_data_incoming = ''
-MAX_NUMBER_OF_CHAR=30
+MAX_NUMBER_OF_CHAR=100
 
 try:
     while(1):
