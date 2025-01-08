@@ -26,7 +26,7 @@ def parse_input_type1(input_string):
     last_hash = input_string.rfind('#')
     
     input_string=input_string[first_hash :last_hash+1]
-    print(input_string)
+    # print(input_string)
     # Ensure the string starts with #1 and ends with #
     if not input_string.startswith("#1") or not input_string.endswith("#"):
         raise ValueError("Input string must start with '#1' and end with '#'.")
