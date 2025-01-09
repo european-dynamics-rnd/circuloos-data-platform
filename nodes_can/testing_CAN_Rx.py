@@ -4,16 +4,22 @@ import os
 
 # https://www.beyondlogic.org/adding-can-controller-area-network-to-the-raspberry-pi/
 
-# print('\n\rCAN Rx test')
-# print('Bring up CAN0....')
-# os.system("sudo /sbin/ip link set can0 up type can bitrate 500000")
+simulating=True
+
+print('\n\rCAN Rx test')
+if not simulating:
+	print('Bring up CAN0....')
+	os.system("sudo /sbin/ip link set can0 up type can bitrate 500000")
+
 time.sleep(0.1)	
 
 try:
-	# bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
-    bus=can.interface.Bus( interface='socketcan', channel='vcan0', bitrate=500000 )
+	if simulating:
+		bus=can.interface.Bus( interface='socketcan', channel='vcan0', bitrate=500000 )
+	else:
+		bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
 except OSError:
-	print('Cannot find PiCAN board.')
+	print('Cannot find hardware board found.')
 	exit()
 	
 print('Ready')
@@ -28,6 +34,14 @@ try:
 			s +=  '{0:x} '.format(message.data[i])
 			
 		print(' {}'.format(c+s))
+		if message.arbitration_id == 3793:
+			print(f"Message from sensor !!!")
+			temp1 = (message.data[0] << 8) | message.data[1]
+			# Combine high and low bytes for temp2
+			temp2 = (message.data[2] << 8) | message.data[3]
+			print(f"temp1: {temp1/100}")
+			print(f"temp2: {temp2/100}")
+
 	
 	
 except KeyboardInterrupt:

@@ -19,3 +19,4 @@ arm64_dockerfiles/mongodb.ce.pi4.r6.0.13-mongodb-raspberrypi-docker-unofficial.t
 rs485_to_ngsild/lib/waveshare_RS485_RS232_HAT/__pycache__/
 rs485_to_ngsild/lib/waveshare_RS485_RS232_HAT/*.pyc
 rs485_to_ngsild/__pycache__/*
+nodes_can/__pycache__/*
