@@ -58,8 +58,6 @@ _logger = logging.getLogger(__name__)
 
 agent = NGSILDAgent(_logger)
 
-sensor_ngsilf_id= os.getenv('RS', "urn:ngsi-ld:circuloos:serial:id1") 
-
 RS485EN = 22
 ser = config.config(Baudrate = 9600 , dev = "/dev/ttySC0")
 serial_data_incoming = ''

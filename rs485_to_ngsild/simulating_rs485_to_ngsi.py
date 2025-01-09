@@ -23,7 +23,7 @@ def post_data_to_orion(type1_data):
     
     type1_data_extended = ExtendedType1SerialData(
         **asdict(type1_data),  # Unpack original data
-        id="urn:ngsi-ld:circuloos:serial:id1",
+        id="urn:ngsi-ld:type1_serial_data:circuloos:serial:id1",
         type="type1_serial_data"
         )
     ngsi_ld=agent.generate_ngsild_entity(asdict(type1_data_extended))
