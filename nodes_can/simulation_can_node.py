@@ -8,7 +8,7 @@ pt100_temp_float=3333.32
 
 
 mcp9600_temp = int(round(mcp9600_temp_float * 100))
-pt100_temp = int(round(pt100_temp_float * 100))
+pt100_temp = int(round(pt100_temp_float * 10))
 
 data = [0] * 8  # Initialize a list with 4 elements, all set to 0
 
