@@ -18,14 +18,14 @@ elif [ $# -eq 1 ]; then
     entity="$1"
     echo $entity
 fi
-
+echo ${ORION_LD_TENANT}
 
 
 
 KONG_URL='https://'"${HOST}"'/kong/keycloak-orion'
 # echo $KONG_URL
 curl -s -G -X GET ''"${KONG_URL}"'/ngsi-ld/v1/entities/'"${entity}"'' \
-  -H 'NGSILD-Tenant: circuloos_demo' \
+  -H 'NGSILD-Tenant: '"${ORION_LD_TENANT}"'' \
   -H 'NGSILD-Path: /' \
   -H 'Link: <'"${CONTEXT}"'>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"' \
   -H 'Accept: application/ld+json' \
