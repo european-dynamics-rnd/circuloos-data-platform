@@ -16,7 +16,7 @@ csv_NGSILD_Agent/__pycache__/csv_ngsild_agent_utils.cpython-311.pyc
 dumy_data_ramp/to_CIRCULOOS_Platform/token.txt
 csv_NGSILD_Agent/__pycache__/csv_ngsild_agent_utils.cpython-311.pyc
 arm64_dockerfiles/mongodb.ce.pi4.r6.0.13-mongodb-raspberrypi-docker-unofficial.tar.gz
-rs485_to_ngsild/lib/waveshare_RS485_RS232_HAT/__pycache__/
-rs485_to_ngsild/lib/waveshare_RS485_RS232_HAT/*.pyc
-rs485_to_ngsild/__pycache__/*
+nodes_rs485/lib/waveshare_RS485_RS232_HAT/__pycache__/
+nodes_rs485/lib/waveshare_RS485_RS232_HAT/*.pyc
+nodes_rs485/__pycache__/*
 nodes_can/__pycache__/*
