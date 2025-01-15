@@ -55,9 +55,11 @@ command="$1"
 case "${command}" in
 	"start")
 		export $(cat .env | grep "#" -v)
-		# stoppingContainers
+		echo -e "Stop all containers"
+		stoppingContainers
 		echo -e "Starting containers"
 		echo ""
+		docker run --privileged --rm tonistiigi/binfmt --install all
         ${dockerCmd} $FINAL_DOCKER_YML -p $COMPOSE_PROJECT_NAME --env-file .env --env-file .env.secrets up -d --remove-orphans # --renew-anon-volumes
 		;;
 	"stop")
