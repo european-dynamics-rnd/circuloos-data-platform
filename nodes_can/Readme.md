@@ -9,7 +9,7 @@ sudo ip link set up vcan0
 # Scripts
 - simulation_can_node.py: simulating the message from an actual ESP32 over CAN for easy debuging and testing
 - testing_CAN_Rx.py: testing the hardware of RasberyPI for recieving the CNA messages. Use the flag simulating for testing
-
+- **can_agent.py** : NGSI-LD agent, it reads the CAN message, transforms it to NGSI-LD and send it.
 
 # Sample json
 ```json

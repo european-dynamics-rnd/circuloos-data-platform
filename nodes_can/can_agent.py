@@ -33,10 +33,11 @@ def post_data_to_orion(_data):
         except Exception as e:
             _logger.error(f"An error occurred: {e}")
     
-simulating=True   
-    
-print('\n\n Simulating CAN Agent')
-if not simulating:
+simulating=False   
+
+if simulating:
+    print('\n\n Simulating CAN Agent')
+else:
 	print('Bring up CAN0....')
 	os.system("sudo /sbin/ip link set can0 up type can bitrate 500000")
 
@@ -46,7 +47,7 @@ try:
 	if simulating:
 		bus=can.interface.Bus( interface='socketcan', channel='vcan0', bitrate=500000 )
 	else:
-		bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
+		bus = can.interface.Bus(channel='can0', bustype='socketcan')
 except OSError:
 	print('Cannot find hardware board found.')
 	exit()
@@ -62,13 +63,13 @@ try:
 	while True:
 		message = bus.recv()	# Wait until a message is received.
 
-		if message.arbitration_id == 3793:
+		if message.arbitration_id == 1745:   # from sim  3793,  arduiono: 1745
 			print(f"Message from sensor !!!. message:{message}")
 			mcp9600_temp = (message.data[0] << 8) | message.data[1]
 			mcp9600_temp = mcp9600_temp/100
 			# Combine high and low bytes for pt100_temp
 			pt100_temp =  (message.data[2] << 8) | message.data[3] 
-			pt100_temp = pt100_temp/100
+			pt100_temp = pt100_temp/10
 
 			_logger.debug(f"mcp9600_temp: {mcp9600_temp}, pt100_temp: {pt100_temp}")
 			_type1_can_data = type1_can_data("urn:ngsi-ld:circuloos:can:id1","type1_can_data",mcp9600_temp,pt100_temp)
