@@ -8,8 +8,8 @@ echo -e 'Provition service:' "${1}"
 curl -s -X POST \
   'http://localhost:'"${IOTA_MQTT_NORTH_PORT}"'/iot/devices' \
   -H 'Content-Type: application/json' \
-  -H 'NGSILD-Tenant: circuloos_demo' \
-  -H 'fiware-service: circuloos_demo' \
+  -H 'NGSILD-Tenant: circuloos_shopfloor_demo' \
+  -H 'fiware-service: circuloos_shopfloor_demo' \
   -H 'fiware-servicepath: /' \
   -d @$1
 
