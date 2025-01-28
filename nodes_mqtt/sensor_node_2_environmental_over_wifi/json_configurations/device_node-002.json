@@ -4,8 +4,6 @@
             "device_id": "node-002",
             "entity_name": "urn:ngsi-ld:BME680:node-002",
             "entity_type": "BME680",
-            "protocol":    "/iot/json",
-            "transport":   "MQTT",
             "timezone": "Europe/Athens"
         }
     ]

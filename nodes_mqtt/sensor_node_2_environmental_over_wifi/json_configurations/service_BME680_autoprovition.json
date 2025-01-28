@@ -3,8 +3,6 @@
         {
             "apikey": "BME680KEYas32r",
             "entity_type": "BME680",
-            "explicitAttrs": true,
-            "autoprovision": false,
             "resource": "/iot/json",
             "timezone": "Europe/Athens",
             "attributes": [
