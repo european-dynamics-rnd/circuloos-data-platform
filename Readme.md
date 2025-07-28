@@ -3,86 +3,164 @@ The CIRCULOOS Platform utilizes FIWARE components, designed to be implemented on
 
 ## Architecture 
 The main components of the circuloos IoT LD platform are:
-1. [Orion-LD](https://github.com/FIWARE/context.Orion-LD) as Context Broker.
-2. [Mintaka](https://github.com/FIWARE/mintaka) as NGSI-LD temporal retrieval API ([OpenAPI Specifications](./commands_URL/miktakaOpenAPISpecs.yaml)).
-3. [Keycloak](https://www.keycloak.org/) as single sign-on with identity and access management.
-4. [Kong](https://github.com/FIWARE/kong-plugins-fiware) as PEP (Policy Enforcement Point) proxy for Orion-LD and Mintaka.
 
+1. **[Orion-LD](https://github.com/FIWARE/context.Orion-LD)**
+   - Role: Context Broker for NGSI-LD entity management
+   - Function: Real-time data storage and retrieval
+
+2. **[Mintaka](https://github.com/FIWARE/mintaka)**
+   - Role: NGSI-LD temporal retrieval API
+   - Function: Historical data queries and time-series analysis
+   - Documentation: [OpenAPI Specifications](./commands_URL/miktakaOpenAPISpecs.yaml)
+
+3. **[Keycloak](https://www.keycloak.org/)**
+   - Role: Identity and Access Management (IAM)
+   - Function: Single sign-on authentication and authorization
+
+4. **[Kong](https://github.com/FIWARE/kong-plugins-fiware)** as API Proxy
+   - Role: Policy Enforcement Point (PEP) proxy
+   - Function: API gateway for Orion-LD and Mintaka access control
 
 ![CILCULOOS Platform Architecture](./CILCULOOS_demo.png)
 
-# CILCULOOS Platform
+## Integration Guide
 
-In the [commands_URL](./commands_URL) you can find commands to interact with the CIRCULOOS Platform located on European Dynamics Server, circuloos-platform.eurodyn.com.
-You **need** to change the centennial in the **partner_variables.txt** that was send to you by email, **PARTNER_USERNAME** and **PARTNER_PASSWORD**. If you have not received your partner credentials, please e-mail konstantinos.gombakisATeurodyn.com.
+### Prerequisites
 
-If you want to utilize the tools CSV to Orion-LD agent and Leather board outline to send data to the CIRCULOOS platform please use the .yml files inside their directories.
+- Docker and Docker Compose installed
+- Linux environment (or WSL/VM for Windows users)
 
-
-Moreover, a Postman collection of the same commands is [HERE](./commands_URL/ED%20CIRCULOOS%20Platform.postman_collection.json).
-Please go throu the demo and then try to connect to the ED CIRCULOOS Platform.
-To send **REAL data** from you pilot please chose a unique **NGSILD-Tenant** to ensure proper data separation form other partner data.
-
-# Providing Pilot data to the CIRCULOOS Data platform
-
-To provide/send data to the CIRCULOOS data platform you have 2 available options:
-- To provide your data by sending it as a valid NGSI-LD JSON to the Orion-LD. With these option you have to implement an mechanism to receive the Authedication token from the CIRCULOOS Keycload and provide the token along side your NGSI-LD JSON
-- Utilizing the NGSI-LD Federation scheme. With these scheme selected data received on your local Orion-LD will be forwarded to the CIRCULOOS Orion-LD. See [Readme_federation.md](./circuloos-registration-to-entities/Readme_federation.md) for more information.
-
-# Demo 
-
-The demo have can run on every Linux system. The following tools needs to be installed: ```docker-compose, curl, bash, jq``` 
-
-jq is used for the formatting of the return json from Orion-LD and Mintaka.
-
-For the installation of docker-compose, please see on the [official documentation of Docker](https://docs.docker.com/compose/install/linux/). Pleaase make sure that you run a [root-less docker](https://docs.docker.com/engine/install/linux-postinstall/)
-
-The Windows user can:
-- Install a virtual machine with [VirtualBox](https://www.virtualbox.org/). Install the latest [Ubuntu LTS image](https://ubuntu.com/download/desktop)
-
-**or**
-
-- Use the WSL (Windows Subsystem for Linux) to install an [Ubuntu](https://learn.microsoft.com/en-us/windows/wsl/install) (```wsl --install --distribution Ubuntu```) and **then** [docker](https://www.docker.com/)
+**ONLY** when you want to send data to the CIRCULOOS platform
+- Valid partner credentials (delivered via secure email) 
 
 
-## Docker
-Clone the current repo on your local development environment. To run the local CIRCULOOS Data platform use: ```./service.sh start``` on the main folder. The first time will need to download all Docker images ~10minutes depending on internet speed. Then open another terminal to [continue](#demo).
+### Authentication Configuration
 
-The main docker-compose file(docker-compose.yml) include additional compose files for specific services.
-1. temporal.yml. Service for Mintaka and TimescaleDB.
-2. keycloak.yml. Service for Keycloak and Kong.
-3. circuloos_custom_apps.yml The custom service to upload/transform csv to NGSI-LD JSON and send/POST to Orion-LD and leather board outline
+1. **Credential Setup**
+   - Locate `partner_variables.txt` from your integration package
+   - Configure required parameters:
+     - `PARTNER_USERNAME`: Assigned partner username
+     - `PARTNER_PASSWORD`: Assigned partner password
+     - **Centennial value**: Update as specified in credentials
 
-**IMPORTANT** all commands can be found on commands folder
+2. **Missing Credentials**
+   - Contact: `konstantinos.gombakis@eurodyn.com`
+   - Include organization name and use case in request
 
-## Check Orion and Mintaka are online 
-You can use the following commands inside commands directory:
+### API Reference
+
+All platform interaction commands are available in [`commands_URL`](./commands_URL) directory.
+For interacting with **YOUR** local the same commands are available in [`commands`](./commands) directory.
+
+**Postman Collection**: [`ED CIRCULOOS Platform.postman_collection.json`](./commands_URL/ED%20CIRCULOOS%20Platform.postman_collection.json)
+
+## Data Integration Methods
+
+To provide/send data to the CIRCULOOS data platform you have 2 available methods:
+
+### Method 1: Direct NGSI-LD Submission
+Send valid NGSI-LD JSON directly to Orion-LD with proper authentication tokens from Keycloak.
+
+### Method 2: NGSI-LD Federation
+Configure local Orion-LD to forward selected data to CIRCULOOS Orion-LD automatically.
+- **Documentation**: [Readme_federation.md](./circuloos-registration-to-entities/Readme_federation.md)
+
+### Production Data Deployment
+
+**Tenant Configuration**: Select a unique `NGSILD-Tenant` identifier to ensure data isolation between partner organizations.
+
+## Local Development Environment
+
+### System Requirements
+
+**Required Tools:**
+- `docker-compose`
+- `curl`
+- `bash`
+- `jq` (for JSON formatting)
+
+**Installation References:**
+- [Docker Compose Official Documentation](https://docs.docker.com/compose/install/linux/)
+- [Rootless Docker Setup](https://docs.docker.com/engine/install/linux-postinstall/)
+
+### Windows Development Setup
+
+**Option 1: Virtual Machine**
+- Install [VirtualBox](https://www.virtualbox.org/)
+- Deploy latest [Ubuntu LTS](https://ubuntu.com/download/desktop)
+
+**Option 2: WSL (Windows Subsystem for Linux)**
+```bash
+wsl --install --distribution Ubuntu
 ```
+Then install [Docker](https://www.docker.com/)
+
+### Local Platform Deployment
+
+1. **Clone Repository**
+   ```bash
+   git clone [repository-url]
+   cd circuloos-platform
+   ```
+
+2. **Start Platform**
+   ```bash
+   ./service.sh start
+   ```
+   *Initial startup downloads Docker images (~10 minutes depending on connection)*
+
+3. **Verify Services**
+   Open new terminal and proceed to testing commands
+
+### Docker Compose Architecture
+
+**Main Configuration**: `docker-compose.yml`
+
+**Additional Service Files:**
+- `temporal.yml`: Mintaka and TimescaleDB services
+- `keycloak.yml`: Keycloak and Kong services  
+- `circuloos_custom_apps.yml`: CSV transformation and leather board outline tools
+
+## Platform Verification
+
+### Service Health Checks
+
+Navigate to commands directory:
+```bash
 cd commands
 ```
-1. ```./getOrionVersion.sh``` : To get the version of the Orion-LD
-2. ```./getOrionVersionViaKong.sh``` : To get the version of the Orion-LD using KONG as PEP (Policy Enforcement Point) proxy
-3. ```./getMintakaVersion.sh``` : To get the version of the Mintaka
-4. ```./getMintakaVersionViaKong.sh``` : To get the version of the Mintaka using KONG as PEP (Policy Enforcement Point) proxy
 
-## Add data to Orion-LD
+**Orion-LD Status:**
+- `./getOrionVersion.sh`: Direct Orion-LD version check
+- `./getOrionVersionViaKong.sh`: Orion-LD via Kong proxy (production method)
+
+**Mintaka Status:**
+- `./getMintakaVersion.sh`: Direct Mintaka version check
+- `./getMintakaVersionViaKong.sh`: Mintaka via Kong proxy (production method)
+
+### Data Operations Testing
+
+**Data Ingestion:**
 A simple Indoor Enviromental Quality sensor measurements have been encoding used NGSI-LD JSON ([demo_1_ieq-001_15min.json](./ieq_sensor/demo_1_ieq-001_15min.json)). With the following commands you can send/POST the measurements to the Orion CB.
-1. ```./addDataOrion.sh ../ieq_sensor/demo_1_ieq-001.json``` : Add data to the Orion-LD
-2. ```./addDataOrionViaKong.sh ../ieq_sensor/demo_1_ieq-001_15min.json``` : Add data to the Orion-LD Orion-LD using KONG as PEP (Policy Enforcement Point) proxy **These will be used for external systems**
-3. ```./addDataOrionViaKong.sh ../ieq_sensor/demo_1_ieq-001_30min.json```
 
-## Get the data from Orion-LD
-Orion-LD keeps only the latest measurement of each entity.
-1. ```./getDataOrionSensors.sh``` : To get the last measurement of the urn:ngsi-ld:circuloos:demo_1:ieq-001. The property "observedAt" should  be "2024-01-11T10:30:07.446000Z"
-2. ```./getDataOrionSensorsViaKong.sh``` : To get the last measurement of the urn:ngsi-ld:circuloos:demo_1:ieq-001 using KONG as PEP (Policy Enforcement Point) proxy
+- `./addDataOrion.sh ../ieq_sensor/demo_1_ieq-001.json`: Direct data upload
+- `./addDataOrionViaKong.sh ../ieq_sensor/demo_1_ieq-001_15min.json`: Production method via Kong
+- `./addDataOrionViaKong.sh ../ieq_sensor/demo_1_ieq-001_30min.json`: Additional test data
 
-## Get the data from Miktana - historical 
-1. ```./getDataMintaka.sh``` : To get the historical measurements of the urn:ngsi-ld:circuloos:demo_1:ieq-001.
-2. ```./getDataMintakaViaKong.sh``` : Historical measurements of the urn:ngsi-ld:circuloos:demo_1:ieq-001 using KONG as PEP (Policy Enforcement Point) proxy
+**Current Data Retrieval:**
+- `./getDataOrionSensors.sh`: Latest measurement retrieval
+- `./getDataOrionSensorsViaKong.sh`: Production method via Kong
 
-**IMPORTANT** on the folder **commands_URL** there are the same scripts that you can utilise to communicate with the CIRCULOOS platform [see](#cilculoos-platform) 
+**Historical Data Retrieval:**
+- `./getDataMintaka.sh`: Historical data from Mintaka
+- `./getDataMintakaViaKong.sh`: Production method via Kong
+
+
+## Data Transformation Tools
 
 # CSV to Orion-LD agent
+**Purpose**: Transform CSV data into NGSI-LD entities and upload to Orion-LD
+
 A custom agent have been created to transform a CSV to NGSI-LD entities and send/POST them to the Orion-LD.
 
 1. Create the csv file with the data that you want to add to the Orion-LD. **IMPORTANT** the first 2 columns **MUST BE** id,type. See [csv_NGSILD_Agent/leatherProducts.csv](csv_NGSILD_Agent/leatherProducts.csv) for a csv file with 2 entities. To add timestamp for the data add a column "observedat" with the date time into a ISO8601 format ("2024-01-31T12:03:02Z"), otherwise the timestamp will be set to current date/time.
@@ -91,7 +169,7 @@ A custom agent have been created to transform a CSV to NGSI-LD entities and send
 4. Click "Post NGSI-LD entities to Orion-LD". The created NGSI-LD JSON will be send to the Orion-LD. A message with the IDs of the send to the Orion-LD will appear. 
 5. See the data send to the Orion-LD ```./getDataOrionSensors.sh leather```
 
-## Send data to the CIRCULOOS CB 
+## Send data to the CIRCULOOS data platform 
 
 In order to send the data to the official CIRCULOOS platform the file 'csv_NGSILD_Agent/circuloos-csv-ngsild-agent.yml' needs to be updated with the partner's username and passowrd.
 1. Stop any running CIRCULOOS dockers, by running ```./service.sh stop```
@@ -102,9 +180,11 @@ In order to send the data to the official CIRCULOOS platform the file 'csv_NGSIL
 
 # Leather board outline
 ## Irregular leather board  
+**Purpose**: Calculate coordinates from irregular leather board images using ArUco markers
 
 A tool to calculate and transform the image of an irregular leather board to coordinates with the help of Aruco marker along side with the necessary metadata.
-Print the aruco markers from the [pdf](./leather_board_outline/aruco_markers.pdf) and measure them. Update the configuration of the docker that you run ([local testing](./circuloos_custom_apps.yml) or [CIRCULOOS platform](./leather_board_outline/leather-board-outline-irregular.yml)) ```NUMBER_ARUCO_MARKERS``` with the number of markers that you are using and ```SIZE_IN_METERS_ARUCO_MARKERS``` the size of the printed markers in **meters**.
+### Physical setup for taking the photo
+Print the aruco markers from the [pdf](./leather_board_outline/aruco_markers.pdf) and measure them. Then, update the configuration of the docker that you run ([local testing](./circuloos_custom_apps.yml) or [CIRCULOOS platform](./leather_board_outline/leather-board-outline-irregular.yml)) ```NUMBER_ARUCO_MARKERS``` with the number of markers that you are using and ```SIZE_IN_METERS_ARUCO_MARKERS``` the size of the printed markers in **meters**.
 For the demo 2 aruco markers with dimensions of 0.045m (4.5cm) is used.
 
 The leather/fabric **MUST** be photographed with a white background. Moreover there should be as flat as possible with no visible shadows. The aruco markers can be glued or taped on the surface and a piece of glass can be put on top of the leather/fabric.
@@ -145,6 +225,35 @@ A tool to calculate and transform to coordinates the remaining part of a rectang
 ![screenshoot](./leather_board_outline/full_image_demonstrating/Screenshot_outline_full_image.png)
 
 
+## Troubleshooting
+
+### Common Issues
+
+**Docker Image Updates:**
+After repository updates, rebuild local images:
+```bash
+./service.sh build
+# or
+docker compose -f [specific-compose-file].yml build
+```
+
+**Service Connectivity:**
+Verify all services are running and accessible before proceeding with data operations.
+
+**Data Upload Failures:**
+- Verify credentials configuration
+- Check tenant naming conventions
+- Ensure NGSI-LD JSON validity
+
+## Support
+
+**Technical Contact**: `konstantinos.gombakis@eurodyn.com`
+
+**Support Request Information:**
+- Organization name
+- Tenant identifier (if applicable)
+- Error messages and logs
+- Reproduction steps
 
 
 
