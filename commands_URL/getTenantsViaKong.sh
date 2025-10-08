@@ -7,8 +7,11 @@ export $(cat ./partner_variables.txt | grep "#" -v)
 token=$(cat "token.txt")
 
 
-# commands_URL/getOrionVersionViaKong.sh   curl localhost:5056/get-tenants |jq
-KONG_URL='https://'"${HOST}"'/kong/tenant-service-keycloak'
-echo $KONG_URL
-curl -s ''"${KONG_URL}"'/get-tenants' \
+# # commands_URL/getOrionVersionViaKong.sh   curl localhost:5056/get-tenants |jq
+# KONG_URL='https://'"${HOST}"'/kong/tenant-service-keycloak'
+# echo $KONG_URL
+# curl -s ''"${KONG_URL}"'/get-tenants' \
+#  --header 'Authorization: Bearer '"${token}"' ' |jq
+
+curl -s 'https://circuloos-platform.eurodyn.com/kong/tenant-service-keycloak/get-tenants' \
  --header 'Authorization: Bearer '"${token}"' ' |jq
