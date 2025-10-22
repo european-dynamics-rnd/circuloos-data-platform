@@ -24,6 +24,15 @@
                 "urn:ngsi-ld:Company:rawplasticsa",
                 "urn:ngsi-ld:Company:iberoplast"
             ]
+        },
+        "warehouseLocation": {
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Warehouse:001"
+        },
+        "stockLevel": {
+            "type": "Property",
+            "value": 10.2,
+            "unitCode": "KGM"
         }
     },
     {
@@ -44,6 +53,15 @@
         "materialSpecification": {
             "type": "Property",
             "value": "Hostacom HKC 182 L W92607 WHITE"
+        },
+        "warehouseLocation": {
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Warehouse:001"
+        },
+        "stockLevel": {
+            "type": "Property",
+            "value": 10.2,
+            "unitCode": "KGM"
         }
     },
     {
@@ -70,6 +88,15 @@
                 "urn:ngsi-ld:Company:rawplasticsa",
                 "urn:ngsi-ld:Company:iberoplast"
             ]
+        },
+        "warehouseLocation": {
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Warehouse:001"
+        },
+        "stockLevel": {
+            "type": "Property",
+            "value": 10.2,
+            "unitCode": "KGM"
         }
     },
     {
