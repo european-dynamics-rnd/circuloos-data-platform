@@ -20,6 +20,21 @@
         "hasMaterial": {
             "type": "Relationship",
             "object": "urn:ngsi-ld:Material:PP50CO3Ca:001"
+        },
+        "warehouseLocation": {
+            "type": "Property",
+            "value": "Warehouse A - Section 1"
+        },
+        "stockLevel": {
+            "type": "Property",
+            "value": 10
+        },
+        "lastTimeUsed": {
+            "type": "Property",
+            "value": {
+                "@type": "DateTime",
+                "@value": "2025-10-20T10:00:00Z"
+            }
         }
     },
     {
@@ -43,6 +58,21 @@
         "hasMaterial": {
             "type": "Relationship",
             "object": "urn:ngsi-ld:Material:PP50CO3Ca:001"
+        },
+        "warehouseLocation": {
+            "type": "Property",
+            "value": "Warehouse A - Section 1"
+        },
+        "stockLevel": {
+            "type": "Property",
+            "value": 10
+        },
+        "lastTimeUsed": {
+            "type": "Property",
+            "value": {
+                "@type": "DateTime",
+                "@value": "2025-10-20T10:00:00Z"
+            }
         }
     },
     {
@@ -66,6 +96,21 @@
         "hasMaterial": {
             "type": "Relationship",
             "object": "urn:ngsi-ld:Material:PP30Talco:001"
+        },
+        "warehouseLocation": {
+            "type": "Property",
+            "value": "Warehouse A - Section 1"
+        },
+        "stockLevel": {
+            "type": "Property",
+            "value": 10
+        },
+        "lastTimeUsed": {
+            "type": "Property",
+            "value": {
+                "@type": "DateTime",
+                "@value": "2025-10-20T10:00:00Z"
+            }
         }
     },
     {
@@ -89,6 +134,21 @@
         "hasMaterial": {
             "type": "Relationship",
             "object": "urn:ngsi-ld:Material:PP30Talco:001"
+        },
+        "warehouseLocation": {
+            "type": "Property",
+            "value": "Warehouse A - Section 1"
+        },
+        "stockLevel": {
+            "type": "Property",
+            "value": 10
+        },
+        "lastTimeUsed": {
+            "type": "Property",
+            "value": {
+                "@type": "DateTime",
+                "@value": "2025-10-20T10:00:00Z"
+            }
         }
     },
     {
@@ -112,6 +172,21 @@
         "hasMaterial": {
             "type": "Relationship",
             "object": "urn:ngsi-ld:Material:PP:001"
+        },
+        "warehouseLocation": {
+            "type": "Property",
+            "value": "Warehouse A - Section 1"
+        },
+        "stockLevel": {
+            "type": "Property",
+            "value": 10
+        },
+        "lastTimeUsed": {
+            "type": "Property",
+            "value": {
+                "@type": "DateTime",
+                "@value": "2025-10-20T10:00:00Z"
+            }
         }
     },
     {
@@ -135,6 +210,21 @@
         "hasMaterial": {
             "type": "Relationship",
             "object": "urn:ngsi-ld:Material:aluminum:001"
+        },
+        "warehouseLocation": {
+            "type": "Property",
+            "value": "Warehouse A - Section 1"
+        },
+        "stockLevel": {
+            "type": "Property",
+            "value": 10
+        },
+        "lastTimeUsed": {
+            "type": "Property",
+            "value": {
+                "@type": "DateTime",
+                "@value": "2025-10-20T10:00:00Z"
+            }
         }
     },
     {
@@ -158,6 +248,21 @@
         "hasMaterial": {
             "type": "Relationship",
             "object": "urn:ngsi-ld:Material:aluminum:001"
+        },
+        "warehouseLocation": {
+            "type": "Property",
+            "value": "Warehouse A - Section 1"
+        },
+        "stockLevel": {
+            "type": "Property",
+            "value": 10
+        },
+        "lastTimeUsed": {
+            "type": "Property",
+            "value": {
+                "@type": "DateTime",
+                "@value": "2025-10-20T10:00:00Z"
+            }
         }
     }
 ]

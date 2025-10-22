@@ -12,9 +12,21 @@ import json
 import os
 import sys
 from datetime import datetime
-from typing import Dict, Set, Any, Optional
+from typing import Dict, Set, Any, Optional, List, Tuple
 import requests
 from pathlib import Path
+
+try:
+    import graphviz
+    GRAPHVIZ_AVAILABLE = True
+except ImportError:
+    GRAPHVIZ_AVAILABLE = False
+
+try:
+    from pyvis.network import Network
+    PYVIS_AVAILABLE = True
+except ImportError:
+    PYVIS_AVAILABLE = False
 
 
 class OrionLDExpander:
@@ -175,6 +187,422 @@ class OrionLDExpander:
 
         return result
 
+    def generate_diagram(self, output_path: str = "entity_diagram") -> Optional[str]:
+        """
+        Generate a visual diagram of the entity relationships.
+
+        Args:
+            output_path: Base path for the output file (without extension)
+
+        Returns:
+            Path to the generated PNG file, or None if graphviz is not available
+        """
+        if not GRAPHVIZ_AVAILABLE:
+            print("\nWarning: graphviz package not available. Install with: pip install graphviz", file=sys.stderr)
+            print("Also ensure graphviz system package is installed: sudo apt install graphviz", file=sys.stderr)
+            return None
+
+        print(f"\nGenerating entity relationship diagram...", file=sys.stderr)
+
+        # Create a directed graph
+        dot = graphviz.Digraph(comment='Entity Relationships', format='png')
+        dot.attr(rankdir='TB', bgcolor='white')
+        dot.attr('node', shape='box', style='rounded,filled', fontname='Arial', fontsize='10')
+        dot.attr('edge', fontname='Arial', fontsize='9')
+
+        # Track entity types for styling
+        entity_types = {}
+        relationships: List[Tuple[str, str, str, str]] = []  # (from_id, to_id, rel_name, rel_type)
+
+        # First pass: collect all entities and their types
+        for entity_id, entity in self.all_entities.items():
+            entity_type = entity.get('type', 'Unknown')
+            entity_types[entity_id] = entity_type
+
+            # Extract relationships for second pass
+            for key, value in entity.items():
+                if isinstance(value, dict) and value.get('type') == 'Relationship':
+                    rel_object = value.get('object')
+                    if isinstance(rel_object, list):
+                        for obj_id in rel_object:
+                            relationships.append((entity_id, obj_id, key, entity_type))
+                    elif isinstance(rel_object, str):
+                        relationships.append((entity_id, rel_object, key, entity_type))
+
+        # Define color scheme for different entity types
+        type_colors = {
+            'ManufacturingMachine': '#FF6B6B',
+            'ManufacturingComponent': '#4ECDC4',
+            'Material': '#95E1D3',
+            'Company': '#FFD93D',
+            'Warehouse': '#C49BFF',
+            'Default': '#E8E8E8'
+        }
+
+        # Create a mapping of entity IDs to safe node names
+        node_names = {}
+        for i, entity_id in enumerate(self.all_entities.keys()):
+            node_names[entity_id] = f"node_{i}"
+
+        # Add nodes with styling based on entity type
+        for entity_id, entity in self.all_entities.items():
+            entity_type = entity.get('type', 'Unknown')
+
+            # Create a shorter label
+            short_id = entity_id.split(':')[-1] if ':' in entity_id else entity_id
+
+            # Try to get name property
+            name = None
+            for key in ['name', 'https://smartdatamodels.org/name']:
+                if key in entity:
+                    name_prop = entity[key]
+                    if isinstance(name_prop, dict) and 'value' in name_prop:
+                        name = name_prop['value']
+                        break
+
+            if name:
+                label = f"{name}\\n({entity_type})\\n{short_id}"
+            else:
+                label = f"{entity_type}\\n{short_id}"
+
+            color = type_colors.get(entity_type, type_colors['Default'])
+            # Use safe node name instead of entity_id
+            dot.node(node_names[entity_id], label, fillcolor=color, fontcolor='#333333')
+
+        # Add edges for relationships
+        relationship_styles = {
+            'hasComponent': {'color': '#FF6B6B', 'style': 'bold', 'penwidth': '2'},
+            'hasMaterial': {'color': '#4ECDC4', 'style': 'solid', 'penwidth': '1.5'},
+            'warehouseLocation': {'color': '#C49BFF', 'style': 'dashed', 'penwidth': '1.5'},
+            'producedBy': {'color': '#FFD93D', 'style': 'solid', 'penwidth': '1.5'},
+            'supplier': {'color': '#95E1D3', 'style': 'dotted', 'penwidth': '1.5'},
+        }
+
+        for from_id, to_id, rel_name, entity_type in relationships:
+            if to_id in self.all_entities:  # Only draw edges to entities we fetched
+                style = relationship_styles.get(rel_name, {'color': '#999999', 'style': 'solid', 'penwidth': '1'})
+                # Use safe node names
+                dot.edge(node_names[from_id], node_names[to_id], label=rel_name, **style)
+
+        # Add legend
+        with dot.subgraph(name='cluster_legend') as legend:
+            legend.attr(label='Entity Types', fontsize='12', style='filled', color='lightgrey')
+            for i, (entity_type, color) in enumerate(type_colors.items()):
+                if entity_type != 'Default':
+                    legend.node(f'legend_{i}', entity_type, fillcolor=color, fontcolor='#333333')
+
+        try:
+            # Render the diagram
+            output_file = dot.render(output_path, cleanup=True)
+            print(f"✓ Diagram generated: {output_file}", file=sys.stderr)
+            return output_file
+        except Exception as e:
+            print(f"Error generating diagram: {e}", file=sys.stderr)
+            return None
+
+    def generate_interactive_diagram(self, output_path: str = "entity_diagram_interactive.html") -> Optional[str]:
+        """
+        Generate an interactive HTML diagram of the entity relationships.
+        Users can drag nodes, zoom in/out, and pan around.
+
+        Args:
+            output_path: Path for the output HTML file
+
+        Returns:
+            Path to the generated HTML file, or None if pyvis is not available
+        """
+        if not PYVIS_AVAILABLE:
+            print("\nWarning: pyvis package not available. Install with: pip install pyvis", file=sys.stderr)
+            return None
+
+        print(f"\nGenerating interactive entity relationship diagram...", file=sys.stderr)
+
+        # Create network with physics enabled for interactive movement
+        net = Network(
+            height="900px",
+            width="100%",
+            bgcolor="#ffffff",
+            font_color="#333333",
+            directed=True
+        )
+
+        # Configure hierarchical layout to match PNG structure
+        net.set_options("""
+        {
+          "layout": {
+            "hierarchical": {
+              "enabled": true,
+              "direction": "UD",
+              "sortMethod": "directed",
+              "nodeSpacing": 150,
+              "levelSeparation": 200,
+              "treeSpacing": 200,
+              "blockShifting": true,
+              "edgeMinimization": true,
+              "parentCentralization": true
+            }
+          },
+          "physics": {
+            "enabled": false,
+            "hierarchicalRepulsion": {
+              "centralGravity": 0.0,
+              "springLength": 200,
+              "springConstant": 0.01,
+              "nodeDistance": 150,
+              "damping": 0.09
+            }
+          },
+          "interaction": {
+            "hover": true,
+            "dragNodes": true,
+            "dragView": true,
+            "zoomView": true,
+            "navigationButtons": true,
+            "keyboard": {
+              "enabled": true
+            },
+            "tooltipDelay": 100
+          },
+          "nodes": {
+            "font": {
+              "size": 14,
+              "face": "Arial"
+            },
+            "borderWidth": 2,
+            "shadow": {
+              "enabled": true,
+              "color": "rgba(0,0,0,0.2)",
+              "size": 5,
+              "x": 2,
+              "y": 2
+            }
+          },
+          "edges": {
+            "font": {
+              "size": 11,
+              "align": "middle",
+              "strokeWidth": 0,
+              "background": "white"
+            },
+            "arrows": {
+              "to": {
+                "enabled": true,
+                "scaleFactor": 0.6
+              }
+            },
+            "smooth": {
+              "enabled": true,
+              "type": "cubicBezier",
+              "forceDirection": "vertical",
+              "roundness": 0.4
+            },
+            "shadow": {
+              "enabled": true,
+              "color": "rgba(0,0,0,0.1)",
+              "size": 3,
+              "x": 1,
+              "y": 1
+            }
+          }
+        }
+        """)
+
+        # Define color scheme for different entity types
+        type_colors = {
+            'ManufacturingMachine': '#FF6B6B',
+            'ManufacturingComponent': '#4ECDC4',
+            'Material': '#95E1D3',
+            'Company': '#FFD93D',
+            'Warehouse': '#C49BFF',
+            'Default': '#E8E8E8'
+        }
+
+        # Add nodes
+        for entity_id, entity in self.all_entities.items():
+            entity_type = entity.get('type', 'Unknown')
+
+            # Create a shorter label
+            short_id = entity_id.split(':')[-1] if ':' in entity_id else entity_id
+
+            # Try to get name property
+            name = None
+            for key in ['name', 'https://smartdatamodels.org/name']:
+                if key in entity:
+                    name_prop = entity[key]
+                    if isinstance(name_prop, dict) and 'value' in name_prop:
+                        name = name_prop['value']
+                        break
+
+            # Build node label and title (tooltip)
+            # Use plain text with newlines for Firefox compatibility
+            if name:
+                label = f"{name}"
+                title = f"{name}\nType: {entity_type}\nID: {short_id}"
+            else:
+                label = f"{entity_type}"
+                title = f"Type: {entity_type}\nID: {short_id}"
+
+            # Get color for entity type
+            color = type_colors.get(entity_type, type_colors['Default'])
+
+            # Determine node size based on entity type
+            size = 25
+            if entity_type == 'ManufacturingMachine':
+                size = 40  # Main entity is larger
+            elif entity_type == 'ManufacturingComponent':
+                size = 30
+
+            # Add node to network
+            net.add_node(
+                entity_id,
+                label=label,
+                title=title,
+                color=color,
+                size=size,
+                shape='dot'
+            )
+
+        # Add edges for relationships
+        relationship_colors = {
+            'hasComponent': '#FF6B6B',
+            'hasMaterial': '#4ECDC4',
+            'warehouseLocation': '#C49BFF',
+            'producedBy': '#FFD93D',
+            'supplier': '#95E1D3',
+        }
+
+        relationship_widths = {
+            'hasComponent': 3,
+            'hasMaterial': 2,
+            'warehouseLocation': 2,
+            'producedBy': 2,
+            'supplier': 1.5,
+        }
+
+        # Extract and add edges
+        for entity_id, entity in self.all_entities.items():
+            for key, value in entity.items():
+                if isinstance(value, dict) and value.get('type') == 'Relationship':
+                    rel_object = value.get('object')
+                    rel_objects = []
+
+                    if isinstance(rel_object, list):
+                        rel_objects = rel_object
+                    elif isinstance(rel_object, str):
+                        rel_objects = [rel_object]
+
+                    for target_id in rel_objects:
+                        if target_id in self.all_entities:
+                            color = relationship_colors.get(key, '#999999')
+                            width = relationship_widths.get(key, 1)
+
+                            net.add_edge(
+                                entity_id,
+                                target_id,
+                                title=key,
+                                label=key,
+                                color=color,
+                                width=width
+                            )
+
+        try:
+            # Save the network to HTML file
+            net.save_graph(output_path)
+
+            # Add custom legend to the HTML
+            self._add_legend_to_html(output_path, type_colors, relationship_colors)
+
+            print(f"✓ Interactive diagram generated: {output_path}", file=sys.stderr)
+            print(f"  Open in browser to interact: drag nodes, zoom, pan", file=sys.stderr)
+            return output_path
+        except Exception as e:
+            print(f"Error generating interactive diagram: {e}", file=sys.stderr)
+            return None
+
+    def _add_legend_to_html(self, html_path: str, type_colors: dict, relationship_colors: dict):
+        """
+        Add a legend to the generated HTML file.
+
+        Args:
+            html_path: Path to the HTML file
+            type_colors: Dictionary of entity type colors
+            relationship_colors: Dictionary of relationship colors
+        """
+        # Read the HTML file
+        with open(html_path, 'r') as f:
+            html_content = f.read()
+
+        # Create legend HTML
+        legend_html = """
+        <div id="legend" style="position: absolute; top: 10px; right: 10px; background: white;
+                                border: 2px solid #ccc; border-radius: 8px; padding: 15px;
+                                box-shadow: 0 2px 10px rgba(0,0,0,0.1); font-family: Arial;
+                                max-width: 250px; z-index: 1000;">
+            <h3 style="margin: 0 0 10px 0; font-size: 16px; border-bottom: 2px solid #333;
+                       padding-bottom: 8px;">Entity Types</h3>
+            <div style="margin-bottom: 15px;">
+"""
+
+        # Add entity types
+        for entity_type, color in type_colors.items():
+            if entity_type != 'Default':
+                legend_html += f"""
+                <div style="display: flex; align-items: center; margin: 6px 0;">
+                    <div style="width: 20px; height: 20px; background-color: {color};
+                                border-radius: 50%; border: 2px solid #333; margin-right: 10px;
+                                box-shadow: 0 1px 3px rgba(0,0,0,0.2);"></div>
+                    <span style="font-size: 13px; color: #333;">{entity_type}</span>
+                </div>
+"""
+
+        legend_html += """
+            </div>
+            <h3 style="margin: 10px 0 10px 0; font-size: 16px; border-bottom: 2px solid #333;
+                       padding-bottom: 8px;">Relationships</h3>
+            <div>
+"""
+
+        # Add relationship types
+        relationship_names = {
+            'hasComponent': 'Has Component',
+            'hasMaterial': 'Has Material',
+            'warehouseLocation': 'Warehouse Location',
+            'producedBy': 'Produced By',
+            'supplier': 'Supplier',
+        }
+
+        for rel_key, rel_name in relationship_names.items():
+            if rel_key in relationship_colors:
+                color = relationship_colors[rel_key]
+                legend_html += f"""
+                <div style="display: flex; align-items: center; margin: 6px 0;">
+                    <div style="width: 30px; height: 3px; background-color: {color};
+                                margin-right: 10px; position: relative;">
+                        <div style="position: absolute; right: -2px; top: -3px; width: 0;
+                                    height: 0; border-left: 6px solid {color};
+                                    border-top: 4px solid transparent;
+                                    border-bottom: 4px solid transparent;"></div>
+                    </div>
+                    <span style="font-size: 12px; color: #555;">{rel_name}</span>
+                </div>
+"""
+
+        legend_html += """
+            </div>
+            <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #ddd;
+                        font-size: 11px; color: #666;">
+                <strong>Tip:</strong> Drag nodes to rearrange, scroll to zoom, drag background to pan.
+            </div>
+        </div>
+"""
+
+        # Insert legend before closing body tag
+        html_content = html_content.replace('</body>', legend_html + '</body>')
+
+        # Write back to file
+        with open(html_path, 'w') as f:
+            f.write(html_content)
+
 
 def load_env_file(env_path: Path) -> Dict[str, str]:
     """
@@ -215,6 +643,15 @@ Examples:
 
   # Specify host and port
   %(prog)s urn:ngsi-ld:Building:001 --host localhost --port 1026
+
+  # Generate static PNG diagram
+  %(prog)s urn:ngsi-ld:Building:001 --diagram --diagram-output building_diagram
+
+  # Generate interactive HTML diagram (drag nodes, zoom, pan)
+  %(prog)s urn:ngsi-ld:Building:001 --interactive --interactive-output building.html
+
+  # Generate both diagram types
+  %(prog)s urn:ngsi-ld:Building:001 --diagram --interactive
         """
     )
 
@@ -229,6 +666,14 @@ Examples:
     parser.add_argument('--port', type=int, help='Orion-LD port (default: from .env)')
     parser.add_argument('--pretty', action='store_true',
                        help='Pretty print the JSON output')
+    parser.add_argument('--diagram', '-d', action='store_true',
+                       help='Generate a PNG diagram of entity relationships')
+    parser.add_argument('--diagram-output', default='entity_diagram',
+                       help='Base path for diagram output (default: entity_diagram)')
+    parser.add_argument('--interactive', '-i', action='store_true',
+                       help='Generate an interactive HTML diagram (with drag, zoom, pan)')
+    parser.add_argument('--interactive-output', default='entity_diagram_interactive.html',
+                       help='Path for interactive HTML diagram (default: entity_diagram_interactive.html)')
 
     args = parser.parse_args()
 
@@ -264,6 +709,18 @@ Examples:
         print(f"  Total entities fetched: {len(expander.all_entities)}", file=sys.stderr)
         print(f"  Output written to: {args.output}", file=sys.stderr)
         print(f"\nTo view: cat {args.output} | jq .", file=sys.stderr)
+
+        # Generate diagram if requested
+        if args.diagram:
+            diagram_path = expander.generate_diagram(args.diagram_output)
+            if diagram_path:
+                print(f"  Diagram written to: {diagram_path}", file=sys.stderr)
+
+        # Generate interactive diagram if requested
+        if args.interactive:
+            interactive_path = expander.generate_interactive_diagram(args.interactive_output)
+            if interactive_path:
+                print(f"  Interactive diagram written to: {interactive_path}", file=sys.stderr)
 
     except Exception as e:
         print(f"\n✗ Error: {e}", file=sys.stderr)
