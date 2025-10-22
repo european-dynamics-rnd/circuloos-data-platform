@@ -1,0 +1,163 @@
+[
+    {
+        "id": "urn:ngsi-ld:ManufacturingComponent:lid:001",
+        "@context": "http://circuloos-ld-context/circuloos-context.jsonld",
+        "type": "ManufacturingComponent",
+        "name": {
+            "type": "Property",
+            "value": "Lid"
+        },
+        "energyConsumption": {
+            "type": "Property",
+            "value": 0.11,
+            "unitCode": "KWH"
+        },
+        "weight": {
+            "type": "Property",
+            "value": 0.10,
+            "unitCode": "KGM"
+        },
+        "hasMaterial": {
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Material:PP50CO3Ca:001"
+        }
+    },
+    {
+        "id": "urn:ngsi-ld:ManufacturingComponent:distributor:001",
+        "@context": "http://circuloos-ld-context/circuloos-context.jsonld",
+        "type": "ManufacturingComponent",
+        "name": {
+            "type": "Property",
+            "value": "Distributor"
+        },
+        "energyConsumption": {
+            "type": "Property",
+            "value": 0.11,
+            "unitCode": "KWH"
+        },
+        "weight": {
+            "type": "Property",
+            "value": 0.25,
+            "unitCode": "KGM"
+        },
+        "hasMaterial": {
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Material:PP50CO3Ca:001"
+        }
+    },
+    {
+        "id": "urn:ngsi-ld:ManufacturingComponent:fixedTub:001",
+        "@context": "http://circuloos-ld-context/circuloos-context.jsonld",
+        "type": "ManufacturingComponent",
+        "name": {
+            "type": "Property",
+            "value": "Fixed tub"
+        },
+        "energyConsumption": {
+            "type": "Property",
+            "value": 0.24,
+            "unitCode": "KWH"
+        },
+        "weight": {
+            "type": "Property",
+            "value": 0.22,
+            "unitCode": "KGM"
+        },
+        "hasMaterial": {
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Material:PP30Talco:001"
+        }
+    },
+    {
+        "id": "urn:ngsi-ld:ManufacturingComponent:slidingTub:001",
+        "@context": "http://circuloos-ld-context/circuloos-context.jsonld",
+        "type": "ManufacturingComponent",
+        "name": {
+            "type": "Property",
+            "value": "Sliding tub"
+        },
+        "energyConsumption": {
+            "type": "Property",
+            "value": 0.24,
+            "unitCode": "KWH"
+        },
+        "weight": {
+            "type": "Property",
+            "value": 0.20,
+            "unitCode": "KGM"
+        },
+        "hasMaterial": {
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Material:PP30Talco:001"
+        }
+    },
+    {
+        "id": "urn:ngsi-ld:ManufacturingComponent:siphon:001",
+        "@context": "http://circuloos-ld-context/circuloos-context.jsonld",
+        "type": "ManufacturingComponent",
+        "name": {
+            "type": "Property",
+            "value": "Siphon"
+        },
+        "energyConsumption": {
+            "type": "Property",
+            "value": 0.03,
+            "unitCode": "KWH"
+        },
+        "weight": {
+            "type": "Property",
+            "value": 0.03,
+            "unitCode": "KGM"
+        },
+        "hasMaterial": {
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Material:PP:001"
+        }
+    },
+    {
+        "id": "urn:ngsi-ld:ManufacturingComponent:metalClamp:001",
+        "@context": "http://circuloos-ld-context/circuloos-context.jsonld",
+        "type": "ManufacturingComponent",
+        "name": {
+            "type": "Property",
+            "value": "Metal clamp"
+        },
+        "energyConsumption": {
+            "type": "Property",
+            "value": 0.00,
+            "unitCode": "KWH"
+        },
+        "weight": {
+            "type": "Property",
+            "value": 0.00187,
+            "unitCode": "KGM"
+        },
+        "hasMaterial": {
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Material:aluminum:001"
+        }
+    },
+    {
+        "id": "urn:ngsi-ld:ManufacturingComponent:pipeTub:001",
+        "@context": "http://circuloos-ld-context/circuloos-context.jsonld",
+        "type": "ManufacturingComponent",
+        "name": {
+            "type": "Property",
+            "value": "Pipe tub"
+        },
+        "energyConsumption": {
+            "type": "Property",
+            "value": 0.00,
+            "unitCode": "KWH"
+        },
+        "weight": {
+            "type": "Property",
+            "value": 0.00976,
+            "unitCode": "KGM"
+        },
+        "hasMaterial": {
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Material:aluminum:001"
+        }
+    }
+]

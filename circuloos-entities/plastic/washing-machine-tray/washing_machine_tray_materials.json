@@ -1,0 +1,76 @@
+[
+    {
+        "id": "urn:ngsi-ld:Material:PP50CO3Ca:001",
+        "@context": "http://circuloos-ld-context/circuloos-context.jsonld",
+        "type": "Material",
+        "name": {
+            "type": "Property",
+            "value": "PP + 50% CO3Ca"
+        },
+        "materialComposition": {
+            "type": "Property",
+            "value": {
+                "PP": 50,
+                "CO3Ca": 50
+            }
+        },
+        "materialSpecification": {
+            "type": "Property",
+            "value": "ISOFIL H50 C2V NATURALSIRMAX"
+        }
+    },
+    {
+        "id": "urn:ngsi-ld:Material:PP30Talco:001",
+        "@context": "http://circuloos-ld-context/circuloos-context.jsonld",
+        "type": "Material",
+        "name": {
+            "type": "Property",
+            "value": "PP + talco 30%"
+        },
+        "materialComposition": {
+            "type": "Property",
+            "value": {
+                "PP": 70,
+                "talco": 30
+            }
+        },
+        "materialSpecification": {
+            "type": "Property",
+            "value": "Hostacom HKC 182 L W92607 WHITE"
+        }
+    },
+    {
+        "id": "urn:ngsi-ld:Material:PP:001",
+        "@context": "http://circuloos-ld-context/circuloos-context.jsonld",
+        "type": "Material",
+        "name": {
+            "type": "Property",
+            "value": "PP"
+        },
+        "materialComposition": {
+            "type": "Property",
+            "value": {
+                "PP": 100
+            }
+        },
+        "materialSpecification": {
+            "type": "Property",
+            "value": "ISOFIL HK 30 TFH2 BL2092"
+        }
+    },
+    {
+        "id": "urn:ngsi-ld:Material:aluminum:001",
+        "@context": "http://circuloos-ld-context/circuloos-context.jsonld",
+        "type": "Material",
+        "name": {
+            "type": "Property",
+            "value": "aluminum"
+        },
+        "materialComposition": {
+            "type": "Property",
+            "value": {
+                "Al": 100
+            }
+        }
+    }
+]

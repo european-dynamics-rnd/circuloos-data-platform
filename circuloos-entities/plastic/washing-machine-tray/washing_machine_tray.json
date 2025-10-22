@@ -1,0 +1,42 @@
+[{
+    "id": "urn:ngsi-ld:ManufacturingMachine:washingMachineTray:001",
+    "@context": "http://circuloos-ld-context/circuloos-context.jsonld",
+    "type": "ManufacturingMachine",
+    "name": {
+        "type": "Property",
+        "value": "Washing Machine Tray Assembly"
+    },
+    "description": {
+        "type": "Property",
+        "value": "Complete washing machine tray with all components"
+    },
+    "dateCreated": {
+        "type": "Property",
+        "value": {
+            "@type": "DateTime",
+            "@value": "2025-10-22T12:00:00Z"
+        }
+    },
+    "hasComponent": {
+        "type": "Relationship",
+        "object": [
+            "urn:ngsi-ld:ManufacturingComponent:lid:001",
+            "urn:ngsi-ld:ManufacturingComponent:distributor:001",
+            "urn:ngsi-ld:ManufacturingComponent:fixedTub:001",
+            "urn:ngsi-ld:ManufacturingComponent:slidingTub:001",
+            "urn:ngsi-ld:ManufacturingComponent:siphon:001",
+            "urn:ngsi-ld:ManufacturingComponent:metalClamp:001",
+            "urn:ngsi-ld:ManufacturingComponent:pipeTub:001"
+        ]
+    },
+    "totalEnergyConsumption": {
+        "type": "Property",
+        "value": 0.73,
+        "unitCode": "KWH"
+    },
+    "totalWeight": {
+        "type": "Property",
+        "value": 0.79163,
+        "unitCode": "KGM"
+    }
+}]
