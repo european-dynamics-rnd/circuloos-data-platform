@@ -1,0 +1,206 @@
+[
+    {
+        "id": "urn:ngsi-ld:Company:thermolympic",
+        "@context": "http://circuloos-ld-context/circuloos-context.jsonld",
+        "type": "Company",
+        "name": {
+            "type": "Property",
+            "value": "Thermolympic"
+        },
+        "address": {
+            "type": "Property",
+            "value": {
+                "streetAddress": "Pol. Ind. El Segre, Calle A, Parcela 223",
+                "addressLocality": "Lleida",
+                "addressRegion": "Catalonia",
+                "addressCountry": "Spain",
+                "postalCode": "25191"
+            }
+        },
+        "location": {
+            "type": "GeoProperty",
+            "value": {
+                "type": "Point",
+                "coordinates": [
+                    0.6265,
+                    41.6176
+                ]
+            }
+        },
+        "description": {
+            "type": "Property",
+            "value": "A Spanish company specializing in plastic injection molding and industrial solutions."
+        },
+        "category": {
+            "type": "Property",
+            "value": [
+                "Manufacturing",
+                "Plastics"
+            ]
+        },
+        "contactPoint": {
+            "type": "Property",
+            "value": {
+                "telephone": "+34-973-257-000",
+                "email": "info@thermolympic.com"
+            }
+        },
+        "openingHours": {
+            "type": "Property",
+            "value": "Mo-Fr 08:00-17:00"
+        }
+    },
+    {
+        "id": "urn:ngsi-ld:Company:aluminext",
+        "@context": "http://circuloos-ld-context/circuloos-context.jsonld",
+        "type": "Company",
+        "name": {
+            "type": "Property",
+            "value": "AlumiNext S.A."
+        },
+        "address": {
+            "type": "Property",
+            "value": {
+                "streetAddress": "Calle de la Industria, 45",
+                "addressLocality": "Zaragoza",
+                "addressRegion": "Aragon",
+                "addressCountry": "Spain",
+                "postalCode": "50018"
+            }
+        },
+        "location": {
+            "type": "GeoProperty",
+            "value": {
+                "type": "Point",
+                "coordinates": [
+                    -0.8891,
+                    41.6488
+                ]
+            }
+        },
+        "description": {
+            "type": "Property",
+            "value": "Leading Spanish manufacturer of precision aluminum parts for industry."
+        },
+        "category": {
+            "type": "Property",
+            "value": [
+                "Manufacturing",
+                "Aluminum Parts"
+            ]
+        },
+        "contactPoint": {
+            "type": "Property",
+            "value": {
+                "telephone": "+34-976-123-456",
+                "email": "contact@aluminext.es"
+            }
+        },
+        "openingHours": {
+            "type": "Property",
+            "value": "Mo-Fr 07:00-15:00"
+        }
+    },
+    {
+        "id": "urn:ngsi-ld:Company:rawplasticsa",
+        "@context": "http://circuloos-ld-context/circuloos-context.jsonld",
+        "type": "Company",
+        "name": {
+            "type": "Property",
+            "value": "RawPlastic S.A."
+        },
+        "address": {
+            "type": "Property",
+            "value": {
+                "streetAddress": "Avenida de la Innovación, 12",
+                "addressLocality": "Valencia",
+                "addressRegion": "Valencian Community",
+                "addressCountry": "Spain",
+                "postalCode": "46026"
+            }
+        },
+        "location": {
+            "type": "GeoProperty",
+            "value": {
+                "type": "Point",
+                "coordinates": [
+                    -0.3763,
+                    39.4699
+                ]
+            }
+        },
+        "description": {
+            "type": "Property",
+            "value": "Supplier of raw plastic materials for manufacturing companies."
+        },
+        "category": {
+            "type": "Property",
+            "value": [
+                "Supplier",
+                "Raw Plastics"
+            ]
+        },
+        "contactPoint": {
+            "type": "Property",
+            "value": {
+                "telephone": "+34-961-234-567",
+                "email": "info@rawplasticsa.es"
+            }
+        },
+        "openingHours": {
+            "type": "Property",
+            "value": "Mo-Fr 08:00-16:00"
+        }
+    },
+    {
+        "id": "urn:ngsi-ld:Company:iberoplast",
+        "@context": "http://circuloos-ld-context/circuloos-context.jsonld",
+        "type": "Company",
+        "name": {
+            "type": "Property",
+            "value": "IberoPlast Supplies"
+        },
+        "address": {
+            "type": "Property",
+            "value": {
+                "streetAddress": "Polígono Sur, Parcela 8",
+                "addressLocality": "Seville",
+                "addressRegion": "Andalusia",
+                "addressCountry": "Spain",
+                "postalCode": "41013"
+            }
+        },
+        "location": {
+            "type": "GeoProperty",
+            "value": {
+                "type": "Point",
+                "coordinates": [
+                    -5.9845,
+                    37.3891
+                ]
+            }
+        },
+        "description": {
+            "type": "Property",
+            "value": "Spanish supplier of raw plastic parts and materials for industry."
+        },
+        "category": {
+            "type": "Property",
+            "value": [
+                "Supplier",
+                "Raw Plastics"
+            ]
+        },
+        "contactPoint": {
+            "type": "Property",
+            "value": {
+                "telephone": "+34-954-321-654",
+                "email": "ventas@iberoplast.es"
+            }
+        },
+        "openingHours": {
+            "type": "Property",
+            "value": "Mo-Fr 09:00-17:00"
+        }
+    }
+]

@@ -17,6 +17,13 @@
         "materialSpecification": {
             "type": "Property",
             "value": "ISOFIL H50 C2V NATURALSIRMAX"
+        },
+        "supplier": {
+            "type": "Relationship",
+            "object": [
+                "urn:ngsi-ld:Company:rawplasticsa",
+                "urn:ngsi-ld:Company:iberoplast"
+            ]
         }
     },
     {
@@ -56,6 +63,13 @@
         "materialSpecification": {
             "type": "Property",
             "value": "ISOFIL HK 30 TFH2 BL2092"
+        },
+        "supplier": {
+            "type": "Relationship",
+            "object": [
+                "urn:ngsi-ld:Company:rawplasticsa",
+                "urn:ngsi-ld:Company:iberoplast"
+            ]
         }
     },
     {

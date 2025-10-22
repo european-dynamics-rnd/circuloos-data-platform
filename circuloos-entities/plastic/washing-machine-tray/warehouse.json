@@ -1,0 +1,60 @@
+[
+    {
+        "id": "urn:ngsi-ld:Warehouse:001",
+        "type": "Warehouse",
+        "@context": "http://circuloos-ld-context/circuloos-context.jsonld",
+        "description": {
+            "type": "Property",
+            "value": "Warehouse for plastic parts"
+        },
+        "address": {
+            "type": "Property",
+            "value": {
+                "streetAddress": "123 Leather St.",
+                "addressLocality": "Athens",
+                "addressRegion": "Attica",
+                "addressCountry": "Greece",
+                "postalCode": "10431"
+            }
+        },
+        "location": {
+            "type": "GeoProperty",
+            "value": {
+                "type": "Point",
+                "coordinates": [
+                    23.7275,
+                    37.9838
+                ]
+            }
+        }
+    },
+    {
+        "id": "urn:ngsi-ld:Warehouse:002",
+        "type": "Warehouse",
+        "@context": "http://circuloos-ld-context/circuloos-context.jsonld",
+        "description": {
+            "type": "Property",
+            "value": "Warehouse for metal parts"
+        },
+        "address": {
+            "type": "Property",
+            "value": {
+                "streetAddress": "124 Leather St.",
+                "addressLocality": "Athens",
+                "addressRegion": "Attica",
+                "addressCountry": "Greece",
+                "postalCode": "10431"
+            }
+        },
+        "location": {
+            "type": "GeoProperty",
+            "value": {
+                "type": "Point",
+                "coordinates": [
+                    23.7475,
+                    37.9238
+                ]
+            }
+        }
+    }
+]

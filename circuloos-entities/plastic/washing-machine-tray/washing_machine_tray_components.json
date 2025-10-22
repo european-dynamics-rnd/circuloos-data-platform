@@ -22,8 +22,12 @@
             "object": "urn:ngsi-ld:Material:PP50CO3Ca:001"
         },
         "warehouseLocation": {
-            "type": "Property",
-            "value": "Warehouse A - Section 1"
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Warehouse:001"
+        },
+        "producedBy": {
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Company:thermolympic"
         },
         "stockLevel": {
             "type": "Property",
@@ -60,8 +64,12 @@
             "object": "urn:ngsi-ld:Material:PP50CO3Ca:001"
         },
         "warehouseLocation": {
-            "type": "Property",
-            "value": "Warehouse A - Section 1"
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Warehouse:001"
+        },
+        "producedBy": {
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Company:thermolympic"
         },
         "stockLevel": {
             "type": "Property",
@@ -98,8 +106,12 @@
             "object": "urn:ngsi-ld:Material:PP30Talco:001"
         },
         "warehouseLocation": {
-            "type": "Property",
-            "value": "Warehouse A - Section 1"
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Warehouse:001"
+        },
+        "producedBy": {
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Company:thermolympic"
         },
         "stockLevel": {
             "type": "Property",
@@ -136,8 +148,12 @@
             "object": "urn:ngsi-ld:Material:PP30Talco:001"
         },
         "warehouseLocation": {
-            "type": "Property",
-            "value": "Warehouse A - Section 1"
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Warehouse:001"
+        },
+        "producedBy": {
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Company:thermolympic"
         },
         "stockLevel": {
             "type": "Property",
@@ -174,8 +190,12 @@
             "object": "urn:ngsi-ld:Material:PP:001"
         },
         "warehouseLocation": {
-            "type": "Property",
-            "value": "Warehouse A - Section 1"
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Warehouse:001"
+        },
+        "producedBy": {
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Company:thermolympic"
         },
         "stockLevel": {
             "type": "Property",
@@ -212,8 +232,12 @@
             "object": "urn:ngsi-ld:Material:aluminum:001"
         },
         "warehouseLocation": {
-            "type": "Property",
-            "value": "Warehouse A - Section 1"
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Warehouse:002"
+        },
+        "producedBy": {
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Company:aluminext"
         },
         "stockLevel": {
             "type": "Property",
@@ -250,8 +274,12 @@
             "object": "urn:ngsi-ld:Material:aluminum:001"
         },
         "warehouseLocation": {
-            "type": "Property",
-            "value": "Warehouse A - Section 1"
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Warehouse:002"
+        },
+        "producedBy": {
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Company:aluminext"
         },
         "stockLevel": {
             "type": "Property",
