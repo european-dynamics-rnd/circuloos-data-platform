@@ -31,7 +31,7 @@
         },
         "stockLevel": {
             "type": "Property",
-            "value": 10.2,
+            "value": 1.2,
             "unitCode": "KGM"
         }
     },
@@ -53,6 +53,13 @@
         "materialSpecification": {
             "type": "Property",
             "value": "Hostacom HKC 182 L W92607 WHITE"
+        },
+        "supplier": {
+            "type": "Relationship",
+            "object": [
+                "urn:ngsi-ld:Company:rawplasticsa",
+                "urn:ngsi-ld:Company:iberoplast"
+            ]
         },
         "warehouseLocation": {
             "type": "Relationship",
@@ -95,7 +102,7 @@
         },
         "stockLevel": {
             "type": "Property",
-            "value": 10.2,
+            "value": 100.2,
             "unitCode": "KGM"
         }
     },

@@ -10,11 +10,11 @@
         "address": {
             "type": "Property",
             "value": {
-                "streetAddress": "123 Leather St.",
-                "addressLocality": "Athens",
-                "addressRegion": "Attica",
-                "addressCountry": "Greece",
-                "postalCode": "10431"
+                "streetAddress": "Avenida Alemania s/n",
+                "addressLocality": "Utebo",
+                "addressRegion": "Zaragoza",
+                "addressCountry": "Spain",
+                "postalCode": "50180"
             }
         },
         "location": {
@@ -22,8 +22,8 @@
             "value": {
                 "type": "Point",
                 "coordinates": [
-                    23.7275,
-                    37.9838
+                    -1.0098,
+                    41.6891
                 ]
             }
         }
@@ -36,14 +36,14 @@
             "type": "Property",
             "value": "Warehouse for metal parts"
         },
-        "address": {
+         "address": {
             "type": "Property",
             "value": {
-                "streetAddress": "124 Leather St.",
-                "addressLocality": "Athens",
-                "addressRegion": "Attica",
-                "addressCountry": "Greece",
-                "postalCode": "10431"
+                "streetAddress": "Avenida Alemania s/n",
+                "addressLocality": "Utebo",
+                "addressRegion": "Zaragoza",
+                "addressCountry": "Spain",
+                "postalCode": "50180"
             }
         },
         "location": {
@@ -51,8 +51,8 @@
             "value": {
                 "type": "Point",
                 "coordinates": [
-                    23.7475,
-                    37.9238
+                    -1.1098,
+                    41.3891
                 ]
             }
         }
