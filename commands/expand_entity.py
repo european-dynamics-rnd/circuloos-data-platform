@@ -145,6 +145,160 @@ class OrionLDExpander:
         find_relationships(entity)
         return relationships
 
+    def _get_property_value(self, entity: Dict[str, Any], *property_names: str) -> Any:
+        """
+        Get a property value from an entity, trying multiple possible keys.
+
+        Args:
+            entity: The entity to search
+            property_names: List of possible property names to try
+
+        Returns:
+            The property value or None if not found
+        """
+        for prop_name in property_names:
+            prop = entity.get(prop_name)
+            if prop and isinstance(prop, dict) and prop.get('type') == 'Property':
+                return prop
+        return None
+
+    def _calculate_material_weights(self) -> Dict[str, Any]:
+        """
+        Calculate the weight of materials for each component.
+
+        Returns:
+            Dictionary containing material weight calculations at the material level (not composition)
+        """
+        calculations = []
+        material_totals = {}
+
+        for entity_id, entity in self.all_entities.items():
+            # Only process components with hasMaterial relationship
+            if entity.get('type') != 'ManufacturingComponent':
+                continue
+
+            has_material = entity.get('hasMaterial')
+            if not has_material or has_material.get('type') != 'Relationship':
+                continue
+
+            material_id = has_material.get('object')
+            if not material_id:
+                continue
+
+            # Get component weight (try multiple property names)
+            weight_prop = self._get_property_value(
+                entity,
+                'weight',
+                'https://smartdatamodels.org/dataModel.Energy/weight',
+                'https://smartdatamodels.org/weight'
+            )
+
+            if not weight_prop:
+                continue
+
+            component_weight = weight_prop.get('value')
+            weight_unit = weight_prop.get('unitCode', 'KGM')
+
+            # Get component name (try multiple property names)
+            name_prop = self._get_property_value(
+                entity,
+                'name',
+                'https://smartdatamodels.org/name'
+            )
+            component_name = name_prop.get('value') if name_prop else entity_id
+
+            # Get material name if entity exists
+            material_name = material_id
+            if material_id in self.all_entities:
+                material_entity = self.all_entities[material_id]
+                material_name_prop = self._get_property_value(
+                    material_entity,
+                    'name',
+                    'https://smartdatamodels.org/name'
+                )
+                if material_name_prop:
+                    material_name = material_name_prop.get('value', material_id)
+
+            calculations.append({
+                "componentId": entity_id,
+                "componentName": component_name,
+                "componentWeight": {
+                    "value": component_weight,
+                    "unitCode": weight_unit
+                },
+                "materialId": material_id,
+                "materialName": material_name,
+                "materialWeight": {
+                    "value": component_weight,
+                    "unitCode": weight_unit
+                }
+            })
+
+            # Aggregate totals by material
+            if material_id not in material_totals:
+                material_totals[material_id] = {
+                    "materialName": material_name,
+                    "totalWeight": 0,
+                    "unitCode": weight_unit,
+                    "components": []
+                }
+
+            material_totals[material_id]['totalWeight'] += component_weight
+            material_totals[material_id]['components'].append({
+                "componentId": entity_id,
+                "componentName": component_name,
+                "weight": component_weight
+            })
+
+        # Round total weights
+        for material_id in material_totals:
+            material_totals[material_id]['totalWeight'] = round(
+                material_totals[material_id]['totalWeight'], 6
+            )
+
+        return {
+            "componentBreakdown": calculations,
+            "materialTotals": material_totals
+        }
+
+    def _generate_ngsi_ld_material_totals(self, root_entity_id: str, material_totals: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Generate NGSI-LD formatted entity for material totals.
+
+        Args:
+            root_entity_id: The root entity ID this calculation is for
+            material_totals: The material totals dictionary
+
+        Returns:
+            NGSI-LD formatted entity
+        """
+        return {
+            # "id": root_entity_id,
+            # "@context": "http://circuloos-ld-context/circuloos-context.jsonld",
+            # "type": self.all_entities.get(root_entity_id, {}).get('type', 'Entity'),
+            "materialTotals": {
+                "type": "Property",
+                "value": material_totals
+            }
+        }
+
+    def _generate_material_totals_attrs(self, material_totals: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Generate attributes-only format for materialTotals (for PATCH operations).
+
+        Args:
+            material_totals: The material totals dictionary
+
+        Returns:
+            Attributes object (without entity metadata) for use with appendAttributesOrion.sh
+        """
+        return {
+            "materialTotals": {
+                "type": "Property",
+                "value": material_totals
+            }
+        }
+
     def expand(self, entity_id: str) -> Dict[str, Any]:
         """
         Expand an entity by fetching it and all related entities.
@@ -172,6 +326,9 @@ class OrionLDExpander:
             if eid != entity_id
         ]
 
+        # Calculate material weights
+        material_weights = self._calculate_material_weights()
+
         result = {
             "@context": "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
             "expandedEntity": {
@@ -182,7 +339,8 @@ class OrionLDExpander:
                 "maxDepth": self.max_depth
             },
             "mainEntity": main_entity,
-            "relatedEntities": related_entities
+            "relatedEntities": related_entities,
+            "materialWeightCalculations": material_weights
         }
 
         return result
@@ -652,6 +810,12 @@ Examples:
 
   # Generate both diagram types
   %(prog)s urn:ngsi-ld:Building:001 --diagram --interactive
+
+  # Output only material weight calculations
+  %(prog)s urn:ngsi-ld:Building:001 --materials-only --output materials.json
+
+  # Generate NGSI-LD entity with materialTotals (ready to upload to Orion-LD)
+  %(prog)s urn:ngsi-ld:Building:001 --ngsi-ld-materials --output material_totals_entity.json
         """
     )
 
@@ -674,6 +838,10 @@ Examples:
                        help='Generate an interactive HTML diagram (with drag, zoom, pan)')
     parser.add_argument('--interactive-output', default='entity_diagram_interactive.html',
                        help='Path for interactive HTML diagram (default: entity_diagram_interactive.html)')
+    parser.add_argument('--materials-only', '-m', action='store_true',
+                       help='Output only material weight calculations (excludes mainEntity and relatedEntities)')
+    parser.add_argument('--ngsi-ld-materials', action='store_true',
+                       help='Generate NGSI-LD formatted entity with materialTotals property (ready for Orion-LD upload)')
 
     args = parser.parse_args()
 
@@ -697,17 +865,36 @@ Examples:
 
         result = expander.expand(args.entity_id)
 
+        # Prepare output based on flags
+        if args.ngsi_ld_materials:
+            # Generate NGSI-LD formatted entity with materialTotals
+            material_calcs = result.get('materialWeightCalculations', {})
+            material_totals = material_calcs.get('materialTotals', {})
+            output_data = expander._generate_ngsi_ld_material_totals(args.entity_id, material_totals)
+        elif args.materials_only:
+            # Output only material calculations (not NGSI-LD formatted)
+            output_data = result.get('materialWeightCalculations', {})
+        else:
+            # Full expansion output
+            output_data = result
+
         # Write output
         print(f"\nBuilding output JSON...", file=sys.stderr)
         with open(args.output, 'w') as f:
             if args.pretty:
-                json.dump(result, f, indent=2, ensure_ascii=False)
+                json.dump(output_data, f, indent=2, ensure_ascii=False)
             else:
-                json.dump(result, f, indent=2, ensure_ascii=False)
+                json.dump(output_data, f, indent=2, ensure_ascii=False)
 
         print(f"\n✓ Expansion complete!", file=sys.stderr)
         print(f"  Total entities fetched: {len(expander.all_entities)}", file=sys.stderr)
-        print(f"  Output written to: {args.output}", file=sys.stderr)
+        if args.ngsi_ld_materials:
+            print(f"  NGSI-LD material totals entity written to: {args.output}", file=sys.stderr)
+            print(f"  Ready to upload to Orion-LD!", file=sys.stderr)
+        elif args.materials_only:
+            print(f"  Material calculations written to: {args.output}", file=sys.stderr)
+        else:
+            print(f"  Output written to: {args.output}", file=sys.stderr)
         print(f"\nTo view: cat {args.output} | jq .", file=sys.stderr)
 
         # Generate diagram if requested
