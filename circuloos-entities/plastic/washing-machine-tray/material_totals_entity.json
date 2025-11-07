@@ -1,0 +1,70 @@
+{
+  "materialTotals": {
+    "type": "Property",
+    "value": {
+      "urn:ngsi-ld:Material:PP:001": {
+        "materialName": "PP",
+        "totalWeight": 0.03,
+        "unitCode": "KGM",
+        "components": [
+          {
+            "componentId": "urn:ngsi-ld:ManufacturingComponent:siphon:001",
+            "componentName": "Siphon",
+            "weight": 0.03
+          }
+        ]
+      },
+      "urn:ngsi-ld:Material:PP30Talco:001": {
+        "materialName": "PP + talco 30%",
+        "totalWeight": 0.42,
+        "unitCode": "KGM",
+        "components": [
+          {
+            "componentId": "urn:ngsi-ld:ManufacturingComponent:slidingTub:001",
+            "componentName": "Sliding tub",
+            "weight": 0.2
+          },
+          {
+            "componentId": "urn:ngsi-ld:ManufacturingComponent:fixedTub:001",
+            "componentName": "Fixed tub",
+            "weight": 0.22
+          }
+        ]
+      },
+      "urn:ngsi-ld:Material:PP50CO3Ca:001": {
+        "materialName": "PP + 50% CO3Ca",
+        "totalWeight": 0.35,
+        "unitCode": "KGM",
+        "components": [
+          {
+            "componentId": "urn:ngsi-ld:ManufacturingComponent:distributor:001",
+            "componentName": "Distributor",
+            "weight": 0.25
+          },
+          {
+            "componentId": "urn:ngsi-ld:ManufacturingComponent:lid:001",
+            "componentName": "Lid",
+            "weight": 0.1
+          }
+        ]
+      },
+      "urn:ngsi-ld:Material:aluminum:001": {
+        "materialName": "aluminum",
+        "totalWeight": 0.01163,
+        "unitCode": "KGM",
+        "components": [
+          {
+            "componentId": "urn:ngsi-ld:ManufacturingComponent:pipeTub:001",
+            "componentName": "Pipe tub",
+            "weight": 0.00976
+          },
+          {
+            "componentId": "urn:ngsi-ld:ManufacturingComponent:metalClamp:001",
+            "componentName": "Metal clamp",
+            "weight": 0.00187
+          }
+        ]
+      }
+    }
+  }
+}

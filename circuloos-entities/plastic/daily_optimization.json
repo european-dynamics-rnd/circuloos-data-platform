@@ -1,0 +1,68 @@
+[
+    {
+        "id": "urn:ngsi-ld:Thermolympic:Optimal-supplier:PP50CO3Ca",
+        "@context": "http://circuloos-ld-context/circuloos-context.jsonld",
+        "type": "optimal-supplier",
+        "materialSpecification": {
+            "type": "Relationship",
+            "value": "urn:ngsi-ld:Material:PP50CO3Ca:001"
+        },
+        "supplier": {
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Company:iberoplast"
+        },
+        "stockLevel": {
+            "type": "Property",
+            "value": 134.2,
+            "unitCode": "KGM"
+        },
+        "valid_for": {
+            "type": "Property",
+            "value": "20-10-2025"
+        }
+    },
+    {
+        "id": "urn:ngsi-ld:Thermolympic:Optimal-supplier:PP30Talco",
+        "@context": "http://circuloos-ld-context/circuloos-context.jsonld",
+        "type": "optimal-supplier",
+        "materialSpecification": {
+            "type": "Relationship",
+            "value": "urn:ngsi-ld:Material:PP30Talco:001"
+        },
+        "supplier": {
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Company:rawplasticsa"
+        },
+        "stockLevel": {
+            "type": "Property",
+            "value": 44.2,
+            "unitCode": "KGM"
+        },
+        "valid_for": {
+            "type": "Property",
+            "value": "20-10-2025"
+        }
+    },
+    {
+        "id": "urn:ngsi-ld:Thermolympic:Optimal-supplier:PP:001",
+        "@context": "http://circuloos-ld-context/circuloos-context.jsonld",
+        "type": "optimal-supplier",
+        "materialSpecification": {
+            "type": "Relationship",
+            "value": "urn:ngsi-ld:Material:PP:001"
+        },
+        "supplier": {
+            "type": "Relationship",
+            "object": "urn:ngsi-ld:Company:rawplasticsa"
+        },
+        "stockLevel": {
+            "type": "Property",
+            "value": 4334.2,
+            "unitCode": "KGM"
+        },
+        "valid_for": {
+            "type": "Property",
+            "value": "20-10-2025"
+        }
+    }
+]

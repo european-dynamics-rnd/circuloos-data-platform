@@ -1,0 +1,21 @@
+{
+    "id": "urn:ngsi-ld:plastic:order:trsgf",
+    "type": "order-request",
+    "material_request": {
+        "type": "Relationship",
+        "value": "urn:ngsi-ld:Material:PP50CO3Ca:001"
+    },
+    "material_amount": {
+        "type": "Property",
+        "value": 100.2,
+        "unitCode": "KGM"
+    },
+    "buyer": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:Company:Thermolimpic"
+    },
+    "supplier": {
+        "type": "Relationship",
+        "object": "urn:ngsi-ld:Company:rawplasticsa"
+    }
+}
