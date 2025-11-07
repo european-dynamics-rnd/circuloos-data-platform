@@ -4,12 +4,13 @@ set -e
 export $(cat ./partner_variables.txt | grep "#" -v)
 
 
-if [ $# -eq 0 ]; then
-    TENNAND_ID="circuloos_ed_wood"
-    echo "No type as input. Providing data for "$TENNAND_ID
-else
-    TENNAND_ID="$1"
+if [ $# -lt 1 ]; then
+    echo "Usage: $0 <tenant>"
+    echo "  tenant: NGSILD-Tenant value"
+    exit 1
 fi
+
+TENANT="$1"
 
 ./getTokenForOrion.sh
 token=$(cat "token.txt")
@@ -19,7 +20,7 @@ token=$(cat "token.txt")
 KONG_URL='https://'"${HOST}"'/kong/keycloak-orion'
 
 curl -s -G -X GET  ''"${KONG_URL}"'/ngsi-ld/v1/entities' \
--H 'NGSILD-Tenant: '"${TENNAND_ID}"'' \
+-H 'NGSILD-Tenant: '"${TENANT}"'' \
 -H 'NGSILD-Path: /' \
 -H 'Content-Type: application/ld+json' \
 -H 'Accept: application/json' \

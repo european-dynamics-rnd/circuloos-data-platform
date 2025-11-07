@@ -11,21 +11,21 @@ export $(cat ./partner_variables.txt | grep "#" -v)
 token=$(cat "token.txt")
 
 
-if [ $# -eq 0 ]; then
-  echo "No sensor as input "
-  exit 0
-elif [ $# -eq 1 ]; then
-    entity="$1"
-    echo $entity
+if [ $# -lt 2 ]; then
+  echo "Usage: $0 <entity_id> <tenant>"
+  echo "  entity_id: Entity ID to retrieve"
+  echo "  tenant: NGSILD-Tenant value"
+  exit 1
 fi
 
-
-
+entity="$1"
+TENANT="$2"
+echo $entity
 
 KONG_URL='https://'"${HOST}"'/kong/keycloak-orion'
 # echo $KONG_URL
 curl -s -G -X GET ''"${KONG_URL}"'/ngsi-ld/v1/entities/'"${entity}"'' \
-  -H 'NGSILD-Tenant: circuloos_demo' \
+  -H 'NGSILD-Tenant: '"${TENANT}"'' \
   -H 'NGSILD-Path: /' \
   -H 'Link: <'"${CONTEXT}"'>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"' \
   -H 'Accept: application/ld+json' \
