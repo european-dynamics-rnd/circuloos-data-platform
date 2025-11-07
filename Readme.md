@@ -143,17 +143,17 @@ cd commands
 **Data Ingestion:**
 A simple Indoor Enviromental Quality sensor measurements have been encoding used NGSI-LD JSON ([demo_1_ieq-001_15min.json](./ieq_sensor/demo_1_ieq-001_15min.json)). With the following commands you can send/POST the measurements to the Orion CB.
 
-- `./addDataOrion.sh ../ieq_sensor/demo_1_ieq-001.json`: Direct data upload
-- `./addDataOrionViaKong.sh ../ieq_sensor/demo_1_ieq-001_15min.json`: Production method via Kong
-- `./addDataOrionViaKong.sh ../ieq_sensor/demo_1_ieq-001_30min.json`: Additional test data
+- `./addDataOrion.sh circuloos_demo ../ieq_sensor/demo_1_ieq-001.json`: Direct data upload
+- `./addDataOrionViaKong.sh circuloos_demo ../ieq_sensor/demo_1_ieq-001_15min.json`: Production method via Kong
+- `./addDataOrionViaKong.sh circuloos_demo ../ieq_sensor/demo_1_ieq-001_30min.json`: Additional test data
 
 **Current Data Retrieval:**
-- `./getDataOrionSensors.sh`: Latest measurement retrieval
-- `./getDataOrionSensorsViaKong.sh`: Production method via Kong
+- `./getDataOrionSensor.sh circuloos_demo urn:ngsi-ld:circuloos:demo_1:ieq-001`: Latest measurement retrieval
+- `./getDataOrionSensorViaKong.sh circuloos_demo urn:ngsi-ld:circuloos:demo_1:ieq-001`: Production method via Kong
 
 **Historical Data Retrieval:**
-- `./getDataMintaka.sh`: Historical data from Mintaka
-- `./getDataMintakaViaKong.sh`: Production method via Kong
+- `./getDataMintaka.sh circuloos_demo urn:ngsi-ld:circuloos:demo_1:ieq-001`: Historical data from Mintaka
+- `./getDataMintakaViaKong.sh circuloos_demo urn:ngsi-ld:circuloos:demo_1:ieq-001`: Production method via Kong
 
 
 ## Data Transformation Tools
@@ -167,7 +167,7 @@ A custom agent have been created to transform a CSV to NGSI-LD entities and send
 2. Go to http://localhost:5000, click on "Browse..." to select a csv file. Next click "Upload".
 3. Click "Generate NGSI-LD entities". A JSON representation of the NGSI-LD of the csv entities will appear.
 4. Click "Post NGSI-LD entities to Orion-LD". The created NGSI-LD JSON will be send to the Orion-LD. A message with the IDs of the send to the Orion-LD will appear. 
-5. See the data send to the Orion-LD ```./getDataOrionSensors.sh leather```
+5. See the data send to the Orion-LD ```./getDataOrionSensors.sh circuloos_demo leather```
 
 ## Send data to the CIRCULOOS data platform 
 
