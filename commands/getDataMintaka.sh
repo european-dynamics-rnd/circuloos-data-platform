@@ -8,15 +8,18 @@ export $(cat ../.env | grep "#" -v)
 
 
 
-if [ $# -eq 0 ]; then
-    sensorID="urn:ngsi-ld:circuloos:demo_1:ieq-001"
-    echo "No type as input. Providing data for urn:ngsi-ld:circuloos:demo_1:ieq-001"
-else
-    sensorID="$1"
+if [ $# -lt 2 ]; then
+    echo "Usage: $0 <tenant> <sensorID>"
+    echo "  sensorID: sensorID"
+    echo "  tenant: NGSILD-Tenant value"
+    exit 1
 fi
 
+sensorID="$2"
+TENANT="$1"
+
 curl -s -G -X GET  'http://'"${HOST}"':'"${MINTAKA_PORT}"'/temporal/entities/'"${sensorID}"'' \
--H 'NGSILD-Tenant: circuloos_demo' \
+-H 'NGSILD-Tenant: '"${TENANT}"'' \
 -H 'Link: <'"${CONTEXT}"'>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"' \
 -d 'lastN=5' |jq  
 

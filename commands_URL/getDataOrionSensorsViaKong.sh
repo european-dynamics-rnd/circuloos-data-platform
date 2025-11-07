@@ -12,14 +12,14 @@ token=$(cat "token.txt")
 
 
 if [ $# -lt 2 ]; then
-  echo "Usage: $0 <type> <tenant>"
+  echo "Usage: $0  <tenant> <type>"
   echo "  type: Entity type to retrieve"
   echo "  tenant: NGSILD-Tenant value"
   exit 1
 fi
 
-type="$1"
-TENANT="$2"
+type="$2"
+TENANT="$1"
 
 KONG_URL='https://'"${HOST}"'/kong/keycloak-orion'
 # echo $KONG_URL

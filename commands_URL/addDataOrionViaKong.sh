@@ -10,14 +10,14 @@ token=$(cat "token.txt")
 # curl -X GET  'http://'"${HOST}"':'"${ORION_LD_PORT}"'/version' |jq 
 
 if [ $# -lt 2 ]; then
-    echo "Usage: $0 <json_file> <tenant>"
+    echo "Usage: $0 <tenant> <json_file>"
     echo "  json_file: Path to the JSON file to upload"
     echo "  tenant: NGSILD-Tenant value"
     exit 1
 fi
 
-sensorID="$1"
-TENANT="$2"
+jsonFile="$1"
+TENANT="$1"
 
 KONG_URL='https://'"${HOST}"'/kong/keycloak-orion'
 
@@ -27,5 +27,5 @@ curl -s -iL -X POST  ''"${KONG_URL}"'/ngsi-ld/v1/entityOperations/upsert' \
 -H 'Content-Type: application/ld+json' \
 -H 'Accept: application/json' \
 -H 'Authorization: Bearer '"${token}"' ' \
--d @$sensorID
+-d @$jsonFile
 echo -e

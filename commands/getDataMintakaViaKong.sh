@@ -17,17 +17,20 @@ fi
 
 token=$(cat "tokenMintaka.txt")
 
-if [ $# -eq 0 ]; then
-    sensorID="urn:ngsi-ld:circuloos:demo_1:ieq-001"
-    echo "No type as input. Providing data for urn:ngsi-ld:circuloos:demo_1:ieq-001"
-else
-    sensorID="$1"
+if [ $# -lt 2 ]; then
+    echo "Usage: $0 <tenant> <entity>"
+    echo "  entity: entity/sensorID"
+    echo "  tenant: NGSILD-Tenant value"
+    exit 1
 fi
+
+entity="$2"
+TENANT="$1"
 
 KONG_URL='https://'"${HOST}"':'"${KONG_PORT}"'/keycloak-mintaka'
 
-curl -s $INSECURE -G -X GET  ''"${KONG_URL}"'/temporal/entities/'"${sensorID}"'' \
--H 'NGSILD-Tenant: circuloos_demo' \
+curl -s $INSECURE -G -X GET  ''"${KONG_URL}"'/temporal/entities/'"${entity}"'' \
+-H 'NGSILD-Tenant: '"${TENANT}"'' \
 -H 'Link: <'"${CONTEXT}"'>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"' \
 -H 'Authorization: Bearer '"${token}"' ' \
 -d 'lastN=5' |jq  
