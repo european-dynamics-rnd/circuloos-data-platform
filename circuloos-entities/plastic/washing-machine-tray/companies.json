@@ -31,23 +31,12 @@
             "type": "Property",
             "value": "A Spanish company specializing in plastic injection molding and industrial solutions."
         },
-        "category": {
+        "manufacturingIndustryList": {
             "type": "Property",
             "value": [
                 "Manufacturing",
                 "Plastics"
             ]
-        },
-        "contactPoint": {
-            "type": "Property",
-            "value": {
-                "telephone": "+34-973-257-000",
-                "email": "info@thermolympic.com"
-            }
-        },
-        "openingHours": {
-            "type": "Property",
-            "value": "Mo-Fr 08:00-17:00"
         }
     },
     {
@@ -82,23 +71,12 @@
             "type": "Property",
             "value": "Leading Spanish manufacturer of precision aluminum parts for industry."
         },
-        "category": {
+        "manufacturingIndustryList": {
             "type": "Property",
             "value": [
                 "Manufacturing",
                 "Aluminum Parts"
             ]
-        },
-        "contactPoint": {
-            "type": "Property",
-            "value": {
-                "telephone": "+34-976-123-456",
-                "email": "contact@aluminext.es"
-            }
-        },
-        "openingHours": {
-            "type": "Property",
-            "value": "Mo-Fr 07:00-15:00"
         }
     },
     {
@@ -133,23 +111,12 @@
             "type": "Property",
             "value": "Supplier of raw plastic materials for manufacturing companies."
         },
-        "category": {
+        "manufacturingIndustryList": {
             "type": "Property",
             "value": [
                 "Supplier",
                 "Raw Plastics"
             ]
-        },
-        "contactPoint": {
-            "type": "Property",
-            "value": {
-                "telephone": "+34-961-234-567",
-                "email": "info@rawplasticsa.es"
-            }
-        },
-        "openingHours": {
-            "type": "Property",
-            "value": "Mo-Fr 08:00-16:00"
         }
     },
     {
@@ -184,23 +151,12 @@
             "type": "Property",
             "value": "Spanish supplier of raw plastic parts and materials for industry."
         },
-        "category": {
+        "manufacturingIndustryList": {
             "type": "Property",
             "value": [
                 "Supplier",
                 "Raw Plastics"
             ]
-        },
-        "contactPoint": {
-            "type": "Property",
-            "value": {
-                "telephone": "+34-954-321-654",
-                "email": "ventas@iberoplast.es"
-            }
-        },
-        "openingHours": {
-            "type": "Property",
-            "value": "Mo-Fr 09:00-17:00"
         }
     }
 ]
