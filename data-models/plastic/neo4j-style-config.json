@@ -1,0 +1,81 @@
+{
+  "node": {
+    "Material": {
+      "color": "#68BC00",
+      "border-color": "#4D8B00",
+      "text-color-internal": "#FFFFFF",
+      "caption": "{name}",
+      "diameter": "50px"
+    },
+    "Company": {
+      "color": "#F79767",
+      "border-color": "#C97548",
+      "text-color-internal": "#FFFFFF",
+      "caption": "{name}",
+      "diameter": "60px"
+    },
+    "Warehouse": {
+      "color": "#569480",
+      "border-color": "#447060",
+      "text-color-internal": "#FFFFFF",
+      "caption": "{name}",
+      "diameter": "55px"
+    },
+    "InjectionMoldingMachine": {
+      "color": "#C990C0",
+      "border-color": "#A070A0",
+      "text-color-internal": "#FFFFFF",
+      "caption": "{name}",
+      "diameter": "70px"
+    },
+    "ManufacturingComponent": {
+      "color": "#4C8EDA",
+      "border-color": "#3A6EA8",
+      "text-color-internal": "#FFFFFF",
+      "caption": "{name}",
+      "diameter": "60px"
+    }
+  },
+  "relationship": {
+    "STORED_IN": {
+      "color": "#A5ABB6",
+      "shaft-width": "2px",
+      "caption": true
+    },
+    "SUPPLIED_BY": {
+      "color": "#68BC00",
+      "shaft-width": "2px",
+      "caption": "{priority}"
+    },
+    "OWNED_BY": {
+      "color": "#F79767",
+      "shaft-width": "2px",
+      "caption": true
+    },
+    "LOCATED_IN": {
+      "color": "#569480",
+      "shaft-width": "2px",
+      "caption": true
+    },
+    "PROCESSES_MATERIAL": {
+      "color": "#FCC940",
+      "shaft-width": "3px",
+      "caption": true
+    },
+    "MANUFACTURES": {
+      "color": "#C990C0",
+      "shaft-width": "3px",
+      "caption": "cycles: {moldingCycles}"
+    },
+    "HAS_MATERIAL": {
+      "color": "#4C8EDA",
+      "shaft-width": "2px",
+      "caption": "{quantity} {unit}"
+    },
+    "PRODUCED_BY": {
+      "color": "#F79767",
+      "shaft-width": "2px",
+      "caption": true
+    }
+  }
+}
