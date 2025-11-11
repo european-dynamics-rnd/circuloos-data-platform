@@ -1,6 +1,6 @@
 // ========================================
 // CIRCULOOS Plastic Manufacturing - Neo4j Graph Database (SIMPLIFIED)
-// Single Component Example: Lid
+// Single Component Example: siphon
 // ========================================
 
 // Clear existing data (optional)
@@ -11,7 +11,7 @@
 // ========================================
 
 CREATE (mat1:Material {
-  id: 'urn:ngsi-ld:Material:PP50CO3Ca:001',
+  id: 'urn:ngsi-ld:Material:PP:001',
   name: 'PP + 50% CO3Ca',
   type: 'Material',
   specification: 'ISOFIL H50 C2V NATURALSIRMAX',
@@ -36,8 +36,8 @@ CREATE (comp1:Company {
 // ========================================
 
 CREATE (comp2:Company {
-  id: 'urn:ngsi-ld:Company:rawplasticsa',
-  name: 'RawPlastic S.A.',
+  id: 'urn:ngsi-ld:Company:Lollo',
+  name: 'Lollo',
   type: 'Company',
   description: 'Supplier of raw plastic materials',
   category: ['Supplier', 'Raw Plastics']
@@ -84,12 +84,12 @@ CREATE (machine1:InjectionMoldingMachine {
 });
 
 // ========================================
-// 6. CREATE COMPONENT (Lid)
+// 6. CREATE COMPONENT (siphon)
 // ========================================
 
-CREATE (comp_lid:ManufacturingComponent {
-  id: 'urn:ngsi-ld:ManufacturingComponent:lid:001',
-  name: 'Lid',
+CREATE (comp_siphon:ManufacturingComponent {
+  id: 'urn:ngsi-ld:ManufacturingComponent:Siphon:001  ',
+  name: 'siphon',
   type: 'ManufacturingComponent',
   weight: 0.10,
   weightUnit: 'KGM',
@@ -98,20 +98,35 @@ CREATE (comp_lid:ManufacturingComponent {
 });
 
 // ========================================
-// 7. CREATE RELATIONSHIPS
+// 7. CREATE SCRAP MATERIAL (for circular economy)
+// ========================================
+
+CREATE (scrap1:Material {
+  id: 'urn:ngsi-ld:Material:ScrapPP50CO3Ca:001',
+  name: 'Scrap PP + 50% CO3Ca',
+  type: 'Material',
+  materialType: 'Scrap',
+  specification: 'Recycled plastic from injection molding',
+  stockLevel: 0.15,
+  unitCode: 'KGM',
+  recyclable: true
+});
+
+// ========================================
+// 8. CREATE RELATIONSHIPS
 // ========================================
 
 // Material stored in Warehouse
-MATCH (m:Material {id: 'urn:ngsi-ld:Material:PP50CO3Ca:001'})
+MATCH (m:Material {id: 'urn:ngsi-ld:Material:PP:001'})
 MATCH (w:Warehouse {id: 'urn:ngsi-ld:Warehouse:001'})
 CREATE (m)-[:STORED_IN]->(w);
 
 // Material supplied by Company
-MATCH (m:Material {id: 'urn:ngsi-ld:Material:PP50CO3Ca:001'})
+MATCH (m:Material {id: 'urn:ngsi-ld:Material:PP:001'})
 MATCH (s:Company {id: 'urn:ngsi-ld:Company:rawplasticsa'})
 CREATE (m)-[:SUPPLIED_BY {priority: 1}]->(s);
 
-MATCH (m:Material {id: 'urn:ngsi-ld:Material:PP50CO3Ca:001'})
+MATCH (m:Material {id: 'urn:ngsi-ld:Material:PP:001'})
 MATCH (s:Company {id: 'urn:ngsi-ld:Company:iberoplast'})
 CREATE (m)-[:SUPPLIED_BY {priority: 2}]->(s);
 
@@ -127,12 +142,12 @@ CREATE (machine)-[:LOCATED_IN]->(wh);
 
 // Machine processes Material
 MATCH (machine:InjectionMoldingMachine {id: 'urn:ngsi-ld:InjectionMoldingMachine:001'})
-MATCH (m:Material {id: 'urn:ngsi-ld:Material:PP50CO3Ca:001'})
+MATCH (m:Material {id: 'urn:ngsi-ld:Material:PP:001'})
 CREATE (machine)-[:PROCESSES_MATERIAL]->(m);
 
 // Machine manufactures Component
 MATCH (machine:InjectionMoldingMachine {id: 'urn:ngsi-ld:InjectionMoldingMachine:001'})
-MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:lid:001'})
+MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Siphon:001  '})
 CREATE (machine)-[:MANUFACTURES {
   moldingCycles: 2,
   moldingCycleTime: 45,
@@ -143,19 +158,47 @@ CREATE (machine)-[:MANUFACTURES {
 }]->(c);
 
 // Component has Material
-MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:lid:001'})
-MATCH (m:Material {id: 'urn:ngsi-ld:Material:PP50CO3Ca:001'})
+MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Siphon:001  '})
+MATCH (m:Material {id: 'urn:ngsi-ld:Material:PP:001'})
 CREATE (c)-[:HAS_MATERIAL {quantity: 0.10, unit: 'KGM'}]->(m);
 
 // Component stored in Warehouse
-MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:lid:001'})
+MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Siphon:001  '})
 MATCH (w:Warehouse {id: 'urn:ngsi-ld:Warehouse:001'})
 CREATE (c)-[:STORED_IN]->(w);
 
 // Component produced by Company
-MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:lid:001'})
+MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Siphon:001  '})
 MATCH (comp:Company {id: 'urn:ngsi-ld:Company:thermolympic'})
 CREATE (c)-[:PRODUCED_BY]->(comp);
+
+// ========================================
+// CIRCULAR ECONOMY - Scrap Material Loop
+// ========================================
+
+// Machine produces Scrap Material
+MATCH (machine:InjectionMoldingMachine {id: 'urn:ngsi-ld:InjectionMoldingMachine:001'})
+MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP50CO3Ca:001'})
+CREATE (machine)-[:PRODUCES_SCRAP {
+  percentage: 5,
+  amount: 0.005,
+  unit: 'KGM',
+  description: 'Scrap from molding process'
+}]->(scrap);
+
+// Scrap Material returned to Supplier for recycling
+MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP50CO3Ca:001'})
+MATCH (supplier:Company {id: 'urn:ngsi-ld:Company:rawplasticsa'})
+CREATE (scrap)-[:RETURNED_TO {
+  forRecycling: true,
+  creditPerKg: 0.50,
+  description: 'Circular economy - scrap returned for recycling'
+}]->(supplier);
+
+// Scrap stored in Warehouse before return
+MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP50CO3Ca:001'})
+MATCH (wh:Warehouse {id: 'urn:ngsi-ld:Warehouse:001'})
+CREATE (scrap)-[:STORED_IN]->(wh);
 
 // ========================================
 // VERIFICATION QUERIES
