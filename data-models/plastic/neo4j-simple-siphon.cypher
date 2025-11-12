@@ -432,3 +432,87 @@ MATCH (virgin:Material {id: 'urn:ngsi-ld:Material:PP:001'})
 //   ((((virgin.carbonFootprint * totalWeight_kg / 1000) + supply.co2Transport + manuf.co2Emissions) -
 //     ((virgin.carbonFootprint * virginWeight_kg / 1000) + (supply.co2Transport * virginPercent) + (scrap.carbonFootprint * recycledWeight_kg / 1000)+ (supplyscrap.co2Transport * recycledPercent) + manuf.co2Emissions)) /
 //    ((virgin.carbonFootprint * totalWeight_kg / 1000) + supply.co2Transport + manuf.co2Emissions) * 100) as PercentReduction;
+
+// ========================================
+// CIRCULAR ECONOMY ANALYSIS - Supply Routes with Circular Content
+// This query analyzes which supply routes provide materials with circular/recycled content
+// ========================================
+// MATCH (material:Material)-[supply:SUPPLIED_BY]->(supplier:Company)
+// OPTIONAL MATCH (component:ManufacturingComponent)-[has:HAS_MATERIAL]->(material)
+// WITH material, supplier, supply, 
+//   CASE 
+//     WHEN material.materialType = 'Scrap' THEN 1.0
+//     ELSE 0.0
+//   END as isRecycled,
+//   component
+// RETURN 
+//   '=== SUPPLY ROUTE ANALYSIS ===' as Section1,
+//   supplier.name as SupplierName,
+//   supplier.id as SupplierID,
+//   material.name as MaterialName,
+//   material.id as MaterialID,
+//   material.materialType as MaterialType,
+//   (isRecycled * 100) as CircularContent_Percent,
+//   CASE 
+//     WHEN isRecycled = 1.0 THEN 'Recycled/Circular'
+//     ELSE 'Virgin/Linear'
+//   END as SupplyType,
+//   supply.transportDistance as TransportDistance_km,
+//   supply.co2Transport as TransportCO2_tCO2,
+//   material.carbonFootprint as MaterialCarbonFootprint_kgCO2perKg,
+//   count(DISTINCT component) as ComponentsUsing
+// ORDER BY CircularContent_Percent DESC, TransportDistance_km ASC;
+
+// ========================================
+// SUPPLIER CIRCULAR ECONOMY RANKING
+// Ranks suppliers by their circular material offerings
+// ========================================
+// MATCH (material:Material)-[supply:SUPPLIED_BY]->(supplier:Company)
+// WITH supplier,
+//   count(material) as TotalMaterials,
+//   sum(CASE WHEN material.materialType = 'Scrap' THEN 1 ELSE 0 END) as RecycledMaterials,
+//   avg(supply.transportDistance) as AvgTransportDistance,
+//   avg(supply.co2Transport) as AvgTransportCO2
+// RETURN 
+//   '=== SUPPLIER CIRCULAR RANKING ===' as Title,
+//   supplier.name as SupplierName,
+//   TotalMaterials as TotalMaterialsSupplied,
+//   RecycledMaterials as RecycledMaterialsSupplied,
+//   ((RecycledMaterials * 1.0 / TotalMaterials) * 100) as CircularContent_Percent,
+//   AvgTransportDistance as AvgTransportDistance_km,
+//   AvgTransportCO2 as AvgTransportCO2_tCO2,
+//   CASE 
+//     WHEN (RecycledMaterials * 1.0 / TotalMaterials) >= 0.5 THEN 'High Circular Economy'
+//     WHEN (RecycledMaterials * 1.0 / TotalMaterials) > 0 THEN 'Mixed Supply'
+//     ELSE 'Linear Economy Only'
+//   END as SupplierCategory
+// ORDER BY CircularContent_Percent DESC, AvgTransportDistance_km ASC;
+
+// ========================================
+// COMPLETE CIRCULAR FLOW ANALYSIS
+// Shows the full circular economy flow from supplier through manufacturing to products
+// ========================================
+// MATCH (supplier:Company)<-[:SUPPLIED_BY]-(material:Material)
+// OPTIONAL MATCH (material)<-[:PROCESSES_MATERIAL]-(machine:InjectionMoldingMachine)
+// OPTIONAL MATCH (machine)-[:MANUFACTURES]->(component:ManufacturingComponent)
+// OPTIONAL MATCH (component)-[has:HAS_MATERIAL]->(material)
+// WITH supplier, material, machine, component, has,
+//   CASE 
+//     WHEN material.materialType = 'Scrap' THEN 'Circular'
+//     ELSE 'Linear'
+//   END as EconomyType
+// RETURN 
+//   '=== CIRCULAR FLOW ANALYSIS ===' as Title,
+//   supplier.name as Supplier,
+//   material.name as Material,
+//   EconomyType as SupplyChainType,
+//   machine.name as ProcessedBy,
+//   component.name as ProducedComponent,
+//   has.quantity as MaterialQuantityInComponent_kg,
+//   has.recycled as IsRecycledInComponent,
+//   material.carbonFootprint as MaterialCO2_kgCO2perKg,
+//   CASE 
+//     WHEN material.materialType = 'Scrap' THEN material.co2Saved
+//     ELSE 0
+//   END as CO2Saved_tCO2
+// ORDER BY EconomyType DESC, supplier.name;
