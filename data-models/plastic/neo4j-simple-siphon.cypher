@@ -11,7 +11,7 @@
 // ========================================
 
 CREATE (mat1:Material {
-  id: 'urn:ngsi-ld:Material:PP:001',
+  id: 'urn:ngsi-ld:Material:PP',
   name: 'PP',
   type: 'Material',
   specification: 'ISOFIL HK 30 TFH2 BL2092',
@@ -28,7 +28,7 @@ CREATE (mat1:Material {
 // ========================================
 
 CREATE (scrap1:Material {
-  id: 'urn:ngsi-ld:Material:ScrapPP50:001',
+  id: 'urn:ngsi-ld:Material:ScrapPP',
   name: 'Scrap PP',
   type: 'Material',
   materialType: 'Scrap',
@@ -108,7 +108,7 @@ CREATE (comp6:Company {
 // ========================================
 
 CREATE (machine1:InjectionMoldingMachine {
-  id: 'urn:ngsi-ld:InjectionMoldingMachine:001',
+  id: 'urn:ngsi-ld:InjectionMoldingMachine',
   name: 'Injection Molding Machine #1',
   type: 'InjectionMoldingMachine',
   manufacturer: 'Engel',
@@ -130,7 +130,7 @@ CREATE (machine1:InjectionMoldingMachine {
 // ========================================
 
 CREATE (comp_siphon:ManufacturingComponent {
-  id: 'urn:ngsi-ld:ManufacturingComponent:Siphon:001',
+  id: 'urn:ngsi-ld:ManufacturingComponent:Siphon',
   name: 'siphon',
   type: 'ManufacturingComponent',
   weight: 0.10,
@@ -144,7 +144,7 @@ CREATE (comp_siphon:ManufacturingComponent {
 // ========================================
 
 CREATE (printer1:ThreeDPrinter {
-  id: 'urn:ngsi-ld:ThreeDPrinter:001',
+  id: 'urn:ngsi-ld:ThreeDPrinter',
   name: '3D Printer #1',
   type: 'ThreeDPrinter',
   manufacturer: 'Prusa',
@@ -166,7 +166,7 @@ CREATE (printer1:ThreeDPrinter {
 // ========================================
 
 CREATE (comp_chair:ManufacturingComponent {
-  id: 'urn:ngsi-ld:ManufacturingComponent:Chair:001',
+  id: 'urn:ngsi-ld:ManufacturingComponent:Chair',
   name: 'Chair',
   type: 'ManufacturingComponent',
   weight: 2.5,
@@ -183,7 +183,7 @@ CREATE (comp_chair:ManufacturingComponent {
 // ========================================
 
 // Material supplied by Company
-MATCH (m:Material {id: 'urn:ngsi-ld:Material:PP:001'})
+MATCH (m:Material {id: 'urn:ngsi-ld:Material:PP'})
 MATCH (s:Company {id: 'urn:ngsi-ld:Company:rawplasticsa'})
 CREATE (m)-[:SUPPLIED_BY {
   priority: 1,
@@ -194,7 +194,7 @@ CREATE (m)-[:SUPPLIED_BY {
   co2TransportDescription: 'CO2 from truck transport (0.12 kg CO2/km)'
 }]->(s);
 
-MATCH (m:Material {id: 'urn:ngsi-ld:Material:ScrapPP50:001'})
+MATCH (m:Material {id: 'urn:ngsi-ld:Material:ScrapPP'})
 MATCH (s:Company {id: 'urn:ngsi-ld:Company:rawplasticsa'})
 CREATE (m)-[:SUPPLIED_BY {
   priority: 1,
@@ -205,7 +205,7 @@ CREATE (m)-[:SUPPLIED_BY {
   co2TransportDescription: 'CO2 from truck transport (0.12 kg CO2/km)'
 }]->(s);
 
-MATCH (m:Material {id: 'urn:ngsi-ld:Material:PP:001'})
+MATCH (m:Material {id: 'urn:ngsi-ld:Material:PP'})
 MATCH (s:Company {id: 'urn:ngsi-ld:Company:iberoplast'})
 CREATE (m)-[:SUPPLIED_BY {
   priority: 2,
@@ -217,27 +217,27 @@ CREATE (m)-[:SUPPLIED_BY {
 }]->(s);
 
 // Machine owned by Company
-MATCH (machine:InjectionMoldingMachine {id: 'urn:ngsi-ld:InjectionMoldingMachine:001'})
+MATCH (machine:InjectionMoldingMachine {id: 'urn:ngsi-ld:InjectionMoldingMachine'})
 MATCH (comp:Company {id: 'urn:ngsi-ld:Company:thermolympic'})
 CREATE (machine)-[:OWNED_BY]->(comp);
 
 
 // Machine processes Material
-MATCH (machine:InjectionMoldingMachine {id: 'urn:ngsi-ld:InjectionMoldingMachine:001'})
-MATCH (m:Material {id: 'urn:ngsi-ld:Material:PP:001'})
+MATCH (machine:InjectionMoldingMachine {id: 'urn:ngsi-ld:InjectionMoldingMachine'})
+MATCH (m:Material {id: 'urn:ngsi-ld:Material:PP'})
 CREATE (machine)-[:PROCESSES_MATERIAL]->(m);
 
 // Machine also processes Scrap Material (circular economy - reuse in production)
-MATCH (machine:InjectionMoldingMachine {id: 'urn:ngsi-ld:InjectionMoldingMachine:001'})
-MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP50:001'})
+MATCH (machine:InjectionMoldingMachine {id: 'urn:ngsi-ld:InjectionMoldingMachine'})
+MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP'})
 CREATE (machine)-[:PROCESSES_MATERIAL {
   materialForm: 'recycled pellets',
   description: 'Scrap material reprocessed for injection molding'
 }]->(scrap);
 
 // Machine manufactures Component
-MATCH (machine:InjectionMoldingMachine {id: 'urn:ngsi-ld:InjectionMoldingMachine:001'})
-MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Siphon:001'})
+MATCH (machine:InjectionMoldingMachine {id: 'urn:ngsi-ld:InjectionMoldingMachine'})
+MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Siphon'})
 CREATE (machine)-[:MANUFACTURES {
   moldingCycles: 2,
   moldingCycleTime: 45,
@@ -251,13 +251,13 @@ CREATE (machine)-[:MANUFACTURES {
 }]->(c);
 
 // Component has Material
-MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Siphon:001'})
-MATCH (m:Material {id: 'urn:ngsi-ld:Material:PP:001'})
+MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Siphon'})
+MATCH (m:Material {id: 'urn:ngsi-ld:Material:PP'})
 CREATE (c)-[:HAS_MATERIAL {quantity: 0.10, unit: 'KGM'}]->(m);
 
 // Siphon can also use Scrap Material (circular economy - closed loop)
-MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Siphon:001'})
-MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP50:001'})
+MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Siphon'})
+MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP'})
 CREATE (c)-[:HAS_MATERIAL {
   quantity: 0.05, 
   unit: 'KGM', 
@@ -267,7 +267,7 @@ CREATE (c)-[:HAS_MATERIAL {
 
 
 // Component produced by Company
-MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Siphon:001'})
+MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Siphon'})
 MATCH (comp:Company {id: 'urn:ngsi-ld:Company:thermolympic'})
 CREATE (c)-[:PRODUCED_BY]->(comp);
 
@@ -276,8 +276,8 @@ CREATE (c)-[:PRODUCED_BY]->(comp);
 // ========================================
 
 // Machine produces Scrap Material
-MATCH (machine:InjectionMoldingMachine {id: 'urn:ngsi-ld:InjectionMoldingMachine:001'})
-MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP50:001'})
+MATCH (machine:InjectionMoldingMachine {id: 'urn:ngsi-ld:InjectionMoldingMachine'})
+MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP'})
 CREATE (machine)-[:PRODUCES_SCRAP {
   percentage: 5,
   amount: 0.005,
@@ -286,7 +286,7 @@ CREATE (machine)-[:PRODUCES_SCRAP {
 }]->(scrap);
 
 // Scrap Material returned to Supplier for recycling
-MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP50:001'})
+MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP'})
 MATCH (supplier:Company {id: 'urn:ngsi-ld:Company:rawplasticsa'})
 CREATE (scrap)-[:RETURNED_TO {
   forRecycling: true,
@@ -295,7 +295,7 @@ CREATE (scrap)-[:RETURNED_TO {
 }]->(supplier);
 
 // Scrap Material also sent to replastauto for recycling
-MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP50:001'})
+MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP'})
 MATCH (replastauto:Company {id: 'urn:ngsi-ld:Company:replastauto'})
 CREATE (scrap)-[:RETURNED_TO {
   forRecycling: true,
@@ -309,22 +309,22 @@ CREATE (scrap)-[:RETURNED_TO {
 // ========================================
 
 // 3D Printer owned by Circuprint
-MATCH (printer:ThreeDPrinter {id: 'urn:ngsi-ld:ThreeDPrinter:001'})
+MATCH (printer:ThreeDPrinter {id: 'urn:ngsi-ld:ThreeDPrinter'})
 MATCH (circuprint:Company {id: 'urn:ngsi-ld:Company:circuprint'})
 CREATE (printer)-[:OWNED_BY]->(circuprint);
 
 
 // 3D Printer processes Scrap Material (from replastauto)
-MATCH (printer:ThreeDPrinter {id: 'urn:ngsi-ld:ThreeDPrinter:001'})
-MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP50:001'})
+MATCH (printer:ThreeDPrinter {id: 'urn:ngsi-ld:ThreeDPrinter'})
+MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP'})
 CREATE (printer)-[:PROCESSES_MATERIAL {
   materialForm: 'filament',
   description: 'Recycled plastic converted to 3D printing filament'
 }]->(scrap);
 
 // 3D Printer prints Chair
-MATCH (printer:ThreeDPrinter {id: 'urn:ngsi-ld:ThreeDPrinter:001'})
-MATCH (chair:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Chair:001'})
+MATCH (printer:ThreeDPrinter {id: 'urn:ngsi-ld:ThreeDPrinter'})
+MATCH (chair:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Chair'})
 CREATE (printer)-[:PRINTS {
   printTime: 48,
   printTimeUnit: 'HOURS',
@@ -342,12 +342,12 @@ CREATE (printer)-[:PRINTS {
 }]->(chair);
 
 // Chair has Scrap Material (closed loop!)
-MATCH (chair:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Chair:001'})
-MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP50:001'})
+MATCH (chair:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Chair'})
+MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP'})
 CREATE (chair)-[:HAS_MATERIAL {quantity: 2.5, unit: 'KGM', recycled: true}]->(scrap);
 
 // Chair produced by Circuprint
-MATCH (chair:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Chair:001'})
+MATCH (chair:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Chair'})
 MATCH (circuprint:Company {id: 'urn:ngsi-ld:Company:circuprint'})
 CREATE (chair)-[:PRODUCED_BY]->(circuprint);
 
@@ -385,8 +385,8 @@ CREATE (chair)-[:PRODUCED_BY]->(circuprint);
 // CONFIGURABLE QUERY - Adjust Virgin vs Recycled Material Percentages
 // Change virginPercent value below (0.0 to 1.0, where 0.5 = 50%)
 // ========================================
-MATCH (virgin:Material {id: 'urn:ngsi-ld:Material:PP:001'})
-// MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP50:001'})
+// MATCH (virgin:Material {id: 'urn:ngsi-ld:Material:PP'})
+// MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP'})
 // MATCH (virgin)-[supply:SUPPLIED_BY]->(supplier:Company)
 // MATCH (scrap)-[supplyscrap:SUPPLIED_BY]->(supplier:Company)
 // MATCH (machine:InjectionMoldingMachine)-[manuf:MANUFACTURES]->(siphon:ManufacturingComponent)
