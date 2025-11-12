@@ -1,9 +1,9 @@
 #!/bin/bash
-# Simple Neo4j Data Loader for Lid Example
-# Loads just one component (Lid) with its relationships
+# Simple Neo4j Data Loader for siphon Example
+# Loads just one component (siphon) with its relationships
 
 echo "=========================================="
-echo "CIRCULOOS Neo4j Simple Lid Example Loader"
+echo "CIRCULOOS Neo4j Simple siphon Example Loader"
 echo "=========================================="
 echo ""
 
@@ -27,8 +27,8 @@ echo "✓ Database cleared"
 echo ""
 
 # Load data
-echo "Loading Lid component data into Neo4j..."
-docker exec -i neo4j-circuloos cypher-shell -u neo4j -p password < neo4j-simple-lid.cypher
+echo "Loading siphon component data into Neo4j..."
+docker exec -i neo4j-circuloos cypher-shell -u neo4j -p password < neo4j-simple-siphon.cypher
 
 echo ""
 echo "=========================================="
@@ -50,12 +50,12 @@ EOF
 
 echo ""
 echo "=========================================="
-echo "✓ Simple Lid example loaded successfully!"
+echo "✓ Simple siphon example loaded successfully!"
 echo "=========================================="
 echo ""
 echo "Summary:"
-echo "  • 7 nodes (1 Material, 3 Companies, 1 Warehouse, 1 Machine, 1 Component)"
-echo "  • 10 relationships showing complete manufacturing flow"
+echo "  • 12 nodes (2 Materials, 5 Companies, 1 Warehouse, 2 Machines, 2 Components)"
+echo "  • 22 relationships (complete circular economy with 3D printing)"
 echo ""
 echo "Open Neo4j Browser: http://localhost:7474"
 echo "Login: neo4j / password"

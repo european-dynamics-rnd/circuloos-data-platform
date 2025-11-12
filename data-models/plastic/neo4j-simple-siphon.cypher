@@ -12,9 +12,9 @@
 
 CREATE (mat1:Material {
   id: 'urn:ngsi-ld:Material:PP:001',
-  name: 'PP + 50% CO3Ca',
+  name: 'PP',
   type: 'Material',
-  specification: 'ISOFIL H50 C2V NATURALSIRMAX',
+  specification: 'ISOFIL HK 30 TFH2 BL2092',
   stockLevel: 1.2,
   unitCode: 'KGM'
 });
@@ -49,6 +49,22 @@ CREATE (comp3:Company {
   type: 'Company',
   description: 'Spanish supplier of raw plastic materials',
   category: ['Supplier', 'Raw Plastics']
+});
+
+CREATE (comp4:Company {
+  id: 'urn:ngsi-ld:Company:replastauto',
+  name: 'RePlAstauto',
+  type: 'Company',
+  description: 'Plastic injection molding and recycled plastic company',
+  category: ['Supplier','Manufacturing', 'Recycled Plastics']
+});
+
+CREATE (comp5:Company {
+  id: 'urn:ngsi-ld:Company:circuprint',
+  name: 'Circuprint',
+  type: 'Company',
+  description: '3D printing manufacturer using recycled materials',
+  category: ['Manufacturing', '3D Printing']
 });
 
 // ========================================
@@ -95,6 +111,43 @@ CREATE (comp_siphon:ManufacturingComponent {
   weightUnit: 'KGM',
   stockLevel: 10,
   lastTimeUsed: '2025-10-20T10:00:00Z'
+});
+
+// ========================================
+// 6b. CREATE 3D PRINTER
+// ========================================
+
+CREATE (printer1:ThreeDPrinter {
+  id: 'urn:ngsi-ld:ThreeDPrinter:001',
+  name: '3D Printer #1',
+  type: 'ThreeDPrinter',
+  manufacturer: 'Prusa',
+  model: 'XL Multi-Tool',
+  buildVolume: '360x360x360',
+  buildVolumeUnit: 'MM',
+  nozzleTemperature: 250,
+  temperatureUnit: 'CELSIUS',
+  printSpeed: 200,
+  printSpeedUnit: 'MM/S',
+  layerHeight: 0.2,
+  layerHeightUnit: 'MM',
+  status: 'operational',
+  operatingHours: 1250
+});
+
+// ========================================
+// 6c. CREATE COMPONENT (Chair)
+// ========================================
+
+CREATE (comp_chair:ManufacturingComponent {
+  id: 'urn:ngsi-ld:ManufacturingComponent:Chair:001',
+  name: 'Chair',
+  type: 'ManufacturingComponent',
+  weight: 2.5,
+  weightUnit: 'KGM',
+  stockLevel: 5,
+  lastTimeUsed: '2025-11-01T10:00:00Z',
+  description: '3D printed chair from recycled materials'
 });
 
 // ========================================
@@ -195,10 +248,69 @@ CREATE (scrap)-[:RETURNED_TO {
   description: 'Circular economy - scrap returned for recycling'
 }]->(supplier);
 
+// Scrap Material also sent to replastauto for recycling
+MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP50CO3Ca:001'})
+MATCH (replastauto:Company {id: 'urn:ngsi-ld:Company:replastauto'})
+CREATE (scrap)-[:RETURNED_TO {
+  forRecycling: true,
+  creditPerKg: 0.60,
+  description: 'Specialized recycling for 3D printing filament'
+}]->(replastauto);
+
 // Scrap stored in Warehouse before return
 MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP50CO3Ca:001'})
 MATCH (wh:Warehouse {id: 'urn:ngsi-ld:Warehouse:001'})
 CREATE (scrap)-[:STORED_IN]->(wh);
+
+// ========================================
+// 3D PRINTING - Chair Production
+// ========================================
+
+// 3D Printer owned by Circuprint
+MATCH (printer:ThreeDPrinter {id: 'urn:ngsi-ld:ThreeDPrinter:001'})
+MATCH (circuprint:Company {id: 'urn:ngsi-ld:Company:circuprint'})
+CREATE (printer)-[:OWNED_BY]->(circuprint);
+
+// 3D Printer located in Warehouse
+MATCH (printer:ThreeDPrinter {id: 'urn:ngsi-ld:ThreeDPrinter:001'})
+MATCH (wh:Warehouse {id: 'urn:ngsi-ld:Warehouse:001'})
+CREATE (printer)-[:LOCATED_IN]->(wh);
+
+// 3D Printer processes Scrap Material (from replastauto)
+MATCH (printer:ThreeDPrinter {id: 'urn:ngsi-ld:ThreeDPrinter:001'})
+MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP50CO3Ca:001'})
+CREATE (printer)-[:PROCESSES_MATERIAL {
+  materialForm: 'filament',
+  description: 'Recycled plastic converted to 3D printing filament'
+}]->(scrap);
+
+// 3D Printer prints Chair
+MATCH (printer:ThreeDPrinter {id: 'urn:ngsi-ld:ThreeDPrinter:001'})
+MATCH (chair:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Chair:001'})
+CREATE (printer)-[:PRINTS {
+  printTime: 48,
+  printTimeUnit: 'HOURS',
+  layerCount: 12500,
+  energyConsumption: 2.5,
+  energyUnit: 'KWH',
+  materialUsed: 2.5,
+  materialUnit: 'KGM'
+}]->(chair);
+
+// Chair has Scrap Material (closed loop!)
+MATCH (chair:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Chair:001'})
+MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP50CO3Ca:001'})
+CREATE (chair)-[:HAS_MATERIAL {quantity: 2.5, unit: 'KGM', recycled: true}]->(scrap);
+
+// Chair stored in Warehouse
+MATCH (chair:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Chair:001'})
+MATCH (wh:Warehouse {id: 'urn:ngsi-ld:Warehouse:001'})
+CREATE (chair)-[:STORED_IN]->(wh);
+
+// Chair produced by Circuprint
+MATCH (chair:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Chair:001'})
+MATCH (circuprint:Company {id: 'urn:ngsi-ld:Company:circuprint'})
+CREATE (chair)-[:PRODUCED_BY]->(circuprint);
 
 // ========================================
 // VERIFICATION QUERIES
