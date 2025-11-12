@@ -78,14 +78,23 @@ CREATE (comp3:Company {
 });
 
 CREATE (comp4:Company {
+  id: 'urn:ngsi-ld:Company:rawplasticsa',
+  name: 'RawPlasticsa Supplies',
+  type: 'Company',
+  description: 'Spanish supplier of raw and recycled plastic materials',
+  category: ['Supplier', 'Raw Plastics' , 'Recycled Plastics' ]
+});
+
+
+CREATE (comp5:Company {
   id: 'urn:ngsi-ld:Company:replastauto',
-  name: 'RePlAstauto',
+  name: 'RePlastauto',
   type: 'Company',
   description: 'Plastic injection molding and recycled plastic company',
   category: ['Supplier','Manufacturing', 'Recycled Plastics']
 });
 
-CREATE (comp5:Company {
+CREATE (comp6:Company {
   id: 'urn:ngsi-ld:Company:circuprint',
   name: 'Circuprint',
   type: 'Company',
@@ -175,6 +184,17 @@ CREATE (comp_chair:ManufacturingComponent {
 
 // Material supplied by Company
 MATCH (m:Material {id: 'urn:ngsi-ld:Material:PP:001'})
+MATCH (s:Company {id: 'urn:ngsi-ld:Company:rawplasticsa'})
+CREATE (m)-[:SUPPLIED_BY {
+  priority: 1,
+  transportDistance: 350,
+  transportDistanceUnit: 'KM',
+  co2Transport: 0.000042,
+  co2TransportUnit: 'tCO2',
+  co2TransportDescription: 'CO2 from truck transport (0.12 kg CO2/km)'
+}]->(s);
+
+MATCH (m:Material {id: 'urn:ngsi-ld:Material:ScrapPP50:001'})
 MATCH (s:Company {id: 'urn:ngsi-ld:Company:rawplasticsa'})
 CREATE (m)-[:SUPPLIED_BY {
   priority: 1,
@@ -352,7 +372,7 @@ CREATE (chair)-[:PRODUCED_BY]->(circuprint);
 // CO2 ENVIRONMENTAL IMPACT QUERIES
 // ========================================
 
-// Calculate total CO2 for Siphon manufacturing
+// Calculate total CO2 for Siphon manufacturing (100% virgin material - original)
 // MATCH (m:Material {name: 'PP'})-[supply:SUPPLIED_BY]->(supplier:Company)
 // MATCH (machine:InjectionMoldingMachine)-[manuf:MANUFACTURES]->(siphon:ManufacturingComponent {name: 'siphon'})
 // RETURN 
@@ -361,18 +381,54 @@ CREATE (chair)-[:PRODUCED_BY]->(circuprint);
 //   manuf.co2Emissions as ManufacturingCO2_tCO2,
 //   (m.totalCO2 + supply.co2Transport + manuf.co2Emissions) as TotalSiphonCO2_tCO2;
 
-// Calculate CO2 savings from circular economy (Chair from recycled material)
-// MATCH (scrap:Material {materialType: 'Scrap'})-[print:PRINTS]->(chair:ManufacturingComponent {name: 'Chair'})
+// ========================================
+// CONFIGURABLE QUERY - Adjust Virgin vs Recycled Material Percentages
+// Change virginPercent value below (0.0 to 1.0, where 0.5 = 50%)
+// ========================================
+MATCH (virgin:Material {id: 'urn:ngsi-ld:Material:PP:001'})
+// MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP50:001'})
+// MATCH (virgin)-[supply:SUPPLIED_BY]->(supplier:Company)
+// MATCH (scrap)-[supplyscrap:SUPPLIED_BY]->(supplier:Company)
+// MATCH (machine:InjectionMoldingMachine)-[manuf:MANUFACTURES]->(siphon:ManufacturingComponent)
+// WHERE supply.priority = 1 AND siphon.name = 'siphon'
+// WITH virgin, scrap, supply, supplyscrap, machine, manuf, siphon,
+//   0.30 as virginPercent  // <-- CHANGE THIS VALUE (0.0 to 1.0)
+// WITH virgin, scrap, supply, supplyscrap, machine, manuf, siphon, virginPercent,
+//   (1.0 - virginPercent) as recycledPercent,
+//   0.10 as totalWeight_kg
+// WITH virgin, scrap, supply, supplyscrap, machine, manuf, siphon, virginPercent, recycledPercent, totalWeight_kg,
+//   (totalWeight_kg * virginPercent) as virginWeight_kg,
+//   (totalWeight_kg * recycledPercent) as recycledWeight_kg
 // RETURN 
-//   scrap.co2Saved as CO2SavedByRecycling_tCO2,
-//   print.co2Saved as CO2SavedByUsingRecycled_tCO2,
-//   (scrap.co2Saved + print.co2Saved) as TotalCO2Saved_tCO2;
-
-// Compare virgin vs recycled material CO2
-// MATCH (virgin:Material {name: 'PP'})
-// MATCH (scrap:Material {materialType: 'Scrap'})
-// RETURN 
-//   virgin.carbonFootprint as VirginPlastic_kgCO2perKg,
-//   scrap.carbonFootprint as RecycledPlastic_kgCO2perKg,
-//   (virgin.carbonFootprint - scrap.carbonFootprint) as CO2Reduction_kgCO2perKg,
-//   ((virgin.carbonFootprint - scrap.carbonFootprint) / virgin.carbonFootprint * 100) as PercentReduction;
+//   '=== MATERIAL COMPOSITION ===' as Section1,
+//   (virginPercent * 100) as VirginPercent,
+//   (recycledPercent * 100) as RecycledPercent,
+//   totalWeight_kg as TotalSiphonWeight_kg,
+//   virginWeight_kg as VirginMaterial_kg,
+//   recycledWeight_kg as RecycledMaterial_kg,
+//   '=== VIRGIN MATERIAL CO2 ===' as Section2,
+//   virgin.carbonFootprint as VirginCarbonFootprint_kgCO2perKg,
+//   (virgin.carbonFootprint * virginWeight_kg / 1000) as VirginMaterialCO2_tCO2,
+//   (supply.co2Transport * virginPercent) as VirginTransportCO2_tCO2,
+//   ((virgin.carbonFootprint * virginWeight_kg / 1000) + (supply.co2Transport * virginPercent)) as VirginTotalCO2_tCO2,
+//   '=== RECYCLED MATERIAL CO2 ===' as Section3,
+//   scrap.carbonFootprint as RecycledCarbonFootprint_kgCO2perKg,
+//   (scrap.carbonFootprint * recycledWeight_kg / 1000) as RecycledMaterialCO2_tCO2,
+//   '=== MANUFACTURING CO2 ===' as Section4,
+//   manuf.co2Emissions as ManufacturingCO2_tCO2,
+//   '=== TRANSPORTATION CO2 ===' as Section4b,
+//   (supply.co2Transport * virginPercent) as virginTransportationCO2_tCO2,
+//   (supplyscrap.co2Transport * recycledPercent) as scrapTransportationCO2_tCO2,
+//   '=== TOTAL CO2 ===' as Section5,
+//   ((virgin.carbonFootprint * virginWeight_kg / 1000) + 
+//    (supply.co2Transport * virginPercent) + 
+//    (scrap.carbonFootprint * recycledWeight_kg / 1000) + 
+//    (supplyscrap.co2Transport * recycledPercent) + 
+//    manuf.co2Emissions) as TotalCO2_tCO2,
+//   '=== COMPARISON ===' as Section6,
+//   ((virgin.carbonFootprint * totalWeight_kg / 1000) + supply.co2Transport + manuf.co2Emissions) as CO2_100PercentVirgin_tCO2,
+//   (((virgin.carbonFootprint * totalWeight_kg / 1000) + supply.co2Transport + manuf.co2Emissions) -
+//    ((virgin.carbonFootprint * virginWeight_kg / 1000) + (supply.co2Transport * virginPercent) + (scrap.carbonFootprint * recycledWeight_kg / 1000) + (supplyscrap.co2Transport * recycledPercent) + manuf.co2Emissions)) as CO2_Saved_tCO2,
+//   ((((virgin.carbonFootprint * totalWeight_kg / 1000) + supply.co2Transport + manuf.co2Emissions) -
+//     ((virgin.carbonFootprint * virginWeight_kg / 1000) + (supply.co2Transport * virginPercent) + (scrap.carbonFootprint * recycledWeight_kg / 1000)+ (supplyscrap.co2Transport * recycledPercent) + manuf.co2Emissions)) /
+//    ((virgin.carbonFootprint * totalWeight_kg / 1000) + supply.co2Transport + manuf.co2Emissions) * 100) as PercentReduction;
