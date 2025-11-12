@@ -225,9 +225,17 @@ MATCH (machine:InjectionMoldingMachine {id: 'urn:ngsi-ld:InjectionMoldingMachine
 MATCH (m:Material {id: 'urn:ngsi-ld:Material:PP:001'})
 CREATE (machine)-[:PROCESSES_MATERIAL]->(m);
 
+// Machine also processes Scrap Material (circular economy - reuse in production)
+MATCH (machine:InjectionMoldingMachine {id: 'urn:ngsi-ld:InjectionMoldingMachine:001'})
+MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP50:001'})
+CREATE (machine)-[:PROCESSES_MATERIAL {
+  materialForm: 'recycled pellets',
+  description: 'Scrap material reprocessed for injection molding'
+}]->(scrap);
+
 // Machine manufactures Component
 MATCH (machine:InjectionMoldingMachine {id: 'urn:ngsi-ld:InjectionMoldingMachine:001'})
-MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Siphon:001  '})
+MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Siphon:001'})
 CREATE (machine)-[:MANUFACTURES {
   moldingCycles: 2,
   moldingCycleTime: 45,
@@ -241,17 +249,27 @@ CREATE (machine)-[:MANUFACTURES {
 }]->(c);
 
 // Component has Material
-MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Siphon:001  '})
+MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Siphon:001'})
 MATCH (m:Material {id: 'urn:ngsi-ld:Material:PP:001'})
 CREATE (c)-[:HAS_MATERIAL {quantity: 0.10, unit: 'KGM'}]->(m);
 
+// Siphon can also use Scrap Material (circular economy - closed loop)
+MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Siphon:001'})
+MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP50:001'})
+CREATE (c)-[:HAS_MATERIAL {
+  quantity: 0.05, 
+  unit: 'KGM', 
+  recycled: true,
+  description: 'Portion of siphon made from recycled scrap material'
+}]->(scrap);
+
 // Component stored in Warehouse
-MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Siphon:001  '})
+MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Siphon:001'})
 MATCH (w:Warehouse {id: 'urn:ngsi-ld:Warehouse:001'})
 CREATE (c)-[:STORED_IN]->(w);
 
 // Component produced by Company
-MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Siphon:001  '})
+MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Siphon:001'})
 MATCH (comp:Company {id: 'urn:ngsi-ld:Company:thermolympic'})
 CREATE (c)-[:PRODUCED_BY]->(comp);
 
