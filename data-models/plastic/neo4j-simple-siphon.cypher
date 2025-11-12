@@ -93,15 +93,6 @@ CREATE (comp5:Company {
   category: ['Manufacturing', '3D Printing']
 });
 
-// ========================================
-// 4. CREATE WAREHOUSE
-// ========================================
-
-CREATE (wh1:Warehouse {
-  id: 'urn:ngsi-ld:Warehouse:001',
-  name: 'Warehouse 001',
-  type: 'Warehouse'
-});
 
 // ========================================
 // 5. CREATE INJECTION MOLDING MACHINE
@@ -182,11 +173,6 @@ CREATE (comp_chair:ManufacturingComponent {
 // 8. CREATE RELATIONSHIPS
 // ========================================
 
-// Material stored in Warehouse
-MATCH (m:Material {id: 'urn:ngsi-ld:Material:PP:001'})
-MATCH (w:Warehouse {id: 'urn:ngsi-ld:Warehouse:001'})
-CREATE (m)-[:STORED_IN]->(w);
-
 // Material supplied by Company
 MATCH (m:Material {id: 'urn:ngsi-ld:Material:PP:001'})
 MATCH (s:Company {id: 'urn:ngsi-ld:Company:rawplasticsa'})
@@ -215,10 +201,6 @@ MATCH (machine:InjectionMoldingMachine {id: 'urn:ngsi-ld:InjectionMoldingMachine
 MATCH (comp:Company {id: 'urn:ngsi-ld:Company:thermolympic'})
 CREATE (machine)-[:OWNED_BY]->(comp);
 
-// Machine located in Warehouse
-MATCH (machine:InjectionMoldingMachine {id: 'urn:ngsi-ld:InjectionMoldingMachine:001'})
-MATCH (wh:Warehouse {id: 'urn:ngsi-ld:Warehouse:001'})
-CREATE (machine)-[:LOCATED_IN]->(wh);
 
 // Machine processes Material
 MATCH (machine:InjectionMoldingMachine {id: 'urn:ngsi-ld:InjectionMoldingMachine:001'})
@@ -263,10 +245,6 @@ CREATE (c)-[:HAS_MATERIAL {
   description: 'Portion of siphon made from recycled scrap material'
 }]->(scrap);
 
-// Component stored in Warehouse
-MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Siphon:001'})
-MATCH (w:Warehouse {id: 'urn:ngsi-ld:Warehouse:001'})
-CREATE (c)-[:STORED_IN]->(w);
 
 // Component produced by Company
 MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Siphon:001'})
@@ -305,10 +283,6 @@ CREATE (scrap)-[:RETURNED_TO {
   description: 'Specialized recycling for 3D printing filament'
 }]->(replastauto);
 
-// Scrap stored in Warehouse before return
-MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP50:001'})
-MATCH (wh:Warehouse {id: 'urn:ngsi-ld:Warehouse:001'})
-CREATE (scrap)-[:STORED_IN]->(wh);
 
 // ========================================
 // 3D PRINTING - Chair Production
@@ -319,10 +293,6 @@ MATCH (printer:ThreeDPrinter {id: 'urn:ngsi-ld:ThreeDPrinter:001'})
 MATCH (circuprint:Company {id: 'urn:ngsi-ld:Company:circuprint'})
 CREATE (printer)-[:OWNED_BY]->(circuprint);
 
-// 3D Printer located in Warehouse
-MATCH (printer:ThreeDPrinter {id: 'urn:ngsi-ld:ThreeDPrinter:001'})
-MATCH (wh:Warehouse {id: 'urn:ngsi-ld:Warehouse:001'})
-CREATE (printer)-[:LOCATED_IN]->(wh);
 
 // 3D Printer processes Scrap Material (from replastauto)
 MATCH (printer:ThreeDPrinter {id: 'urn:ngsi-ld:ThreeDPrinter:001'})
@@ -355,11 +325,6 @@ CREATE (printer)-[:PRINTS {
 MATCH (chair:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Chair:001'})
 MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP50:001'})
 CREATE (chair)-[:HAS_MATERIAL {quantity: 2.5, unit: 'KGM', recycled: true}]->(scrap);
-
-// Chair stored in Warehouse
-MATCH (chair:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Chair:001'})
-MATCH (wh:Warehouse {id: 'urn:ngsi-ld:Warehouse:001'})
-CREATE (chair)-[:STORED_IN]->(wh);
 
 // Chair produced by Circuprint
 MATCH (chair:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Chair:001'})
