@@ -1,0 +1,1168 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "$id": "https://raw.githubusercontent.com/european-dynamics-rnd/CIRCULOOS_Data_model/main/material/plastic/unified-schema.json",
+  "title": "CIRCULOOS Plastic Manufacturing Data Model",
+  "description": "Unified NGSI-LD data model for plastic manufacturing entities in the CIRCULOOS platform. This data model encompasses the complete lifecycle of plastic manufacturing including materials, components, products, suppliers, warehouses, and optimization workflows for circular economy applications.",
+  "modelTags": "CIRCULOOS, Plastic, Manufacturing, Circular Economy, Digital Twin",
+  "version": "1.0.0",
+  "derivedFrom": "https://smart-data-models.github.io/dataModel.Device/",
+  "license": "https://opensource.org/licenses/MIT",
+  "type": "object",
+  "allOf": [
+    {
+      "$ref": "https://smart-data-models.github.io/data-models/common-schema.json#/definitions/GSMA-Commons"
+    },
+    {
+      "$ref": "https://smart-data-models.github.io/data-models/common-schema.json#/definitions/Location-Commons"
+    }
+  ],
+  "definitions": {
+    "Material": {
+      "type": "object",
+      "description": "Represents raw materials used in plastic manufacturing, including composition, specifications, supplier relationships, and inventory levels.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uri",
+          "description": "Unique identifier for the material entity (e.g., urn:ngsi-ld:Material:PP50CO3Ca:001)"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["Material"],
+          "description": "NGSI-LD Entity Type. Must be 'Material'"
+        },
+        "@context": {
+          "type": "string",
+          "format": "uri",
+          "description": "NGSI-LD context reference pointing to the CIRCULOOS context definition"
+        },
+        "name": {
+          "type": "object",
+          "description": "Human-readable name of the material (e.g., 'PP + 50% CO3Ca', 'PP + talco 30%', 'PP', 'aluminum')",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Property"]
+            },
+            "value": {
+              "type": "string"
+            }
+          }
+        },
+        "materialComposition": {
+          "type": "object",
+          "description": "Percentage composition of the material's components. Object with component names as keys and percentage values (0-100)",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Property"]
+            },
+            "value": {
+              "type": "object",
+              "description": "Key-value pairs where keys are material components (e.g., PP, CO3Ca, talco, Al) and values are percentages",
+              "additionalProperties": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100
+              }
+            }
+          }
+        },
+        "materialSpecification": {
+          "type": "object",
+          "description": "Technical specification or product code from the supplier (e.g., 'ISOFIL H50 C2V NATURALSIRMAX', 'Hostacom HKC 182 L W92607 WHITE')",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Property"]
+            },
+            "value": {
+              "type": "string"
+            }
+          }
+        },
+        "supplier": {
+          "type": "object",
+          "description": "Relationship to one or more Company entities that supply this material",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Relationship"]
+            },
+            "object": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "uri",
+                  "description": "Single supplier reference (e.g., urn:ngsi-ld:Company:rawplasticsa)"
+                },
+                {
+                  "type": "array",
+                  "description": "Multiple supplier references",
+                  "items": {
+                    "type": "string",
+                    "format": "uri"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "warehouseLocation": {
+          "type": "object",
+          "description": "Relationship to the Warehouse entity where this material is stored",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Relationship"]
+            },
+            "object": {
+              "type": "string",
+              "format": "uri",
+              "description": "Warehouse reference (e.g., urn:ngsi-ld:Warehouse:001)"
+            }
+          }
+        },
+        "stockLevel": {
+          "type": "object",
+          "description": "Current inventory quantity of the material in the warehouse",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Property"]
+            },
+            "value": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Stock quantity value"
+            },
+            "unitCode": {
+              "type": "string",
+              "enum": ["KGM"],
+              "description": "Unit code (KGM = kilograms) following UN/CEFACT standards"
+            }
+          }
+        }
+      },
+      "required": ["id", "type", "@context", "name"]
+    },
+    "ManufacturingComponent": {
+      "type": "object",
+      "description": "Represents a manufactured component or sub-assembly used in the production of final products. Tracks energy consumption, weight, material composition, production details, and inventory.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uri",
+          "description": "Unique identifier for the component (e.g., urn:ngsi-ld:ManufacturingComponent:lid:001)"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["ManufacturingComponent"],
+          "description": "NGSI-LD Entity Type. Must be 'ManufacturingComponent'"
+        },
+        "@context": {
+          "type": "string",
+          "format": "uri",
+          "description": "NGSI-LD context reference"
+        },
+        "name": {
+          "type": "object",
+          "description": "Human-readable name of the component (e.g., 'Lid', 'Distributor', 'Fixed tub', 'Siphon', 'Metal clamp')",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Property"]
+            },
+            "value": {
+              "type": "string"
+            }
+          }
+        },
+        "energyConsumption": {
+          "type": "object",
+          "description": "Energy required to manufacture one unit of this component",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Property"]
+            },
+            "value": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Energy consumption value"
+            },
+            "unitCode": {
+              "type": "string",
+              "enum": ["WH"],
+              "description": "Unit code (WH = watt-hours)"
+            }
+          }
+        },
+        "weight": {
+          "type": "object",
+          "description": "Weight of one component unit",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Property"]
+            },
+            "value": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Weight value"
+            },
+            "unitCode": {
+              "type": "string",
+              "enum": ["KGM"],
+              "description": "Unit code (KGM = kilograms)"
+            }
+          }
+        },
+        "hasMaterial": {
+          "type": "object",
+          "description": "Relationship to the Material entity that this component is made from",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Relationship"]
+            },
+            "object": {
+              "type": "string",
+              "format": "uri",
+              "description": "Material reference (e.g., urn:ngsi-ld:Material:PP50CO3Ca:001)"
+            }
+          }
+        },
+        "warehouseLocation": {
+          "type": "object",
+          "description": "Relationship to the Warehouse entity where this component is stored",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Relationship"]
+            },
+            "object": {
+              "type": "string",
+              "format": "uri",
+              "description": "Warehouse reference (e.g., urn:ngsi-ld:Warehouse:001)"
+            }
+          }
+        },
+        "producedBy": {
+          "type": "object",
+          "description": "Relationship to the Company entity that manufactures this component",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Relationship"]
+            },
+            "object": {
+              "type": "string",
+              "format": "uri",
+              "description": "Company reference (e.g., urn:ngsi-ld:Company:thermolympic)"
+            }
+          }
+        },
+        "stockLevel": {
+          "type": "object",
+          "description": "Current inventory quantity of this component in the warehouse",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Property"]
+            },
+            "value": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of component units in stock"
+            }
+          }
+        },
+        "lastTimeUsed": {
+          "type": "object",
+          "description": "Timestamp indicating when this component was last used in production",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Property"]
+            },
+            "value": {
+              "type": "object",
+              "properties": {
+                "@type": {
+                  "type": "string",
+                  "enum": ["DateTime"]
+                },
+                "@value": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "ISO 8601 datetime format (e.g., 2025-10-20T10:00:00Z)"
+                }
+              }
+            }
+          }
+        }
+      },
+      "required": ["id", "type", "@context", "name"]
+    },
+    "ManufacturingMachine": {
+      "type": "object",
+      "description": "Represents a final manufactured product composed of multiple components. Tracks total energy consumption, weight, and relationships to all constituent components.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uri",
+          "description": "Unique identifier for the product (e.g., urn:ngsi-ld:ManufacturingMachine:washingMachineTray:001)"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["ManufacturingMachine"],
+          "description": "NGSI-LD Entity Type. Must be 'ManufacturingMachine'"
+        },
+        "@context": {
+          "type": "string",
+          "format": "uri",
+          "description": "NGSI-LD context reference"
+        },
+        "name": {
+          "type": "object",
+          "description": "Human-readable name of the product (e.g., 'Washing Machine Tray Assembly')",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Property"]
+            },
+            "value": {
+              "type": "string"
+            }
+          }
+        },
+        "description": {
+          "type": "object",
+          "description": "Detailed description of the product and its purpose",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Property"]
+            },
+            "value": {
+              "type": "string"
+            }
+          }
+        },
+        "dateCreated": {
+          "type": "object",
+          "description": "Timestamp when this product entity was created in the system",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Property"]
+            },
+            "value": {
+              "type": "object",
+              "properties": {
+                "@type": {
+                  "type": "string",
+                  "enum": ["DateTime"]
+                },
+                "@value": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          }
+        },
+        "hasComponent": {
+          "type": "object",
+          "description": "Relationship to all ManufacturingComponent entities that make up this product",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Relationship"]
+            },
+            "object": {
+              "type": "array",
+              "description": "Array of component references",
+              "items": {
+                "type": "string",
+                "format": "uri",
+                "description": "Component reference (e.g., urn:ngsi-ld:ManufacturingComponent:lid:001)"
+              }
+            }
+          }
+        },
+        "totalEnergyConsumption": {
+          "type": "object",
+          "description": "Sum of energy consumption for manufacturing all components of this product",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Property"]
+            },
+            "value": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Total energy value"
+            },
+            "unitCode": {
+              "type": "string",
+              "enum": ["KWH"],
+              "description": "Unit code (KWH = kilowatt-hours)"
+            }
+          }
+        },
+        "totalWeight": {
+          "type": "object",
+          "description": "Sum of weights of all components in this product",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Property"]
+            },
+            "value": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Total weight value"
+            },
+            "unitCode": {
+              "type": "string",
+              "enum": ["KGM"],
+              "description": "Unit code (KGM = kilograms)"
+            }
+          }
+        }
+      },
+      "required": ["id", "type", "@context", "name", "hasComponent"]
+    },
+    "Company": {
+      "type": "object",
+      "description": "Represents a company entity including manufacturers, suppliers, and other business partners. Contains contact details, location, business category, and operating hours.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uri",
+          "description": "Unique identifier for the company (e.g., urn:ngsi-ld:Company:thermolympic)"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["Company"],
+          "description": "NGSI-LD Entity Type. Must be 'Company'"
+        },
+        "@context": {
+          "type": "string",
+          "format": "uri",
+          "description": "NGSI-LD context reference"
+        },
+        "name": {
+          "type": "object",
+          "description": "Official company name",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Property"]
+            },
+            "value": {
+              "type": "string"
+            }
+          }
+        },
+        "address": {
+          "type": "object",
+          "description": "Postal address of the company",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Property"]
+            },
+            "value": {
+              "type": "object",
+              "properties": {
+                "streetAddress": {
+                  "type": "string",
+                  "description": "Street address"
+                },
+                "addressLocality": {
+                  "type": "string",
+                  "description": "City or locality"
+                },
+                "addressRegion": {
+                  "type": "string",
+                  "description": "Region or state"
+                },
+                "addressCountry": {
+                  "type": "string",
+                  "description": "Country name"
+                },
+                "postalCode": {
+                  "type": "string",
+                  "description": "Postal code"
+                }
+              }
+            }
+          }
+        },
+        "location": {
+          "type": "object",
+          "description": "Geographic coordinates of the company location (GeoJSON Point)",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["GeoProperty"]
+            },
+            "value": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["Point"]
+                },
+                "coordinates": {
+                  "type": "array",
+                  "description": "Longitude and latitude [longitude, latitude]",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                }
+              }
+            }
+          }
+        },
+        "description": {
+          "type": "object",
+          "description": "Description of the company's business activities and specialization",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Property"]
+            },
+            "value": {
+              "type": "string"
+            }
+          }
+        },
+        "category": {
+          "type": "object",
+          "description": "Business categories or industry sectors the company operates in",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Property"]
+            },
+            "value": {
+              "type": "array",
+              "description": "List of categories (e.g., ['Manufacturing', 'Plastics'], ['Supplier', 'Raw Plastics'])",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "contactPoint": {
+          "type": "object",
+          "description": "Contact information for the company",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Property"]
+            },
+            "value": {
+              "type": "object",
+              "properties": {
+                "telephone": {
+                  "type": "string",
+                  "description": "Phone number in international format"
+                },
+                "email": {
+                  "type": "string",
+                  "format": "email",
+                  "description": "Contact email address"
+                }
+              }
+            }
+          }
+        },
+        "openingHours": {
+          "type": "object",
+          "description": "Business operating hours",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Property"]
+            },
+            "value": {
+              "type": "string",
+              "description": "Opening hours in format like 'Mo-Fr 08:00-17:00'"
+            }
+          }
+        }
+      },
+      "required": ["id", "type", "@context", "name"]
+    },
+    "Warehouse": {
+      "type": "object",
+      "description": "Represents a storage facility for materials and components. Contains location information and description of stored items.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uri",
+          "description": "Unique identifier for the warehouse (e.g., urn:ngsi-ld:Warehouse:001)"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["Warehouse"],
+          "description": "NGSI-LD Entity Type. Must be 'Warehouse'"
+        },
+        "@context": {
+          "type": "string",
+          "format": "uri",
+          "description": "NGSI-LD context reference"
+        },
+        "description": {
+          "type": "object",
+          "description": "Description of the warehouse and what it stores (e.g., 'Warehouse for plastic parts', 'Warehouse for metal parts')",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Property"]
+            },
+            "value": {
+              "type": "string"
+            }
+          }
+        },
+        "address": {
+          "type": "object",
+          "description": "Postal address of the warehouse",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Property"]
+            },
+            "value": {
+              "type": "object",
+              "properties": {
+                "streetAddress": {
+                  "type": "string"
+                },
+                "addressLocality": {
+                  "type": "string"
+                },
+                "addressRegion": {
+                  "type": "string"
+                },
+                "addressCountry": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "location": {
+          "type": "object",
+          "description": "Geographic coordinates of the warehouse (GeoJSON Point)",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["GeoProperty"]
+            },
+            "value": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["Point"]
+                },
+                "coordinates": {
+                  "type": "array",
+                  "description": "[longitude, latitude]",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                }
+              }
+            }
+          }
+        }
+      },
+      "required": ["id", "type", "@context", "description"]
+    },
+    "OptimalSupplier": {
+      "type": "object",
+      "description": "Represents the result of a supply chain optimization process. Links a specific material specification with the optimal supplier based on stock levels and validity period. Used for daily optimization workflows.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uri",
+          "description": "Unique identifier for the optimal supplier recommendation (e.g., urn:ngsi-ld:Thermolympic:Optimal-supplier:PP50CO3Ca)"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["optimal-supplier"],
+          "description": "NGSI-LD Entity Type. Must be 'optimal-supplier'"
+        },
+        "@context": {
+          "type": "string",
+          "format": "uri",
+          "description": "NGSI-LD context reference"
+        },
+        "materialSpecification": {
+          "type": "object",
+          "description": "Relationship to the Material entity being sourced",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Relationship"]
+            },
+            "value": {
+              "type": "string",
+              "format": "uri",
+              "description": "Material reference (e.g., urn:ngsi-ld:Material:PP50CO3Ca:001)"
+            }
+          }
+        },
+        "supplier": {
+          "type": "object",
+          "description": "Relationship to the recommended Company supplier",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Relationship"]
+            },
+            "object": {
+              "type": "string",
+              "format": "uri",
+              "description": "Company reference (e.g., urn:ngsi-ld:Company:iberoplast)"
+            }
+          }
+        },
+        "stockLevel": {
+          "type": "object",
+          "description": "Available stock quantity at the recommended supplier",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Property"]
+            },
+            "value": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Stock quantity"
+            },
+            "unitCode": {
+              "type": "string",
+              "enum": ["KGM"],
+              "description": "Unit code (KGM = kilograms)"
+            }
+          }
+        },
+        "valid_for": {
+          "type": "object",
+          "description": "Date until which this optimization recommendation is valid",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Property"]
+            },
+            "value": {
+              "type": "string",
+              "description": "Date in format DD-MM-YYYY (e.g., '20-10-2025')"
+            }
+          }
+        }
+      },
+      "required": ["id", "type", "@context", "materialSpecification", "supplier"]
+    },
+    "OrderRequest": {
+      "type": "object",
+      "description": "Represents a material procurement order between a buyer and supplier. Used to track material requisitions and procurement workflows.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uri",
+          "description": "Unique identifier for the order (e.g., urn:ngsi-ld:plastic:order:trsgf)"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["order-request"],
+          "description": "NGSI-LD Entity Type. Must be 'order-request'"
+        },
+        "@context": {
+          "type": "string",
+          "format": "uri",
+          "description": "NGSI-LD context reference"
+        },
+        "material_request": {
+          "type": "object",
+          "description": "Relationship to the Material entity being ordered",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Relationship"]
+            },
+            "value": {
+              "type": "string",
+              "format": "uri",
+              "description": "Material reference (e.g., urn:ngsi-ld:Material:PP50CO3Ca:001)"
+            }
+          }
+        },
+        "material_amount": {
+          "type": "object",
+          "description": "Quantity of material being ordered",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Property"]
+            },
+            "value": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Order quantity"
+            },
+            "unitCode": {
+              "type": "string",
+              "enum": ["KGM"],
+              "description": "Unit code (KGM = kilograms)"
+            }
+          }
+        },
+        "buyer": {
+          "type": "object",
+          "description": "Relationship to the Company entity placing the order",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Relationship"]
+            },
+            "object": {
+              "type": "string",
+              "format": "uri",
+              "description": "Buyer company reference (e.g., urn:ngsi-ld:Company:Thermolimpic)"
+            }
+          }
+        },
+        "supplier": {
+          "type": "object",
+          "description": "Relationship to the Company entity fulfilling the order",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["Relationship"]
+            },
+            "object": {
+              "type": "string",
+              "format": "uri",
+              "description": "Supplier company reference (e.g., urn:ngsi-ld:Company:rawplasticsa)"
+            }
+          }
+        }
+      },
+      "required": ["id", "type", "material_request", "material_amount", "buyer", "supplier"]
+    }
+  },
+  "examples": [
+    {
+      "description": "Example of a Material entity for PP + 50% CO3Ca composite",
+      "data": {
+        "id": "urn:ngsi-ld:Material:PP50CO3Ca:001",
+        "@context": "http://circuloos-ld-context/circuloos-context.jsonld",
+        "type": "Material",
+        "name": {
+          "type": "Property",
+          "value": "PP + 50% CO3Ca"
+        },
+        "materialComposition": {
+          "type": "Property",
+          "value": {
+            "PP": 50,
+            "CO3Ca": 50
+          }
+        },
+        "materialSpecification": {
+          "type": "Property",
+          "value": "ISOFIL H50 C2V NATURALSIRMAX"
+        },
+        "supplier": {
+          "type": "Relationship",
+          "object": [
+            "urn:ngsi-ld:Company:rawplasticsa",
+            "urn:ngsi-ld:Company:iberoplast"
+          ]
+        },
+        "warehouseLocation": {
+          "type": "Relationship",
+          "object": "urn:ngsi-ld:Warehouse:001"
+        },
+        "stockLevel": {
+          "type": "Property",
+          "value": 1.2,
+          "unitCode": "KGM"
+        }
+      }
+    },
+    {
+      "description": "Example of a ManufacturingComponent entity for a washing machine lid",
+      "data": {
+        "id": "urn:ngsi-ld:ManufacturingComponent:lid:001",
+        "@context": "http://circuloos-ld-context/circuloos-context.jsonld",
+        "type": "ManufacturingComponent",
+        "name": {
+          "type": "Property",
+          "value": "Lid"
+        },
+        "energyConsumption": {
+          "type": "Property",
+          "value": 0.11,
+          "unitCode": "KWH"
+        },
+        "weight": {
+          "type": "Property",
+          "value": 0.10,
+          "unitCode": "KGM"
+        },
+        "hasMaterial": {
+          "type": "Relationship",
+          "object": "urn:ngsi-ld:Material:PP50CO3Ca:001"
+        },
+        "warehouseLocation": {
+          "type": "Relationship",
+          "object": "urn:ngsi-ld:Warehouse:001"
+        },
+        "producedBy": {
+          "type": "Relationship",
+          "object": "urn:ngsi-ld:Company:thermolympic"
+        },
+        "stockLevel": {
+          "type": "Property",
+          "value": 10
+        },
+        "lastTimeUsed": {
+          "type": "Property",
+          "value": {
+            "@type": "DateTime",
+            "@value": "2025-10-20T10:00:00Z"
+          }
+        }
+      }
+    },
+    {
+      "description": "Example of a ManufacturingMachine entity for a complete washing machine tray",
+      "data": {
+        "id": "urn:ngsi-ld:ManufacturingMachine:washingMachineTray:001",
+        "@context": "http://circuloos-ld-context/circuloos-context.jsonld",
+        "type": "ManufacturingMachine",
+        "name": {
+          "type": "Property",
+          "value": "Washing Machine Tray Assembly"
+        },
+        "description": {
+          "type": "Property",
+          "value": "Complete washing machine tray with all components"
+        },
+        "dateCreated": {
+          "type": "Property",
+          "value": {
+            "@type": "DateTime",
+            "@value": "2025-10-22T12:00:00Z"
+          }
+        },
+        "hasComponent": {
+          "type": "Relationship",
+          "object": [
+            "urn:ngsi-ld:ManufacturingComponent:lid:001",
+            "urn:ngsi-ld:ManufacturingComponent:distributor:001",
+            "urn:ngsi-ld:ManufacturingComponent:fixedTub:001",
+            "urn:ngsi-ld:ManufacturingComponent:slidingTub:001",
+            "urn:ngsi-ld:ManufacturingComponent:siphon:001",
+            "urn:ngsi-ld:ManufacturingComponent:metalClamp:001",
+            "urn:ngsi-ld:ManufacturingComponent:pipeTub:001"
+          ]
+        },
+        "totalEnergyConsumption": {
+          "type": "Property",
+          "value": 0.73,
+          "unitCode": "KWH"
+        },
+        "totalWeight": {
+          "type": "Property",
+          "value": 0.79163,
+          "unitCode": "KGM"
+        }
+      }
+    },
+    {
+      "description": "Example of a Company entity for a plastic manufacturer",
+      "data": {
+        "id": "urn:ngsi-ld:Company:thermolympic",
+        "@context": "http://circuloos-ld-context/circuloos-context.jsonld",
+        "type": "Company",
+        "name": {
+          "type": "Property",
+          "value": "Thermolympic"
+        },
+        "address": {
+          "type": "Property",
+          "value": {
+            "streetAddress": "Pol. Ind. El Segre, Calle A, Parcela 223",
+            "addressLocality": "Lleida",
+            "addressRegion": "Catalonia",
+            "addressCountry": "Spain",
+            "postalCode": "25191"
+          }
+        },
+        "location": {
+          "type": "GeoProperty",
+          "value": {
+            "type": "Point",
+            "coordinates": [0.6265, 41.6176]
+          }
+        },
+        "description": {
+          "type": "Property",
+          "value": "A Spanish company specializing in plastic injection molding and industrial solutions."
+        },
+        "category": {
+          "type": "Property",
+          "value": ["Manufacturing", "Plastics"]
+        },
+        "contactPoint": {
+          "type": "Property",
+          "value": {
+            "telephone": "+34-973-257-000",
+            "email": "info@thermolympic.com"
+          }
+        },
+        "openingHours": {
+          "type": "Property",
+          "value": "Mo-Fr 08:00-17:00"
+        }
+      }
+    },
+    {
+      "description": "Example of a Warehouse entity for plastic parts storage",
+      "data": {
+        "id": "urn:ngsi-ld:Warehouse:001",
+        "type": "Warehouse",
+        "@context": "http://circuloos-ld-context/circuloos-context.jsonld",
+        "description": {
+          "type": "Property",
+          "value": "Warehouse for plastic parts"
+        },
+        "address": {
+          "type": "Property",
+          "value": {
+            "streetAddress": "Avenida Alemania s/n",
+            "addressLocality": "Utebo",
+            "addressRegion": "Zaragoza",
+            "addressCountry": "Spain",
+            "postalCode": "50180"
+          }
+        },
+        "location": {
+          "type": "GeoProperty",
+          "value": {
+            "type": "Point",
+            "coordinates": [-1.0098, 41.6891]
+          }
+        }
+      }
+    },
+    {
+      "description": "Example of an OptimalSupplier entity from optimization workflow",
+      "data": {
+        "id": "urn:ngsi-ld:Thermolympic:Optimal-supplier:PP50CO3Ca",
+        "@context": "http://circuloos-ld-context/circuloos-context.jsonld",
+        "type": "optimal-supplier",
+        "materialSpecification": {
+          "type": "Relationship",
+          "value": "urn:ngsi-ld:Material:PP50CO3Ca:001"
+        },
+        "supplier": {
+          "type": "Relationship",
+          "object": "urn:ngsi-ld:Company:iberoplast"
+        },
+        "stockLevel": {
+          "type": "Property",
+          "value": 134.2,
+          "unitCode": "KGM"
+        },
+        "valid_for": {
+          "type": "Property",
+          "value": "20-10-2025"
+        }
+      }
+    },
+    {
+      "description": "Example of an OrderRequest entity for material procurement",
+      "data": {
+        "id": "urn:ngsi-ld:plastic:order:trsgf",
+        "type": "order-request",
+        "@context": "http://circuloos-ld-context/circuloos-context.jsonld",
+        "material_request": {
+          "type": "Relationship",
+          "value": "urn:ngsi-ld:Material:PP50CO3Ca:001"
+        },
+        "material_amount": {
+          "type": "Property",
+          "value": 100.2,
+          "unitCode": "KGM"
+        },
+        "buyer": {
+          "type": "Relationship",
+          "object": "urn:ngsi-ld:Company:Thermolimpic"
+        },
+        "supplier": {
+          "type": "Relationship",
+          "object": "urn:ngsi-ld:Company:rawplasticsa"
+        }
+      }
+    }
+  ],
+  "useCases": [
+    {
+      "name": "Digital Twin for Manufacturing",
+      "description": "Track complete product lifecycle from raw materials through components to final assembly, including energy consumption and weight at each stage."
+    },
+    {
+      "name": "Supply Chain Optimization",
+      "description": "Use optimal-supplier entities to recommend best suppliers based on stock availability, pricing, and logistics optimization."
+    },
+    {
+      "name": "Inventory Management",
+      "description": "Monitor stock levels across materials, components, and warehouses to trigger automatic reordering when thresholds are reached."
+    },
+    {
+      "name": "Production Planning",
+      "description": "Calculate material requirements for production orders by traversing relationships from products to components to materials, factoring in current stock levels."
+    },
+    {
+      "name": "Circular Economy Tracking",
+      "description": "Track material composition and recycling potential throughout the product lifecycle to support circular economy initiatives."
+    },
+    {
+      "name": "Energy Monitoring",
+      "description": "Aggregate energy consumption data from individual components to calculate total environmental impact of manufactured products."
+    }
+  ],
+  "workflowDescription": {
+    "orderProcessing": {
+      "step1": "Receive production order for N units of a ManufacturingMachine",
+      "step2": "Query stockLevel of each ManufacturingComponent referenced in hasComponent relationship",
+      "step3": "For components with insufficient stock, follow hasMaterial relationship to identify required raw materials",
+      "step4": "Calculate total material requirements: component.weight × quantity_needed",
+      "step5": "Check Material.stockLevel against calculated requirements",
+      "step6": "For materials with insufficient stock, query OptimalSupplier entities for sourcing recommendations",
+      "step7": "Create OrderRequest entities for required materials using recommended suppliers",
+      "step8": "Schedule production based on material availability and aggregate totalEnergyConsumption",
+      "step9": "Update stockLevel for consumed materials and components; update lastTimeUsed timestamps"
+    }
+  }
+}

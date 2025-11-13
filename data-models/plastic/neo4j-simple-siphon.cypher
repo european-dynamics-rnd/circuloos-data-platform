@@ -14,7 +14,7 @@
     id: 'urn:ngsi-ld:Material:PP',
     name: 'PP',
     type: 'Material',
-    stockLevel_kg: 1.2,
+    stockLevel_kg: 230.2,
     carbonFootprint: 1.8,
     carbonFootprintUnit: 'KG_CO2_PER_KG',
     totalCO2_tCO2: 0.0022
@@ -30,7 +30,7 @@
     type: 'Material',
     materialType: 'Scrap',
     specification: 'Recycled plastic from injection molding',
-    stockLevel_kg: 0.15,
+    stockLevel_kg: 130.15,
     recyclable: true,
     carbonFootprint: 0.4,
     carbonFootprintUnit: 'KG_CO2_PER_KG',
@@ -375,23 +375,37 @@ MATCH (wh:Warehouse {id: 'urn:ngsi-ld:Warehouse'})
 
   // ========================================
   // CONFIGURABLE QUERY - Adjust Virgin vs Recycled Material Percentages
-  // Change virginPercent value below (0.0 to 1.0, where 0.5 = 50%)
+  // Values are now calculated from existing graph data
   // ========================================
   // MATCH (virgin:Material {id: 'urn:ngsi-ld:Material:PP'})
   // MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP'})
   // MATCH (virgin)-[supply:SUPPLIED_BY]->(supplier:Company)
   // MATCH (scrap)-[supplyscrap:SUPPLIED_BY]->(supplier:Company)
   // MATCH (machine:InjectionMoldingMachine)-[manuf:MAKES]->(siphon:ManufacturingComponent)
+  // MATCH (machine)-[scrapRel:PRODUCES_SCRAP]->(scrap)
   // WHERE supply.priority = 1 AND siphon.name = 'siphon'
-  // WITH virgin, scrap, supply, supplyscrap, machine, manuf, siphon,
-  //   0.30 as virginPercent  // <-- CHANGE THIS VALUE (0.0 to 1.0)
-  // WITH virgin, scrap, supply, supplyscrap, machine, manuf, siphon, virginPercent,
+  // WITH virgin, scrap, supply, supplyscrap, machine, manuf, siphon, scrapRel,
+  //   // Calculate values from graph data
+  //   (scrapRel.percentage / 100.0 * siphon.rawMaterialPerPart_kg) as scrapPerSiphon_kg,
+  //   machine.energyConsumptionPerCycle as energyPerCycle_kWh,
+  //   manuf.totalProductionTime as totalProductionTime_seconds
+  // WITH virgin, scrap, supply, supplyscrap, machine, manuf, siphon, scrapPerSiphon_kg, energyPerCycle_kWh, cycleTime_seconds,
+  //   // Calculate virgin percentage based on scrap
+  //   ((siphon.rawMaterialPerPart_kg - scrapPerSiphon_kg) / siphon.rawMaterialPerPart_kg) as virginPercent
+  // WITH virgin, scrap, supply, supplyscrap, machine, manuf, siphon, scrapPerSiphon_kg, energyPerCycle_kWh, totalProductionTime_seconds,
+  //   // Calculate virgin percentage based on scrap
+  //   ((siphon.rawMaterialPerPart_kg - scrapPerSiphon_kg) / siphon.rawMaterialPerPart_kg) as virginPercent
+  // WITH virgin, scrap, supply, supplyscrap, machine, manuf, siphon, virginPercent, scrapPerSiphon_kg, energyPerCycle_kWh, totalProductionTime_seconds,
   //   (1.0 - virginPercent) as recycledPercent,
-  //   0.10 as totalWeight_kg
+  //   siphon.rawMaterialPerPart_kg as totalWeight_kg
   // WITH virgin, scrap, supply, supplyscrap, machine, manuf, siphon, virginPercent, recycledPercent, totalWeight_kg,
   //   (totalWeight_kg * virginPercent) as virginWeight_kg,
   //   (totalWeight_kg * recycledPercent) as recycledWeight_kg
   // RETURN 
+  //   '=== GRAPH DATA VALUES ===' as Section0,
+  //   scrapPerSiphon_kg as ScrapPerSiphon_kg,
+  //   energyPerCycle_kWh as EnergyPerCycle_kWh,
+  //   totalProductionTime_seconds as TotalProductionTime_seconds,
   //   '=== MATERIAL COMPOSITION ===' as Section1,
   //   (virginPercent * 100) as VirginPercent,
   //   (recycledPercent * 100) as RecycledPercent,

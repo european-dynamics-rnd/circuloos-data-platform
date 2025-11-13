@@ -25,8 +25,4 @@
 5. Execute each section one by one (the script is divided into 16 sections)
 6. Verify with the verification queries at the end
 
-**Tips for Neo4j Browser:**
-- The browser may timeout on large scripts
-- Execute sections 1-16 separately for best results
-- Each section is clearly marked with comments
-- Watch for any error messages after each execution
+

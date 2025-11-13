@@ -17,7 +17,7 @@ MATCH (pp:Material {id: 'urn:ngsi-ld:Material:PP'})
 RETURN 
   '=== PP MATERIAL ===' as Title,
   pp.name as ComponentName,
-  pp.stockLevel as CurrentStockLevel,
+  pp.stockLevel_kg as CurrentStockLevel,
   'kg' as Unit
 
 UNION
@@ -27,7 +27,7 @@ MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP'})
 RETURN 
   '=== SCRAP PP MATERIAL ===' as Title,
   scrap.name as ComponentName,
-  scrap.stockLevel as CurrentStockLevel,
+  scrap.stockLevel_kg as CurrentStockLevel,
   'kg' as Unit
 
 UNION
