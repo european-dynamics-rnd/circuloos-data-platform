@@ -20,7 +20,7 @@
 
 1. Open Neo4j Browser: http://localhost:7474
 2. Login with credentials (default: neo4j/password)
-3. Open the `neo4j-washing-machine-tray.cypher` file in a text editor
+3. Open the `neo4j-simple-siphon.cypher` file in a text editor
 4. Copy sections and paste into Neo4j Browser
 5. Execute each section one by one (the script is divided into 16 sections)
 6. Verify with the verification queries at the end

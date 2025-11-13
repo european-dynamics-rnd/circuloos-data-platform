@@ -4,7 +4,7 @@
   // ========================================
 
   // Clear existing data (optional)
-  // MATCH (n) DETACH DELETE n;
+  MATCH (n) DETACH DELETE n;
 
   // ========================================
   // 1. CREATE MATERIAL
@@ -17,7 +17,7 @@
     stockLevel_kg: 1.2,
     carbonFootprint: 1.8,
     carbonFootprintUnit: 'KG_CO2_PER_KG',
-    totalCO2_tCO2: 0.0022,
+    totalCO2_tCO2: 0.0022
   });
 
   // ========================================
@@ -136,7 +136,7 @@ CREATE (wh1:Warehouse {
     name: 'siphon',
     type: 'ManufacturingComponent',
     rawMaterialPerPart_kg: 0.10,
-    stockLevel: 10,
+    stockLevel: 10
   });
 
   // ========================================
