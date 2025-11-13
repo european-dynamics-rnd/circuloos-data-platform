@@ -14,13 +14,10 @@
     id: 'urn:ngsi-ld:Material:PP',
     name: 'PP',
     type: 'Material',
-    specification: 'ISOFIL HK 30 TFH2 BL2092',
-    stockLevel: 1.2,
-    unitCode: 'KGM',
+    stockLevel_kg: 1.2,
     carbonFootprint: 1.8,
     carbonFootprintUnit: 'KG_CO2_PER_KG',
-    totalCO2: 0.0022,
-    totalCO2Unit: 'tCO2'
+    totalCO2_tCO2: 0.0022,
   });
 
   // ========================================
@@ -33,15 +30,12 @@
     type: 'Material',
     materialType: 'Scrap',
     specification: 'Recycled plastic from injection molding',
-    stockLevel: 0.15,
-    unitCode: 'KGM',
+    stockLevel_kg: 0.15,
     recyclable: true,
     carbonFootprint: 0.4,
     carbonFootprintUnit: 'KG_CO2_PER_KG',
     totalCO2: 0.00006,
-    totalCO2Unit: 'tCO2',
     co2Saved: 0.00021,
-    co2SavedUnit: 'tCO2',
     co2SavedDescription: 'CO2 saved by recycling vs virgin plastic'
   });
 
@@ -112,8 +106,6 @@ CREATE (wh1:Warehouse {
   type: 'Warehouse'
 });
 
-
-
   // ========================================
   // 5. CREATE INJECTION MOLDING MACHINE
   // ========================================
@@ -130,8 +122,7 @@ CREATE (wh1:Warehouse {
     injectionVolumeUnit: 'CM3',
     energyConsumptionPerCycle: 0.055,
     energyConsumptionUnit: 'KWH',
-    cycleTime: 45,
-    cycleTimeUnit: 'SECONDS',
+    cycleTime_s: 45,
     status: 'operational',
     operatingHours: 45230
   });
@@ -144,10 +135,8 @@ CREATE (wh1:Warehouse {
     id: 'urn:ngsi-ld:ManufacturingComponent:Siphon',
     name: 'siphon',
     type: 'ManufacturingComponent',
-    weight: 0.10,
-    weightUnit: 'KGM',
+    rawMaterialPerPart_kg: 0.10,
     stockLevel: 10,
-    lastTimeUsed: '2025-10-20T10:00:00Z'
   });
 
   // ========================================
@@ -180,10 +169,8 @@ CREATE (wh1:Warehouse {
     id: 'urn:ngsi-ld:ManufacturingComponent:Chair',
     name: 'Chair',
     type: 'ManufacturingComponent',
-    weight: 2.5,
-    weightUnit: 'KGM',
+    rawMaterialPerPart_kg : 2.5,
     stockLevel: 5,
-    lastTimeUsed: '2025-11-01T10:00:00Z',
     description: '3D printed chair from recycled materials'
   });
 
@@ -198,10 +185,8 @@ CREATE (wh1:Warehouse {
   MATCH (s:Company {id: 'urn:ngsi-ld:Company:rawplasticsa'})
   CREATE (m)-[:SUPPLIED_BY {
     priority: 1,
-    transportDistance: 350,
-    transportDistanceUnit: 'KM',
-    co2Transport: 0.000042,
-    co2TransportUnit: 'tCO2',
+    transportDistance_km: 350,
+    co2Transport_tCO2: 0.000042,
     co2TransportDescription: 'CO2 from truck transport (0.12 kg CO2/km)'
   }]->(s);
 
@@ -209,10 +194,8 @@ CREATE (wh1:Warehouse {
   MATCH (s:Company {id: 'urn:ngsi-ld:Company:rawplasticsa'})
   CREATE (m)-[:SUPPLIED_BY {
     priority: 1,
-    transportDistance: 350,
-    transportDistanceUnit: 'KM',
-    co2Transport: 0.000042,
-    co2TransportUnit: 'tCO2',
+    transportDistance_km: 350,
+    co2Transport_tCO2: 0.000042,
     co2TransportDescription: 'CO2 from truck transport (0.12 kg CO2/km)'
   }]->(s);
 
@@ -220,10 +203,8 @@ CREATE (wh1:Warehouse {
   MATCH (s:Company {id: 'urn:ngsi-ld:Company:iberoplast'})
   CREATE (m)-[:SUPPLIED_BY {
     priority: 2,
-    transportDistance: 650,
-    transportDistanceUnit: 'KM',
-    co2Transport: 0.000078,
-    co2TransportUnit: 'tCO2',
+    transportDistance_km: 650,
+    co2Transport_tCO2: 0.000078,
     co2TransportDescription: 'CO2 from truck transport (0.12 kg CO2/km)'
   }]->(s);
 
@@ -238,31 +219,31 @@ CREATE (wh1:Warehouse {
   MATCH (machine:InjectionMoldingMachine {id: 'urn:ngsi-ld:InjectionMoldingMachine'})
   MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Siphon'})
   CREATE (machine)-[:MAKES {
-    moldingCycles: 2,
-    moldingCycleTime: 45,
-    energyConsumption: 0.11,
-    energyUnit: 'KWH',
-    setupTime: 15,
+    // moldingCycles: 2,
+    // moldingCycleTime: 45,
+    // setupTime: 15,
     totalProductionTime: 105,
-    co2Emissions: 0.000055,
-    co2EmissionsUnit: 'tCO2',
+    energyConsumption_kWh: 0.11,
+    co2Emissions_tCO2: 0.000055,
     co2EmissionsDescription: 'CO2 from energy use (0.5 kg CO2/kWh)'
   }]->(c);
 
   // Component has Material
   MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Siphon'})
   MATCH (m:Material {id: 'urn:ngsi-ld:Material:PP'})
-  CREATE (c)-[:HAS_MATERIAL {quantity: 0.10, unit: 'KGM'}]->(m);
+  //  {quantity: 0.10, unit: 'KGM'}
+  CREATE (c)-[:HAS_MATERIAL]->(m);
 
   // Siphon can also use Scrap Material (circular economy - closed loop)
   MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Siphon'})
   MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP'})
-  CREATE (c)-[:HAS_MATERIAL {
-    quantity: 0.05, 
-    unit: 'KGM', 
-    recycled: true,
-    description: 'Portion of siphon made from recycled scrap material'
-  }]->(scrap);
+  CREATE (c)-[:HAS_MATERIAL ]->(scrap);
+  // {
+  //   quantity: 0.05, 
+  //   unit: 'KGM', 
+  //   recycled: true,
+  //   description: 'Portion of siphon made from recycled scrap material'
+  // }
 
 
   // Component produced by Company
@@ -295,8 +276,6 @@ MATCH (wh:Warehouse {id: 'urn:ngsi-ld:Warehouse'})
   MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP'})
   CREATE (machine)-[:PRODUCES_SCRAP {
     percentage: 5,
-    amount: 0.005,
-    unit: 'KGM',
     description: 'Scrap from molding process'
   }]->(scrap);
 
@@ -305,7 +284,7 @@ MATCH (wh:Warehouse {id: 'urn:ngsi-ld:Warehouse'})
   MATCH (supplier:Company {id: 'urn:ngsi-ld:Company:rawplasticsa'})
   CREATE (scrap)-[:RETURNED_TO {
     forRecycling: true,
-    creditPerKg: 0.50,
+    // creditPerKg: 0.50,
     description: 'Circular economy - scrap returned for recycling'
   }]->(supplier);
 
@@ -314,7 +293,7 @@ MATCH (wh:Warehouse {id: 'urn:ngsi-ld:Warehouse'})
   MATCH (replastauto:Company {id: 'urn:ngsi-ld:Company:replastauto'})
   CREATE (scrap)-[:RETURNED_TO {
     forRecycling: true,
-    creditPerKg: 0.60,
+    // creditPerKg: 0.60,
     description: 'Specialized recycling for 3D printing filament'
   }]->(replastauto);
 
@@ -341,30 +320,22 @@ MATCH (wh:Warehouse {id: 'urn:ngsi-ld:Warehouse'})
   MATCH (printer:ThreeDPrinter {id: 'urn:ngsi-ld:ThreeDPrinter'})
   MATCH (chair:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Chair'})
   CREATE (printer)-[:PRINTS {
-    printTime: 48,
-    printTimeUnit: 'HOURS',
+    printTime_h: 48,
     layerCount: 12500,
-    energyConsumption: 2.5,
-    energyUnit: 'KWH',
-    materialUsed: 2.5,
-    materialUnit: 'KGM',
-    co2Emissions: 0.00125,
-    co2EmissionsUnit: 'tCO2',
-    co2EmissionsDescription: 'CO2 from energy use (0.5 kg CO2/kWh)',
-    co2Saved: 0.00325,
-    co2SavedUnit: 'tCO2',
-    co2SavedDescription: 'CO2 saved by using recycled vs virgin plastic'
+    energyConsumption_kWh: 2.5,
+    materialUsed_kg: 2.5,
+    co2Emissions_tCO2: 0.00125,
+    co2EmissionsDescription: 'CO2 from energy use (0.5 kg CO2/kWh)'
   }]->(chair);
 
   // Chair has Scrap Material (closed loop!)
   MATCH (chair:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Chair'})
   MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP'})
-  CREATE (chair)-[:HAS_MATERIAL {quantity: 2.5, unit: 'KGM', recycled: true}]->(scrap);
+  CREATE (chair)-[:HAS_MATERIAL]->(scrap);
 
   MATCH (chair:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Chair'})
   MATCH (vergin:Material {id: 'urn:ngsi-ld:Material:PP'})
-  CREATE (chair)-[:HAS_MATERIAL {quantity: 2.5, unit: 'KGM', recycled: true}]->(vergin);
-
+  CREATE (chair)-[:HAS_MATERIAL]->(vergin);
 
 
   // Chair produced by Circuprint
