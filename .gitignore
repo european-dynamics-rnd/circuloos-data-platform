@@ -18,3 +18,5 @@ csv_NGSILD_Agent/__pycache__/csv_ngsild_agent_utils.cpython-311.pyc
 commands/entity_diagram_interactive.html
 commands/entity_diagram.png
 commands/expanded.json
+
+data-models/plastic/__pycache__

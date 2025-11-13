@@ -1,0 +1,5 @@
+# Neo4j Python Driver
+neo4j>=5.0.0
+
+# Docker SDK for Python
+docker>=6.0.0
