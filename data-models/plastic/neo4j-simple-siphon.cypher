@@ -14,7 +14,6 @@
     id: 'urn:ngsi-ld:Material:PP',
     name: 'PP',
     type: 'Material',
-    stockLevel_kg: 230.2,
     carbonFootprint: 1.8,
     carbonFootprintUnit: 'KG_CO2_PER_KG',
     totalCO2_tCO2: 0.0022
@@ -30,7 +29,6 @@
     type: 'Material',
     materialType: 'Scrap',
     specification: 'Recycled plastic from injection molding',
-    stockLevel_kg: 130.15,
     recyclable: true,
     carbonFootprint: 0.4,
     carbonFootprintUnit: 'KG_CO2_PER_KG',
@@ -48,7 +46,6 @@
     name: 'Recycle PP',
     type: 'Material',
     materialType: 'Recycled',
-    stockLevel_kg: 85.5,
     recyclable: true,
     carbonFootprint: 0.5,
     carbonFootprintUnit: 'KG_CO2_PER_KG',
@@ -66,7 +63,10 @@
     name: 'Thermolympic',
     type: 'Company',
     description: 'Plastic injection molding company',
-    category: ['Manufacturing', 'Plastics']
+    category: ['Manufacturing', 'Plastics'],
+    stockLevel_PP_kg: 230.2,
+    stockLevel_ScrapPP_kg: 130.15,
+    stockLevel_RecyclePP_kg: 85.5
   });
 
   // ========================================
@@ -78,7 +78,9 @@
     name: 'Lollo',
     type: 'Company',
     description: 'Supplier of raw plastic materials',
-    category: ['Supplier', 'Raw Plastics']
+    category: ['Supplier', 'Raw Plastics'],
+    stockLevel_PP_kg: 500.0,
+    stockLevel_RecyclePP_kg: 300.0
   });
 
   CREATE (comp3:Company {
@@ -86,7 +88,8 @@
     name: 'IberoPlast Supplies',
     type: 'Company',
     description: 'Spanish supplier of raw plastic materials',
-    category: ['Supplier', 'Raw Plastics']
+    category: ['Supplier', 'Raw Plastics'],
+    stockLevel_PP_kg: 800.0
   });
 
   CREATE (comp4:Company {
@@ -94,7 +97,10 @@
     name: 'RawPlasticsa Supplies',
     type: 'Company',
     description: 'Spanish supplier of raw and recycled plastic materials',
-    category: ['Supplier', 'Raw Plastics' , 'Recycled Plastics' ]
+    category: ['Supplier', 'Raw Plastics' , 'Recycled Plastics' ],
+    stockLevel_PP_kg: 650.0,
+    stockLevel_ScrapPP_kg: 200.0,
+    stockLevel_RecyclePP_kg: 150.0
   });
 
 
@@ -103,7 +109,9 @@
     name: 'RePlastauto',
     type: 'Company',
     description: 'Plastic injection molding and recycled plastic company',
-    category: ['Supplier','Manufacturing', 'Recycled Plastics']
+    category: ['Supplier','Manufacturing', 'Recycled Plastics'],
+    stockLevel_ScrapPP_kg: 400.0,
+    stockLevel_RecyclePP_kg: 250.0
   });
 
   CREATE (comp6:Company {
@@ -111,7 +119,9 @@
     name: 'Circuprint',
     type: 'Company',
     description: '3D printing manufacturer using recycled materials',
-    category: ['Manufacturing', '3D Printing']
+    category: ['Manufacturing', '3D Printing'],
+    stockLevel_RecyclePP_kg: 180.0,
+    stockLevel_ScrapPP_kg: 75.0
   });
 
   // ========================================
@@ -143,8 +153,7 @@
     id: 'urn:ngsi-ld:ManufacturingComponent:Siphon',
     name: 'siphon',
     type: 'ManufacturingComponent',
-    rawMaterialPerPart_kg: 0.10,
-    stockLevel: 10
+    rawMaterialPerPart_kg: 0.10
   });
 
   // ========================================
@@ -178,7 +187,6 @@
     name: 'Chair',
     type: 'ManufacturingComponent',
     rawMaterialPerPart_kg : 2.5,
-    stockLevel: 5,
     description: '3D printed chair from recycled materials'
   });
 
