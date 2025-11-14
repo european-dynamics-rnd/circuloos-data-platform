@@ -211,21 +211,30 @@ CREATE (wh1:Warehouse {
 
   // Lollo recycles ScrapPP to create RecyclePP
   MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP'})
-  MATCH (recycle:Material {id: 'urn:ngsi-ld:Material:RecyclePP'})
+  // MATCH (recycle:Material {id: 'urn:ngsi-ld:Material:RecyclePP'})
   MATCH (lollo:Company {id: 'urn:ngsi-ld:Company:Lollo'})
   CREATE (scrap)-[:RECYCLED_BY {
     recyclingEfficiency: 85,
-    description: 'Lollo recycles scrap PP into usable recycled PP',
-    processingTime_hours: 24,
     energyConsumption_kWh: 12.5,
     co2Emissions_tCO2: 0.00000625,
-    co2EmissionsDescription: 'CO2 from recycling process energy (0.5 kg CO2/kWh)'
+    co2EmissionsDescription: 'CO2 from recycling process energy (0.5 kg CO2/kWh)',
+    transportDistance_km: 420,
+    co2Transport_tCO2: 0.00005,
+    co2TransportDescription: 'CO2 from truck transport (0.12 kg CO2/km)'
   }]->(lollo);
   
-  CREATE (lollo)-[:PRODUCES {
-    outputMaterial: 'RecyclePP',
-    description: 'Lollo produces recycled PP from scrap material'
-  }]->(recycle);
+ MATCH (m:Material {id: 'urn:ngsi-ld:Material:ScrapPP'})
+  MATCH (s:Company {id: 'urn:ngsi-ld:Company:rawplasticsa'})
+  CREATE (m)-[:RECYCLED_BY {
+    priority: 1,
+    recyclingEfficiency: 85,
+    energyConsumption_kWh: 12.5,
+    co2Emissions_tCO2: 0.00000625,
+    co2EmissionsDescription: 'CO2 from recycling process energy (0.5 kg CO2/kWh)',
+    transportDistance_km: 350,
+    co2Transport_tCO2: 0.000042,
+    co2TransportDescription: 'CO2 from truck transport (0.12 kg CO2/km)'
+  }]->(s);
 
   // RecyclePP supplied by Lollo
   MATCH (recycle:Material {id: 'urn:ngsi-ld:Material:RecyclePP'})
@@ -237,14 +246,6 @@ CREATE (wh1:Warehouse {
     co2TransportDescription: 'CO2 from truck transport (0.12 kg CO2/km)'
   }]->(lollo);
 
-  MATCH (m:Material {id: 'urn:ngsi-ld:Material:ScrapPP'})
-  MATCH (s:Company {id: 'urn:ngsi-ld:Company:rawplasticsa'})
-  CREATE (m)-[:SUPPLIED_BY {
-    priority: 1,
-    transportDistance_km: 350,
-    co2Transport_tCO2: 0.000042,
-    co2TransportDescription: 'CO2 from truck transport (0.12 kg CO2/km)'
-  }]->(s);
 
   MATCH (m:Material {id: 'urn:ngsi-ld:Material:PP'})
   MATCH (s:Company {id: 'urn:ngsi-ld:Company:iberoplast'})
@@ -320,15 +321,6 @@ MATCH (wh:Warehouse {id: 'urn:ngsi-ld:Warehouse'})
     description: 'Scrap from molding process'
   }]->(scrap);
 
-  // Scrap Material returned to Supplier for recycling
-  MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP'})
-  MATCH (supplier:Company {id: 'urn:ngsi-ld:Company:rawplasticsa'})
-  CREATE (scrap)-[:RECYCLED_BY ]->(supplier);
-// {
-//     forRecycling: true,
-//     // creditPerKg: 0.50,
-//     description: 'Circular economy - scrap returned for recycling'
-//   }
 
   // Scrap Material also sent to replastauto for recycling
   MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP'})
