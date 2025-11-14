@@ -40,6 +40,25 @@
   });
 
   // ========================================
+  // CREATE RECYCLED MATERIAL (processed from scrap)
+  // ========================================
+
+  CREATE (recycle1:Material {
+    id: 'urn:ngsi-ld:Material:RecyclePP',
+    name: 'Recycle PP',
+    type: 'Material',
+    materialType: 'Recycled',
+    specification: 'Recycled PP processed by Lollo from scrap material',
+    stockLevel_kg: 85.5,
+    recyclable: true,
+    carbonFootprint: 0.5,
+    carbonFootprintUnit: 'KG_CO2_PER_KG',
+    totalCO2: 0.00004,
+    co2Saved: 0.00015,
+    co2SavedDescription: 'CO2 saved by using recycled material vs virgin plastic'
+  });
+
+  // ========================================
   // 2. CREATE COMPANY (Manufacturer)
   // ========================================
 
@@ -190,6 +209,34 @@ CREATE (wh1:Warehouse {
     co2TransportDescription: 'CO2 from truck transport (0.12 kg CO2/km)'
   }]->(s);
 
+  // Lollo recycles ScrapPP to create RecyclePP
+  MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP'})
+  MATCH (recycle:Material {id: 'urn:ngsi-ld:Material:RecyclePP'})
+  MATCH (lollo:Company {id: 'urn:ngsi-ld:Company:Lollo'})
+  CREATE (scrap)-[:RECYCLED_BY {
+    recyclingEfficiency: 85,
+    description: 'Lollo recycles scrap PP into usable recycled PP',
+    processingTime_hours: 24,
+    energyConsumption_kWh: 12.5,
+    co2Emissions_tCO2: 0.00000625,
+    co2EmissionsDescription: 'CO2 from recycling process energy (0.5 kg CO2/kWh)'
+  }]->(lollo);
+  
+  CREATE (lollo)-[:PRODUCES {
+    outputMaterial: 'RecyclePP',
+    description: 'Lollo produces recycled PP from scrap material'
+  }]->(recycle);
+
+  // RecyclePP supplied by Lollo
+  MATCH (recycle:Material {id: 'urn:ngsi-ld:Material:RecyclePP'})
+  MATCH (lollo:Company {id: 'urn:ngsi-ld:Company:Lollo'})
+  CREATE (recycle)-[:SUPPLIED_BY {
+    priority: 1,
+    transportDistance_km: 420,
+    co2Transport_tCO2: 0.00005,
+    co2TransportDescription: 'CO2 from truck transport (0.12 kg CO2/km)'
+  }]->(lollo);
+
   MATCH (m:Material {id: 'urn:ngsi-ld:Material:ScrapPP'})
   MATCH (s:Company {id: 'urn:ngsi-ld:Company:rawplasticsa'})
   CREATE (m)-[:SUPPLIED_BY {
@@ -244,6 +291,13 @@ CREATE (wh1:Warehouse {
   //   recycled: true,
   //   description: 'Portion of siphon made from recycled scrap material'
   // }
+
+  // Siphon can also use RecyclePP (processed recycled material from Lollo)
+  MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Siphon'})
+  MATCH (recycle:Material {id: 'urn:ngsi-ld:Material:RecyclePP'})
+  CREATE (c)-[:HAS_MATERIAL {
+    description: 'Portion of siphon made from Lollo-recycled PP material'
+  }]->(recycle);
 
 
   // Component produced by Company
