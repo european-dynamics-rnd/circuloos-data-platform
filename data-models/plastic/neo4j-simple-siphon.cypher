@@ -212,30 +212,28 @@ CREATE (wh1:Warehouse {
   }]->(s);
 
   // Lollo recycles ScrapPP to create RecyclePP
-  WITH 0.12 AS co2PerKm_kgCO2, 420 AS transportDistance_km
+  WITH 0.12 AS co2PerKm_kgCO2, 420 AS transportDistance_km, 12.5 AS energyConsumption_kWh, 0.5 AS co2PerKWh_kgCO2
   MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP'})
   MATCH (lollo:Company {id: 'urn:ngsi-ld:Company:Lollo'})
-  WITH scrap, lollo, co2PerKm_kgCO2, transportDistance_km
+  WITH scrap, lollo, co2PerKm_kgCO2, transportDistance_km, energyConsumption_kWh, co2PerKWh_kgCO2
   CREATE (scrap)-[:RECYCLED_BY {
-    recyclingEfficiency: 85,
-    energyConsumption_kWh: 12.5,
-    co2Emissions_tCO2: 0.00000625,
-    co2EmissionsDescription: 'CO2 from recycling process energy (0.5 kg CO2/kWh)',
+    energyConsumption_kWh: energyConsumption_kWh,
+    co2Emissions_tCO2: (energyConsumption_kWh * co2PerKWh_kgCO2 / 1000),
+    co2EmissionsDescription: 'CO2 from recycling process energy (' + toString(co2PerKWh_kgCO2) + ' kg CO2/kWh)',
     transportDistance_km: transportDistance_km,
     co2Transport_tCO2: (transportDistance_km * co2PerKm_kgCO2 / 1000),
     co2TransportDescription: 'CO2 from truck transport (' + toString(co2PerKm_kgCO2) + ' kg CO2/km)'
   }]->(lollo);
   
-  WITH 0.12 AS co2PerKm_kgCO2, 350 AS transportDistance_km
+  WITH 0.12 AS co2PerKm_kgCO2, 350 AS transportDistance_km, 12.5 AS energyConsumption_kWh, 0.5 AS co2PerKWh_kgCO2
   MATCH (m:Material {id: 'urn:ngsi-ld:Material:ScrapPP'})
   MATCH (s:Company {id: 'urn:ngsi-ld:Company:rawplasticsa'})
-  WITH m, s, co2PerKm_kgCO2, transportDistance_km
+  WITH m, s, co2PerKm_kgCO2, transportDistance_km, energyConsumption_kWh, co2PerKWh_kgCO2
   CREATE (m)-[:RECYCLED_BY {
     priority: 1,
-    recyclingEfficiency: 85,
-    energyConsumption_kWh: 12.5,
-    co2Emissions_tCO2: 0.00000625,
-    co2EmissionsDescription: 'CO2 from recycling process energy (0.5 kg CO2/kWh)',
+    energyConsumption_kWh: energyConsumption_kWh,
+    co2Emissions_tCO2: (energyConsumption_kWh * co2PerKWh_kgCO2 / 1000),
+    co2EmissionsDescription: 'CO2 from recycling process energy (' + toString(co2PerKWh_kgCO2) + ' kg CO2/kWh)',
     transportDistance_km: transportDistance_km,
     co2Transport_tCO2: (transportDistance_km * co2PerKm_kgCO2 / 1000),
     co2TransportDescription: 'CO2 from truck transport (' + toString(co2PerKm_kgCO2) + ' kg CO2/km)'
