@@ -8,26 +8,34 @@ RETURN
   '=== SIPHON COMPONENT ===' as Title,
   siphon.name as ComponentName,
   siphon.stockLevel as CurrentStockLevel,
-  toString(siphon.lastTimeUsed) as Unit
+  'units' as Unit
 
 UNION
 
-// Check PP Material stock level
-MATCH (pp:Material {id: 'urn:ngsi-ld:Material:PP'})
+// Check Thermolympic stock levels
+MATCH (company:Company {id: 'urn:ngsi-ld:Company:thermolympic'})
 RETURN 
-  '=== PP MATERIAL ===' as Title,
-  pp.name as ComponentName,
-  pp.stockLevel_kg as CurrentStockLevel,
+  '=== THERMOLYMPIC - PP MATERIAL ===' as Title,
+  company.name + ' - PP' as ComponentName,
+  company.stockLevel_PP_kg as CurrentStockLevel,
   'kg' as Unit
 
 UNION
 
-// Check Scrap PP Material stock level
-MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP'})
+MATCH (company:Company {id: 'urn:ngsi-ld:Company:thermolympic'})
 RETURN 
-  '=== SCRAP PP MATERIAL ===' as Title,
-  scrap.name as ComponentName,
-  scrap.stockLevel_kg as CurrentStockLevel,
+  '=== THERMOLYMPIC - SCRAP PP MATERIAL ===' as Title,
+  company.name + ' - Scrap PP' as ComponentName,
+  company.stockLevel_ScrapPP_kg as CurrentStockLevel,
+  'kg' as Unit
+
+UNION
+
+MATCH (company:Company {id: 'urn:ngsi-ld:Company:thermolympic'})
+RETURN 
+  '=== THERMOLYMPIC - RECYCLE PP MATERIAL ===' as Title,
+  company.name + ' - Recycle PP' as ComponentName,
+  company.stockLevel_RecyclePP_kg as CurrentStockLevel,
   'kg' as Unit
 
 UNION

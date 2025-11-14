@@ -326,14 +326,6 @@
   CREATE (printer)-[:OWNED_BY]->(circuprint);
 
 
-  // 3D Printer processes Scrap Material (from replastauto)
-  MATCH (printer:ThreeDPrinter {id: 'urn:ngsi-ld:ThreeDPrinter'})
-  MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP'})
-  CREATE (printer)-[:PROCESSES_MATERIAL {
-    materialForm: 'filament',
-    description: 'Recycled plastic converted to 3D printing filament'
-  }]->(scrap);
-
   // 3D Printer prints Chair
   MATCH (printer:ThreeDPrinter {id: 'urn:ngsi-ld:ThreeDPrinter'})
   MATCH (chair:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Chair'})
