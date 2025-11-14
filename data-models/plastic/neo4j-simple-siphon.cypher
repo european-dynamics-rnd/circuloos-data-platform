@@ -200,70 +200,75 @@ CREATE (wh1:Warehouse {
   // ========================================
 
   // Material supplied by Company
+  WITH 0.12 AS co2PerKm_kgCO2, 350 AS transportDistance_km
   MATCH (m:Material {id: 'urn:ngsi-ld:Material:PP'})
   MATCH (s:Company {id: 'urn:ngsi-ld:Company:rawplasticsa'})
+  WITH m, s, co2PerKm_kgCO2, transportDistance_km
   CREATE (m)-[:SUPPLIED_BY {
     priority: 1,
-    transportDistance_km: 350,
-    co2Transport_tCO2: 0.000042,
-    co2TransportDescription: 'CO2 from truck transport (0.12 kg CO2/km)'
+    transportDistance_km: transportDistance_km,
+    co2Transport_tCO2: (transportDistance_km * co2PerKm_kgCO2 / 1000),
+    co2TransportDescription: 'CO2 from truck transport (' + toString(co2PerKm_kgCO2) + ' kg CO2/km)'
   }]->(s);
 
   // Lollo recycles ScrapPP to create RecyclePP
+  WITH 0.12 AS co2PerKm_kgCO2, 420 AS transportDistance_km
   MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP'})
-  // MATCH (recycle:Material {id: 'urn:ngsi-ld:Material:RecyclePP'})
   MATCH (lollo:Company {id: 'urn:ngsi-ld:Company:Lollo'})
+  WITH scrap, lollo, co2PerKm_kgCO2, transportDistance_km
   CREATE (scrap)-[:RECYCLED_BY {
     recyclingEfficiency: 85,
     energyConsumption_kWh: 12.5,
     co2Emissions_tCO2: 0.00000625,
     co2EmissionsDescription: 'CO2 from recycling process energy (0.5 kg CO2/kWh)',
-    transportDistance_km: 420,
-    co2Transport_tCO2: 0.00005,
-    co2TransportDescription: 'CO2 from truck transport (0.12 kg CO2/km)'
+    transportDistance_km: transportDistance_km,
+    co2Transport_tCO2: (transportDistance_km * co2PerKm_kgCO2 / 1000),
+    co2TransportDescription: 'CO2 from truck transport (' + toString(co2PerKm_kgCO2) + ' kg CO2/km)'
   }]->(lollo);
   
- MATCH (m:Material {id: 'urn:ngsi-ld:Material:ScrapPP'})
+  WITH 0.12 AS co2PerKm_kgCO2, 350 AS transportDistance_km
+  MATCH (m:Material {id: 'urn:ngsi-ld:Material:ScrapPP'})
   MATCH (s:Company {id: 'urn:ngsi-ld:Company:rawplasticsa'})
+  WITH m, s, co2PerKm_kgCO2, transportDistance_km
   CREATE (m)-[:RECYCLED_BY {
     priority: 1,
     recyclingEfficiency: 85,
     energyConsumption_kWh: 12.5,
     co2Emissions_tCO2: 0.00000625,
     co2EmissionsDescription: 'CO2 from recycling process energy (0.5 kg CO2/kWh)',
-    transportDistance_km: 350,
-    co2Transport_tCO2: 0.000042,
-    co2TransportDescription: 'CO2 from truck transport (0.12 kg CO2/km)'
+    transportDistance_km: transportDistance_km,
+    co2Transport_tCO2: (transportDistance_km * co2PerKm_kgCO2 / 1000),
+    co2TransportDescription: 'CO2 from truck transport (' + toString(co2PerKm_kgCO2) + ' kg CO2/km)'
   }]->(s);
 
   // RecyclePP supplied by Lollo
+  WITH 0.12 AS co2PerKm_kgCO2, 420 AS transportDistance_km
   MATCH (recycle:Material {id: 'urn:ngsi-ld:Material:RecyclePP'})
   MATCH (lollo:Company {id: 'urn:ngsi-ld:Company:Lollo'})
+  WITH recycle, lollo, co2PerKm_kgCO2, transportDistance_km
   CREATE (recycle)-[:SUPPLIED_BY {
     priority: 1,
-    transportDistance_km: 420,
-    co2Transport_tCO2: 0.00005,
-    co2TransportDescription: 'CO2 from truck transport (0.12 kg CO2/km)'
+    transportDistance_km: transportDistance_km,
+    co2Transport_tCO2: (transportDistance_km * co2PerKm_kgCO2 / 1000),
+    co2TransportDescription: 'CO2 from truck transport (' + toString(co2PerKm_kgCO2) + ' kg CO2/km)'
   }]->(lollo);
 
 
+  WITH 0.12 AS co2PerKm_kgCO2, 650 AS transportDistance_km
   MATCH (m:Material {id: 'urn:ngsi-ld:Material:PP'})
   MATCH (s:Company {id: 'urn:ngsi-ld:Company:iberoplast'})
+  WITH m, s, co2PerKm_kgCO2, transportDistance_km
   CREATE (m)-[:SUPPLIED_BY {
     priority: 2,
-    transportDistance_km: 650,
-    co2Transport_tCO2: 0.000078,
-    co2TransportDescription: 'CO2 from truck transport (0.12 kg CO2/km)'
+    transportDistance_km: transportDistance_km,
+    co2Transport_tCO2: (transportDistance_km * co2PerKm_kgCO2 / 1000),
+    co2TransportDescription: 'CO2 from truck transport (' + toString(co2PerKm_kgCO2) + ' kg CO2/km)'
   }]->(s);
 
   // Machine owned by Company
   MATCH (machine:InjectionMoldingMachine {id: 'urn:ngsi-ld:InjectionMoldingMachine'})
   MATCH (comp:Company {id: 'urn:ngsi-ld:Company:thermolympic'})
   CREATE (machine)-[:OWNED_BY]->(comp);
-
-
-
-  // Machine MAKES Component
   MATCH (machine:InjectionMoldingMachine {id: 'urn:ngsi-ld:InjectionMoldingMachine'})
   MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Siphon'})
   CREATE (machine)-[:MAKES {
