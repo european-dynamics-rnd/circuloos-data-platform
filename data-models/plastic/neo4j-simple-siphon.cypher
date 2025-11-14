@@ -48,7 +48,6 @@
     name: 'Recycle PP',
     type: 'Material',
     materialType: 'Recycled',
-    specification: 'Recycled PP processed by Lollo from scrap material',
     stockLevel_kg: 85.5,
     recyclable: true,
     carbonFootprint: 0.5,
@@ -114,16 +113,6 @@
     description: '3D printing manufacturer using recycled materials',
     category: ['Manufacturing', '3D Printing']
   });
-
-// ========================================
-// 4. CREATE WAREHOUSE
-// ========================================
-
-CREATE (wh1:Warehouse {
-  id: 'urn:ngsi-ld:Warehouse',
-  name: 'Warehouse 001',
-  type: 'Warehouse'
-});
 
   // ========================================
   // 5. CREATE INJECTION MOLDING MACHINE
@@ -295,22 +284,6 @@ CREATE (wh1:Warehouse {
   MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Siphon'})
   MATCH (comp:Company {id: 'urn:ngsi-ld:Company:thermolympic'})
   CREATE (c)-[:PRODUCED_BY]->(comp);
-
-
-// Material stored in Warehouse
-MATCH (m:Material {id: 'urn:ngsi-ld:Material:PP'})
-MATCH (w:Warehouse {id: 'urn:ngsi-ld:Warehouse'})
-CREATE (m)-[:STORED_IN]->(w);
-
-// Component stored in Warehouse
-MATCH (c:ManufacturingComponent {id: 'urn:ngsi-ld:ManufacturingComponent:Siphon'})
-MATCH (w:Warehouse {id: 'urn:ngsi-ld:Warehouse'})
-CREATE (c)-[:STORED_IN]->(w);
-
-  // Machine owned by Company
-MATCH (wh:Warehouse {id: 'urn:ngsi-ld:Warehouse'})
-  MATCH (comp:Company {id: 'urn:ngsi-ld:Company:thermolympic'})
-  CREATE (wh)-[:OWNED_BY]->(comp);
 
   // ========================================
   // CIRCULAR ECONOMY - Scrap Material Loop
