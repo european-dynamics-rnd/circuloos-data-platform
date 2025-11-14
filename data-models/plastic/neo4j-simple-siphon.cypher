@@ -32,9 +32,7 @@
     recyclable: true,
     carbonFootprint: 0.4,
     carbonFootprintUnit: 'KG_CO2_PER_KG',
-    totalCO2: 0.00006,
-    co2Saved: 0.00021,
-    co2SavedDescription: 'CO2 saved by recycling vs virgin plastic'
+    totalCO2: 0
   });
 
   // ========================================
@@ -49,9 +47,7 @@
     recyclable: true,
     carbonFootprint: 0.5,
     carbonFootprintUnit: 'KG_CO2_PER_KG',
-    totalCO2: 0.00004,
-    co2Saved: 0.00015,
-    co2SavedDescription: 'CO2 saved by using recycled material vs virgin plastic'
+    totalCO2: 0.00004
   });
 
   // ========================================
@@ -74,7 +70,7 @@
   // ========================================
 
   CREATE (comp2:Company {
-    id: 'urn:ngsi-ld:Company:Lollo',
+    id: 'urn:ngsi-ld:Company:lollo',
     name: 'Lollo',
     type: 'Company',
     description: 'Supplier of raw plastic materials',
@@ -211,7 +207,7 @@
   // Lollo recycles ScrapPP to create RecyclePP
   WITH 0.12 AS co2PerKm_kgCO2, 420 AS transportDistance_km, 12.5 AS energyConsumption_kWh, 0.5 AS co2PerKWh_kgCO2
   MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP'})
-  MATCH (lollo:Company {id: 'urn:ngsi-ld:Company:Lollo'})
+  MATCH (lollo:Company {id: 'urn:ngsi-ld:Company:lollo'})
   WITH scrap, lollo, co2PerKm_kgCO2, transportDistance_km, energyConsumption_kWh, co2PerKWh_kgCO2
   CREATE (scrap)-[:RECYCLED_BY {
     energyConsumption_kWh: energyConsumption_kWh,
@@ -222,6 +218,22 @@
     co2TransportDescription: 'CO2 from truck transport (' + toString(co2PerKm_kgCO2) + ' kg CO2/km)'
   }]->(lollo);
   
+ // Circuprint recycles ScrapPP to create RecyclePP
+  WITH 0.12 AS co2PerKm_kgCO2, 0 AS transportDistance_km, 12.5 AS energyConsumption_kWh, 0.5 AS co2PerKWh_kgCO2
+  MATCH (scrap:Material {id: 'urn:ngsi-ld:Material:ScrapPP'})
+  MATCH (circuprint:Company {id: 'urn:ngsi-ld:Company:circuprint'})
+  WITH scrap, circuprint, co2PerKm_kgCO2, transportDistance_km, energyConsumption_kWh, co2PerKWh_kgCO2
+  CREATE (scrap)-[:RECYCLED_BY {
+    energyConsumption_kWh: energyConsumption_kWh,
+    co2Emissions_tCO2: (energyConsumption_kWh * co2PerKWh_kgCO2 / 1000),
+    co2EmissionsDescription: 'CO2 from recycling process energy (' + toString(co2PerKWh_kgCO2) + ' kg CO2/kWh)',
+    transportDistance_km: transportDistance_km,
+    co2Transport_tCO2: (transportDistance_km * co2PerKm_kgCO2 / 1000),
+    co2TransportDescription: 'CO2 from truck transport (' + toString(co2PerKm_kgCO2) + ' kg CO2/km)'
+  }]->(circuprint);
+
+
+
   WITH 0.12 AS co2PerKm_kgCO2, 350 AS transportDistance_km, 12.5 AS energyConsumption_kWh, 0.5 AS co2PerKWh_kgCO2
   MATCH (m:Material {id: 'urn:ngsi-ld:Material:ScrapPP'})
   MATCH (s:Company {id: 'urn:ngsi-ld:Company:rawplasticsa'})
@@ -239,7 +251,7 @@
   // RecyclePP supplied by Lollo
   WITH 0.12 AS co2PerKm_kgCO2, 420 AS transportDistance_km
   MATCH (recycle:Material {id: 'urn:ngsi-ld:Material:RecyclePP'})
-  MATCH (lollo:Company {id: 'urn:ngsi-ld:Company:Lollo'})
+  MATCH (lollo:Company {id: 'urn:ngsi-ld:Company:lollo'})
   WITH recycle, lollo, co2PerKm_kgCO2, transportDistance_km
   CREATE (recycle)-[:SUPPLIED_BY {
     priority: 1,
@@ -248,6 +260,18 @@
     co2TransportDescription: 'CO2 from truck transport (' + toString(co2PerKm_kgCO2) + ' kg CO2/km)'
   }]->(lollo);
 
+
+  // RecyclePP supplied by Circuprint
+  WITH 0.12 AS co2PerKm_kgCO2, 0 AS transportDistance_km
+  MATCH (recycle:Material {id: 'urn:ngsi-ld:Material:RecyclePP'})
+  MATCH (circuprint:Company {id: 'urn:ngsi-ld:Company:circuprint'})
+  WITH recycle, circuprint, co2PerKm_kgCO2, transportDistance_km
+  CREATE (recycle)-[:SUPPLIED_BY {
+    priority: 1,
+    transportDistance_km: transportDistance_km,
+    co2Transport_tCO2: (transportDistance_km * co2PerKm_kgCO2 / 1000),
+    co2TransportDescription: 'CO2 from truck transport (' + toString(co2PerKm_kgCO2) + ' kg CO2/km)'
+  }]->(circuprint);
 
   WITH 0.12 AS co2PerKm_kgCO2, 650 AS transportDistance_km
   MATCH (m:Material {id: 'urn:ngsi-ld:Material:PP'})
