@@ -16,15 +16,15 @@ if [ $# -lt 2 ]; then
     exit 1
 fi
 
-jsonFile="$1"
 TENANT="$1"
+jsonFile="$2"
 
 KONG_URL='https://'"${HOST}"'/kong/keycloak-orion'
 
 curl -s -iL -X POST  ''"${KONG_URL}"'/ngsi-ld/v1/entityOperations/upsert' \
 -H 'NGSILD-Tenant: '"${TENANT}"'' \
 -H 'NGSILD-Path: /' \
--H 'Content-Type: application/ld+json' \
+-H 'Content-Type: application/json' \
 -H 'Accept: application/json' \
 -H 'Authorization: Bearer '"${token}"' ' \
 -d @$jsonFile
