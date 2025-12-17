@@ -245,6 +245,166 @@ Verify all services are running and accessible before proceeding with data opera
 - Check tenant naming conventions
 - Ensure NGSI-LD JSON validity
 
+## Debugging
+
+### Platform Debugging Script
+
+A dedicated debugging script is available to help diagnose platform issues:
+```bash
+cd commands
+./debug-platform.sh
+```
+
+This script provides comprehensive system health checks including service status, connectivity tests, and configuration validation.
+
+### Service Status Verification
+
+**Check all running containers:**
+```bash
+docker ps
+```
+
+**Check all containers (including stopped):**
+```bash
+docker ps -a
+```
+
+**Inspect specific container:**
+```bash
+docker inspect [container-name]
+```
+
+### Network Connectivity Testing
+
+**Test Orion-LD direct access:**
+```bash
+curl -X GET http://localhost:1026/ngsi-ld/ex/v1/version
+```
+
+**Test Orion-LD via Kong:**
+```bash
+cd commands
+./getTokenForOrion.sh
+# Then use the token to test authenticated access
+./getOrionVersionViaKong.sh
+```
+
+### Authentication Issues
+
+**Verify Keycloak is running:**
+```bash
+curl -X GET http://localhost:8080/realms/fiware-server/.well-known/openid-configuration
+```
+
+**Test token generation:**
+```bash
+cd commands
+./getTokenForOrion.sh
+# Check if a valid token is returned
+```
+
+**Debug token issues:**
+- Check Keycloak logs for authentication errors
+- Ensure Kong is properly configured to communicate with Keycloak
+
+### Data Persistence Issues
+
+**Check TimescaleDB data directory:**
+```bash
+docker volume inspect circuloos-data-platform_timescaledb-data
+```
+
+**Check volume mounts:**
+```bash
+docker inspect [container-name] | jq '.[0].Mounts'
+```
+
+### Port Conflicts
+
+**Check if ports are already in use:**
+```bash
+# Check common ports used by the platform
+sudo netstat -tulpn | grep -E ':(1026|8080|8000|5432|5000|8501|8503)'
+```
+
+**Or using lsof:**
+```bash
+sudo lsof -i :1026  # Orion-LD
+sudo lsof -i :8080  # Mintaka/Keycloak
+sudo lsof -i :8000  # Kong
+```
+
+### Performance Debugging
+
+**Monitor container resource usage:**
+```bash
+docker stats
+```
+
+**Check container resource limits:**
+```bash
+docker inspect [container-name] | jq '.[0].HostConfig.Memory'
+```
+
+### NGSI-LD Data Validation
+
+**Validate JSON syntax:**
+```bash
+cat your-data.json | jq .
+```
+
+**Test with minimal entity:**
+```json
+{
+  "id": "urn:ngsi-ld:test:001",
+  "type": "TestEntity",
+  "@context": ["https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"]
+}
+```
+
+### Clean Restart
+
+**Complete platform reset:**
+```bash
+./service.sh stop
+docker system prune -a --volumes  # WARNING: Removes all unused containers, networks, images, and volumes
+./service.sh start
+```
+
+**Reset specific service:**
+```bash
+docker compose restart [service-name]
+```
+
+### Debug Logs Location
+
+Platform debug logs can be found in:
+- Container logs: `docker logs [container-name]`
+- Debug logs directory: [debug-logs/](./debug-logs/)
+- Application-specific logs within containers
+
+### Common Error Messages
+
+**"Connection refused" errors:**
+- Verify service is running: `docker ps`
+- Check port mappings are correct
+- Ensure no firewall blocking
+
+**"Unauthorized" or "403 Forbidden":**
+- Verify authentication token is valid
+- Check Keycloak realm and client configuration
+- Ensure user has proper permissions
+
+**"Entity already exists" errors:**
+- Use PATCH instead of POST to update
+- Or delete existing entity first
+- Check for duplicate IDs
+
+**TimescaleDB connection errors:**
+- Verify TimescaleDB container is running
+- Check database credentials
+- Ensure Mintaka can reach TimescaleDB
+
 ## Support
 
 **Technical Contact**: `konstantinos.gombakis@eurodyn.com`
