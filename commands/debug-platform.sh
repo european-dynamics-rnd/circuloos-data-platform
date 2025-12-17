@@ -13,7 +13,7 @@ NC='\033[0m' # No Color
 echo -e "${GREEN}=== CIRCULOOS Data Platform Debug Log Generator ===${NC}"
 echo -e "${YELLOW}Checking required commands...${NC}\n"
 
-REQUIRED_COMMANDS=("docker" "docker-compose" "curl" "grep" "awk" "sed" "date" "hostname" "uname" "uptime" "du" "df" "wc")
+REQUIRED_COMMANDS=("docker" "curl" "grep" "awk" "sed" "date" "hostname" "uname" "uptime" "du" "df" "wc")
 OPTIONAL_COMMANDS=("netstat" "ss" "lsof" "nslookup" "ping" "systemctl" "journalctl")
 MISSING_REQUIRED=()
 MISSING_OPTIONAL=()
@@ -26,6 +26,12 @@ for cmd in "${REQUIRED_COMMANDS[@]}"; do
     fi
 done
 
+# Special check for docker compose (V2 plugin)
+if ! docker compose version &> /dev/null; then
+    MISSING_REQUIRED+=("docker compose")
+    echo -e "${RED}✗ Missing required command: docker compose${NC}"
+fi
+
 # Check optional commands
 for cmd in "${OPTIONAL_COMMANDS[@]}"; do
     if ! command -v "$cmd" &> /dev/null; then
@@ -37,11 +43,6 @@ done
 if [ ${#MISSING_REQUIRED[@]} -gt 0 ]; then
     echo -e "\n${RED}ERROR: Missing required commands: ${MISSING_REQUIRED[*]}${NC}"
     echo -e "${YELLOW}Please install missing commands and try again.${NC}"
-    echo ""
-    echo "Installation hints:"
-    echo "  - docker: Visit https://docs.docker.com/engine/install/"
-    echo "  - docker-compose: sudo apt install docker-compose (or use Docker Desktop)"
-    echo "  - curl: sudo apt install curl"
     exit 1
 fi
 
