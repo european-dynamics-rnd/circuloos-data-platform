@@ -112,6 +112,19 @@ echo -e "Log file: ${GREEN}$LOG_FILE${NC}\n"
     docker ps -a --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}" 2>&1
     echo ""
 
+    # Container Exit Codes and Status Details
+    echo "========== CONTAINER EXIT CODES & STATUS =========="
+    docker ps -a --format "table {{.Names}}\t{{.State}}\t{{.Status}}" 2>&1
+    echo ""
+    echo "Containers with non-zero exit codes:"
+    docker ps -a --filter "status=exited" --format "{{.Names}}: Exit {{.Status}}" 2>&1 | grep -v "Exit 0" || echo "None found"
+    echo ""
+
+    # Docker Compose Status
+    echo "========== DOCKER COMPOSE STATUS =========="
+    docker-compose ps 2>&1
+    echo ""
+
     # Container Resource Usage
     echo "========== CONTAINER RESOURCE USAGE =========="
     docker stats --no-stream --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.NetIO}}" 2>&1
@@ -188,9 +201,32 @@ echo -e "Log file: ${GREEN}$LOG_FILE${NC}\n"
     docker system df 2>&1
     echo ""
 
+    # Recent Docker Events
+    echo "========== RECENT DOCKER EVENTS (Last 50) =========="
+    docker events --since 1h --until 0s 2>&1 | tail -50 || echo "No recent events or docker events not available"
+    echo ""
+
     # System Disk Usage
     echo "========== SYSTEM DISK USAGE =========="
     df -h 2>&1
+    echo ""
+
+    # System Memory and Swap
+    echo "========== SYSTEM MEMORY & SWAP =========="
+    free -h 2>&1
+    echo ""
+    echo "OOM Killer activity (last 50 lines):"
+    dmesg -T 2>&1 | grep -i "killed process" | tail -50 || echo "No OOM kills found or dmesg not accessible"
+    echo ""
+
+    # Kernel Messages Related to Docker
+    echo "========== KERNEL MESSAGES (Docker/Container related) =========="
+    dmesg -T 2>&1 | grep -i -E "docker|container|oom" | tail -30 || echo "No relevant kernel messages or dmesg not accessible"
+    echo ""
+
+    # System Limits
+    echo "========== SYSTEM LIMITS (ulimit) =========="
+    ulimit -a 2>&1
     echo ""
 
     # Docker Compose Configuration
@@ -227,12 +263,36 @@ echo -e "Log file: ${GREEN}$LOG_FILE${NC}\n"
     curl -s -o /dev/null -w "HTTP Status: %{http_code}\n" http://localhost:8080/health 2>&1 || echo "Cannot reach Keycloak"
     echo ""
 
-    # Container Logs (Last 50 lines)
-    echo "========== CONTAINER LOGS (Last 50 lines each) =========="
-    for container in $(docker ps --format "{{.Names}}" 2>&1); do
+    # Container Health Checks
+    echo "========== CONTAINER HEALTH CHECKS =========="
+    for container in $(docker ps -a --format "{{.Names}}" 2>&1); do
+        health=$(docker inspect --format='{{.State.Health.Status}}' "$container" 2>&1)
+        if [ "$health" != "<no value>" ] && [ -n "$health" ]; then
+            echo "$container: $health"
+        fi
+    done
+    echo ""
+
+    # Inspect Failed/Stopped Containers
+    echo "========== DETAILED INSPECTION OF FAILED/STOPPED CONTAINERS =========="
+    for container in $(docker ps -a --filter "status=exited" --format "{{.Names}}" 2>&1); do
+        echo "--- Inspecting: $container ---"
+        docker inspect "$container" 2>&1 | grep -A 20 -E '"State"|"ExitCode"|"Error"|"Health"|"RestartCount"'
+        echo ""
+    done
+    echo ""
+
+    # Container Restart Counts
+    echo "========== CONTAINER RESTART COUNTS =========="
+    docker ps -a --format "table {{.Names}}\t{{.Status}}" 2>&1 | grep -i restart || echo "No restarting containers"
+    echo ""
+
+    # Container Logs (Last 100 lines, including stopped containers)
+    echo "========== CONTAINER LOGS (Last 100 lines each, including stopped) =========="
+    for container in $(docker ps -a --format "{{.Names}}" 2>&1); do
         echo ""
         echo "--- Logs for: $container ---"
-        docker logs --tail=50 "$container" 2>&1
+        docker logs --tail=100 "$container" 2>&1
         echo ""
     done
 
@@ -248,11 +308,28 @@ echo -e "Log file: ${GREEN}$LOG_FILE${NC}\n"
 
     # Network Connectivity Tests
     echo "========== NETWORK CONNECTIVITY =========="
-    echo "Testing DNS resolution..."
+    echo "Testing DNS resolution from host..."
     nslookup google.com 2>&1 | head -5
     echo ""
-    echo "Testing internet connectivity..."
+    echo "Testing internet connectivity from host..."
     ping -c 2 8.8.8.8 2>&1
+    echo ""
+
+    # DNS Resolution from Containers
+    echo "========== DNS RESOLUTION FROM CONTAINERS =========="
+    for container in $(docker ps --format "{{.Names}}" 2>&1 | head -3); do
+        echo "Testing DNS in container: $container"
+        docker exec "$container" nslookup google.com 2>&1 | head -5 || echo "DNS test failed or nslookup not available in container"
+        echo ""
+    done
+
+    # Time Synchronization
+    echo "========== TIME SYNCHRONIZATION =========="
+    echo "Host time: $(date)"
+    echo "Host timezone: $(timedatectl 2>&1 | grep 'Time zone' || echo $TZ)"
+    if command -v timedatectl &> /dev/null; then
+        timedatectl status 2>&1
+    fi
     echo ""
 
     # Firewall Status
@@ -263,6 +340,29 @@ echo -e "Log file: ${GREEN}$LOG_FILE${NC}\n"
         sudo firewall-cmd --state 2>&1
     else
         echo "No common firewall tool detected"
+    fi
+    echo ""
+
+    # SELinux/AppArmor Status
+    echo "========== SELINUX/APPARMOR STATUS =========="
+    if command -v getenforce &> /dev/null; then
+        echo "SELinux status: $(getenforce 2>&1)"
+        sestatus 2>&1 | head -10
+    elif command -v aa-status &> /dev/null; then
+        echo "AppArmor status:"
+        sudo aa-status 2>&1 | head -20
+    else
+        echo "Neither SELinux nor AppArmor detected"
+    fi
+    echo ""
+
+    # Docker Daemon Logs
+    echo "========== DOCKER DAEMON LOGS (Last 50 lines) =========="
+    if command -v journalctl &> /dev/null; then
+        sudo journalctl -u docker -n 50 --no-pager 2>&1
+    else
+        echo "journalctl not available, trying docker logs location..."
+        tail -50 /var/log/docker.log 2>&1 || echo "Docker logs not accessible"
     fi
     echo ""
 
