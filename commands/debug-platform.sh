@@ -162,10 +162,10 @@ echo -e "Log file: ${GREEN}$LOG_FILE${NC}\n"
         [ -n "$KONG_PORT" ] && PORTS_TO_CHECK+=("$KONG_PORT:Kong")
         
         # Add common Kong ports
-        PORTS_TO_CHECK+=("8000:Kong-Proxy" "8001:Kong-Admin" "8080:Keycloak-HTTP")
+        PORTS_TO_CHECK+=("8000:Kong-Proxy" "8001:Kong-Admin" "8082:Keycloak-HTTP")
     else
         # Fallback to default ports if .env not found
-        PORTS_TO_CHECK=("8000:Kong-Proxy" "8001:Kong-Admin" "8080:Keycloak" "1026:Orion-LD" "8668:QuantumLeap" "5432:PostgreSQL" "27017:MongoDB")
+        PORTS_TO_CHECK=("8000:Kong-Proxy" "8001:Kong-Admin" "8082:Keycloak" "1026:Orion-LD" "8668:QuantumLeap" "5432:PostgreSQL" "27017:MongoDB")
     fi
     
     for port_info in "${PORTS_TO_CHECK[@]}"; do
@@ -260,7 +260,7 @@ echo -e "Log file: ${GREEN}$LOG_FILE${NC}\n"
 
     # Keycloak Status
     echo "========== KEYCLOAK STATUS =========="
-    curl -s -o /dev/null -w "HTTP Status: %{http_code}\n" http://localhost:8080/health 2>&1 || echo "Cannot reach Keycloak"
+    curl -s -o /dev/null -w "HTTP Status: %{http_code}\n" http://localhost:8082/health 2>&1 || echo "Cannot reach Keycloak"
     echo ""
 
     # Container Health Checks

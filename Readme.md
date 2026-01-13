@@ -293,7 +293,7 @@ cd commands
 
 **Verify Keycloak is running:**
 ```bash
-curl -X GET http://localhost:8080/realms/fiware-server/.well-known/openid-configuration
+curl -X GET http://localhost:8082/realms/fiware-server/.well-known/openid-configuration
 ```
 
 **Test token generation:**
@@ -324,13 +324,13 @@ docker inspect [container-name] | jq '.[0].Mounts'
 **Check if ports are already in use:**
 ```bash
 # Check common ports used by the platform
-sudo netstat -tulpn | grep -E ':(1026|8080|8000|5432|5000|8501|8503)'
+sudo netstat -tulpn | grep -E ':(1026|8082|8000|5432|5000|8501|8503)'
 ```
 
 **Or using lsof:**
 ```bash
 sudo lsof -i :1026  # Orion-LD
-sudo lsof -i :8080  # Mintaka/Keycloak
+sudo lsof -i :8082  # Mintaka/Keycloak
 sudo lsof -i :8000  # Kong
 ```
 

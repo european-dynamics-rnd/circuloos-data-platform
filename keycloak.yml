@@ -32,7 +32,7 @@ services:
     init: true
     command: start-dev
     ports:
-      - "127.0.0.1:8080:8080"  # for testing !!! 
+      - "127.0.0.1:8082:8082"  # for testing !!! 
       # - "127.0.0.1:${KEYCLOAK_TLS_PORT}:${KEYCLOAK_TLS_PORT}" # available to localhost
       - "${KEYCLOAK_TLS_PORT}:${KEYCLOAK_TLS_PORT}"  # Public available to internet
     networks:

@@ -18,7 +18,7 @@
           - name: pep-plugin
             config:
               authorizationendpointtype: Keycloak
-              # authorizationendpointaddress: http://circuloos-keycloak:8080
+              # authorizationendpointaddress: http://circuloos-keycloak:8082
               authorizationendpointaddress : https://circuloos-keycloak:8443
               keycloakrealm: fiware-server
               keycloakclientid: orion-pep
@@ -46,7 +46,7 @@
           - name: pep-plugin
             config:
               authorizationendpointtype: Keycloak
-              # authorizationendpointaddress: http://circuloos-keycloak:8080
+              # authorizationendpointaddress: http://circuloos-keycloak:8082
               authorizationendpointaddress : https://circuloos-keycloak:8443
               keycloakrealm: fiware-server
               keycloakclientid: mintaka-pep

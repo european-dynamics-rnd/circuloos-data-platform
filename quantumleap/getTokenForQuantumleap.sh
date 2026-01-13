@@ -4,7 +4,7 @@
 set -e
 export $(cat ../.env | grep "#" -v)
 
-# token=$(curl --insecure --location --request POST 'http://localhost:8080/realms/fiware-server/protocol/openid-connect/token' \
+# token=$(curl --insecure --location --request POST 'http://localhost:8082/realms/fiware-server/protocol/openid-connect/token' \
 
 if [ "$HOST" == "localhost" ]; then
   INSECURE=' --insecure '
