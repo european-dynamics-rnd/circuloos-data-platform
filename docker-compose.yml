@@ -9,7 +9,7 @@ services:
     hostname: circuloos-ld-context
     container_name: circuloos-ld-context
     expose:
-        - "3004:80"
+        - "80"
     networks:
       - circuloos
     volumes:
@@ -56,7 +56,7 @@ services:
     hostname: circuloos-mongo-db
     container_name: circuloos-mongo-db
     expose:
-      - "${MONGO_DB_PORT}:${MONGO_DB_PORT}"
+      - "${MONGO_DB_PORT}"
     networks:
       - circuloos
     volumes:
