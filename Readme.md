@@ -157,13 +157,17 @@ A simple Indoor Enviromental Quality sensor measurements have been encoding used
 
 
 ## Data Transformation Tools
+By default the following tools are disabled. To enable them uncomment the L13 of ```service.sh``` 
 
+```#CIRCULOOS_YML=" -f circuloos_custom_apps.yml"``` -> ```CIRCULOOS_YML=" -f circuloos_custom_apps.yml"```
+
+and stop (```./service.sh stop```), build the containers - will take some time (```./service.sh build```) and start again the applications (```./service.sh start```).
 # CSV to Orion-LD agent
 **Purpose**: Transform CSV data into NGSI-LD entities and upload to Orion-LD
 
 A custom agent have been created to transform a CSV to NGSI-LD entities and send/POST them to the Orion-LD.
 
-1. Create the csv file with the data that you want to add to the Orion-LD. **IMPORTANT** the first 2 columns **MUST BE** id,type. See [csv_NGSILD_Agent/leatherProducts.csv](csv_NGSILD_Agent/leatherProducts.csv) for a csv file with 2 entities. To add timestamp for the data add a column "observedat" with the date time into a ISO8601 format ("2024-01-31T12:03:02Z"), otherwise the timestamp will be set to current date/time.
+1. Create the csv file with the data that you want to add to the Orion-LD.    **IMPORTANT** the first 2 columns **MUST BE** id,type. See [csv_NGSILD_Agent/leatherProducts.csv](csv_NGSILD_Agent/leatherProducts.csv) for a csv file with 2 entities. To add timestamp for the data add a column "observedat" with the date time into a ISO8601 format ("2024-01-31T12:03:02Z"), otherwise the timestamp will be set to current date/time.
 2. Go to http://localhost:5000, click on "Browse..." to select a csv file. Next click "Upload".
 3. Click "Generate NGSI-LD entities". A JSON representation of the NGSI-LD of the csv entities will appear.
 4. Click "Post NGSI-LD entities to Orion-LD". The created NGSI-LD JSON will be send to the Orion-LD. A message with the IDs of the send to the Orion-LD will appear. 
