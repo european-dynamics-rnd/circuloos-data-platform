@@ -34,7 +34,7 @@ services:
     ports:   # for communication outside docker environment BUT only localhost
       - "127.0.0.1:${ORION_LD_PORT}:${ORION_LD_PORT}"
     expose: # for monitoring via prometheus
-      - 8000:8000
+      - 8000
     environment:
       - ORIONLD_TROE=TRUE
       - ORIONLD_TROE_USER=${ORIONLD_TROE_USER}
