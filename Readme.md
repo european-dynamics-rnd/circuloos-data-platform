@@ -69,6 +69,29 @@ Configure local Orion-LD to forward selected data to CIRCULOOS Orion-LD automati
 
 **Tenant Configuration**: Select a unique `NGSILD-Tenant` identifier to ensure data isolation between partner organizations.
 
+### Tenant Security and Access Control
+
+As part of our ongoing security enhancements, we have activated additional security features on the CIRCULOOS platform.
+
+As outlined in the documentation, the CIRCULOOS platform is multi-tenant, meaning that data from different tenants is strictly segregated. Tenant selection is defined through the `NGSILD-Tenant` header in all requests (POST, GET, etc.) to the CIRCULOOS Data Platform.
+
+**Effective immediately, you are only permitted to use tenants that start with your username.**
+
+**Example:**
+- Username: `circuloos-ed`
+- Allowed tenants:
+  - `circuloos_ed`
+  - `circuloos_ed_experiment1`
+  - `circuloos_ed_kostas`
+  - `circuloos_ed_recycled`
+  - `circuloos_ed_cadkjfa_adaf`
+
+**Important:** Tenant names must not contain dashes (`-`). Please replace any dash with an underscore (`_`).
+
+**Integration Tenant:**
+For experiments that have not yet completed Phase 1 of the integration, read and write access is permitted only to the following tenant:
+- `circuloos_integration`
+
 ## Local Development Environment
 
 ### System Requirements
@@ -132,11 +155,11 @@ cd commands
 
 **Orion-LD Status:**
 - `./getOrionVersion.sh`: Direct Orion-LD version check
-- `./getOrionVersionViaKong.sh`: Orion-LD via Kong proxy (production method)
+- `./getOrionVersionViaKong.sh <tenant>`: Orion-LD via Kong proxy (production method)
 
 **Mintaka Status:**
 - `./getMintakaVersion.sh`: Direct Mintaka version check
-- `./getMintakaVersionViaKong.sh`: Mintaka via Kong proxy (production method)
+- `./getMintakaVersionViaKong.sh <tenant>`: Mintaka via Kong proxy (production method)
 
 ### Data Operations Testing
 
