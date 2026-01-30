@@ -51,6 +51,8 @@ def get_cb_info_with_token(logger):
         # the CB is behind a PEP proxy (wilma or KONG), need to get a token 
         token= get_orion_token(config)
         headers['Authorization']= 'Bearer ' + token + ' '
+        headers['NGSILD-Tenant']= config['ORION_LD_TENANT']       
+
         endpoint=f"https://{config['NGSI_LD_CONTECT_BROKER']['HOSTNAME']}/kong/keycloak-orion/version" 
     else:
         endpoint=f"http://{config['NGSI_LD_CONTECT_BROKER']['HOSTNAME']}:{config['NGSI_LD_CONTECT_BROKER']['PORT']}/version"
