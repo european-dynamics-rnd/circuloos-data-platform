@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "5655f039-d439-4995-a7a1-9335d70972ed",
+    "_postman_id": "856389ff-7d83-45ea-87bb-83c514c6532d",
     "name": "ED CIRCULOOS Platform",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "9192452"
@@ -91,7 +91,7 @@
           },
           {
             "key": "NGSILD-Tenant",
-            "value": "test_circuloos",
+            "value": "{{TENANT}}",
             "type": "text"
           }
         ],
@@ -114,7 +114,7 @@
         "header": [
           {
             "key": "NGSILD-Tenant",
-            "value": "test_circuloos"
+            "value": "{{TENANT}}"
           },
           {
             "key": "NGSILD-Path",
@@ -134,13 +134,12 @@
           },
           {
             "key": "type",
-            "value": "application/ld+json",
-            "type": "text"
+            "value": "application/ld+json"
           }
         ],
         "body": {
           "mode": "raw",
-          "raw": "[{\r\n    \"id\": \"urn:ngsi-ld:circuloos:demo_1:ieq-001\",\r\n    \"type\": \"ieq_sensor\",\r\n    \"pm25\": {\r\n        \"type\": \"Property\",\r\n        \"value\": 159.39,\r\n        \"unitCode\": \"GQ\",\r\n        \"observedAt\": \"2024-01-11T10:15:07.446000Z\"\r\n    },\r\n    \"temperature\": {\r\n        \"type\": \"Property\",\r\n        \"value\": 24.32,\r\n        \"unitCode\": \"CEL\",\r\n        \"observedAt\": \"2024-01-11T10:15:07.446000Z\"\r\n    },\r\n    \"relativeHumidity\": {\r\n        \"type\": \"Property\",\r\n        \"value\": 98.09,\r\n        \"unitCode\": \"P1\",\r\n        \"observedAt\": \"2024-01-11T10:15:07.446000Z\"\r\n    }\r\n}]",
+          "raw": "[{\r\n    \"id\": \"urn:ngsi-ld:circuloos:demo_1:ieq-001\",\r\n    \"type\": \"ieq_sensor\",\r\n    \"pm25\": {\r\n        \"type\": \"Property\",\r\n        \"value\": 139.39,\r\n        \"unitCode\": \"GQ\",\r\n        \"observedAt\": \"2024-01-11T10:15:07.446000Z\"\r\n    },\r\n    \"temperature\": {\r\n        \"type\": \"Property\",\r\n        \"value\": 14.32,\r\n        \"unitCode\": \"CEL\",\r\n        \"observedAt\": \"2024-01-11T10:15:07.446000Z\"\r\n    },\r\n    \"relativeHumidity\": {\r\n        \"type\": \"Property\",\r\n        \"value\": 58.09,\r\n        \"unitCode\": \"P1\",\r\n        \"observedAt\": \"2024-01-11T10:15:07.446000Z\"\r\n    }\r\n}]",
           "options": {
             "raw": {
               "language": "json"
@@ -169,7 +168,7 @@
         "header": [
           {
             "key": "NGSILD-Tenant",
-            "value": "test_circuloos"
+            "value": "{{TENANT}}"
           },
           {
             "key": "NGSILD-Path",
@@ -288,7 +287,7 @@
           },
           {
             "key": "NGSILD-Tenant",
-            "value": "test_circuloos",
+            "value": "{{TENANT}}",
             "type": "text"
           }
         ],
@@ -316,7 +315,7 @@
           },
           {
             "key": "NGSILD-Tenant",
-            "value": "test_circuloos",
+            "value": "{{TENANT}}",
             "type": "text"
           },
           {
@@ -345,6 +344,7 @@
       "listen": "prerequest",
       "script": {
         "type": "text/javascript",
+        "requests": {},
         "exec": [
           ""
         ]
@@ -354,6 +354,7 @@
       "listen": "test",
       "script": {
         "type": "text/javascript",
+        "requests": {},
         "exec": [
           ""
         ]
@@ -363,43 +364,39 @@
   "variable": [
     {
       "key": "PARTNER_USERNAME",
-      "value": "test-circuloos",
-      "type": "string"
+      "value": "test-circuloos"
     },
     {
       "key": "PARTNER_PASSWORD",
-      "value": "2UnGRKm7NW8Wxa9Z3N",
-      "type": "string"
+      "value": "2UnGRKm7NW8Wxa9Z3N"
     },
     {
       "key": "ORION_PEP_SECRET",
-      "value": "yWv2aRCm3KKMGrj9lMXQcEXY4v80tcFk",
-      "type": "string"
+      "value": "yWv2aRCm3KKMGrj9lMXQcEXY4v80tcFk"
     },
     {
       "key": "MINKTAKA_PEP_SECRET",
-      "value": "zQXGjcxPWuF7YBpAiFtaIOEIOrCiWqeH",
-      "type": "string"
-    },
-    {
-      "key": "ORION_TOKEN",
-      "value": "",
-      "type": "string"
+      "value": "zQXGjcxPWuF7YBpAiFtaIOEIOrCiWqeH"
     },
     {
       "key": "MINTAKA_TOKEN",
-      "value": "",
-      "type": "string"
+      "value": ""
     },
     {
-      "key": "ORION_KONG_URL",
-      "value": "https://circuloos-platform.eurodyn.com/kong/keycloak-orion",
-      "type": "string"
+      "key": "ORION_TOKEN",
+      "value": ""
     },
     {
       "key": "MINKTAKA_KONG_URL",
-      "value": "https://circuloos-platform.eurodyn.com/kong/keycloak-mintaka",
-      "type": "string"
+      "value": "https://circuloos-platform.eurodyn.com/kong/keycloak-mintaka"
+    },
+    {
+      "key": "ORION_KONG_URL",
+      "value": "https://circuloos-platform.eurodyn.com/kong/keycloak-orion"
+    },
+    {
+      "key": "TENANT",
+      "value": ""
     }
   ]
 }
