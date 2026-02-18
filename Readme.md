@@ -23,6 +23,24 @@ The main components of the circuloos IoT LD platform are:
 
 ![CILCULOOS Platform Architecture](./CILCULOOS_demo.png)
 
+## Data Models
+
+The CIRCULOOS platform leverages standardized data models to enhance interoperability and consistency across the ecosystem.
+
+### Standard Data Models
+We adhere to [Smart Data Models](https://smartdatamodels.org/), a global initiative that provides open-licensed, standardized data models for various domains, including Smart Cities, Smart AgriFood, Smart Manufacturing, and more. These models facilitate seamless data exchange and integration between different systems.
+
+### CIRCULOOS Specific Models
+To address the specific needs of the circular economy in manufacturing, we have developed the [CIRCULOOS Data Model](https://github.com/european-dynamics-rnd/CIRCULOOS_Data_model). This repository hosts the definitions, schemas, and examples of the custom entities used within the CIRCULOOS platform, referencing and extending standard models where applicable.
+
+## Learning Resources
+
+To better understand the underlying technologies of the CIRCULOOS platform, we recommend referencing the official FIWARE tutorials and documentation:
+- **[NGSI-LD Step-by-Step Tutorials](https://github.com/FIWARE/tutorials.NGSI-LD)**: A comprehensive collection of tutorials for learning how to use NGSI-LD (Next Generation Service Interfaces - Linked Data) context brokers and IoT agents.
+- **[FIWARE Academy](https://fiware-academy.readthedocs.io/en/latest/)**: Video tutorials and slide decks validating FIWARE technologies.
+- **[Orion-LD Documentation](https://github.com/FIWARE/context.Orion-LD/blob/master/doc/manuals-ld/intro.md)**: The official administration and user guides for the Orion-LD Context Broker.
+- **[ETSI NGSI-LD Specification](https://www.etsi.org/deliver/etsi_gs/CIM/001_099/009/01.08.01_60/gs_cim009v010801p.pdf)**: The technical specification for the NGSI-LD API (for advanced users).
+
 ## Integration Guide
 
 ### Prerequisites
