@@ -2206,7 +2206,7 @@ fd4cb91f-7d85-4a80-b708-2249c0630e6a	b9eca7a6-abda-4d7b-97db-043e9d5852c6
 --
 
 COPY public.credential (id, salt, type, user_id, created_date, user_label, secret_data, credential_data, priority) FROM stdin;
-ac1986e4-8fc5-4a7a-9c21-0cba5b18113d	\N	password	89ff425e-7daf-4d02-bd10-ece87ed8c06e	1696404798602	\N	{"value":"g7ntHbZp5x44JtsFmgKaM8KvjHY2ByjOUuALZJL0Q4ugaq02b6ZkT6l6Wl8OQLgyt+cKKT5MqupM8Y837YRGJA==","salt":"FaEC75E+HdJSSqLwO8xY/Q==","additionalParameters":{}}	{"hashIterations":27500,"algorithm":"pbkdf2-sha256","additionalParameters":{}}	10
+ac1986e4-8fc5-4a7a-9c21-0cba5b18113d	\N	password	89ff425e-7daf-4d02-bd10-ece87ed8c06e	1696404798602	\N	{"value":"lYW7NqCYOnthg6efArQGOos6WfKsAXm64QPsDNjhuLU=","salt":"G2lsxqkHZTpCgSTMqg4aRg==","additionalParameters":{}}	{"hashIterations":27500,"algorithm":"pbkdf2-sha256","additionalParameters":{}}	10
 54929b6a-cace-4589-98ca-53383adb2b47	\N	password	7a45ce29-fd6d-4b3d-8860-0dc999e58b3a	1696404896388	My password	{"value":"URBECkWbh5PgIY30kHI9qr9pGei6rcMW0Gm8AQWyruBStJH5RP8KLA2pWSR9cKulKa6C3Dv+cnyYnGVd6uW8Nw==","salt":"yY+DkEUZ6dO4r42S4EdD/Q==","additionalParameters":{}}	{"hashIterations":27500,"algorithm":"pbkdf2-sha256","additionalParameters":{}}	10
 \.
 
