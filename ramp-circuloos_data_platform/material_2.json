@@ -1,0 +1,80 @@
+[{
+  "id": "urn:ngsi-ld:standard_plastics:2ae7c84d-de4a-42a2-989c-5cb5c0e1f480",
+  "type": "standard_plastics",
+  "materialAdTitle": {
+    "type": "Property",
+    "value": "petg fillament palet",
+    "observedAt": "2026-02-16T14:20:46.719Z"
+  },
+  "materialTypeL0": {
+    "type": "Property",
+    "value": "['RM2001']",
+    "observedAt": "2026-02-16T14:20:46.719Z"
+  },
+  "materialTypeL1": {
+    "type": "Property",
+    "value": "['PM3300']",
+    "observedAt": "2026-02-16T14:20:46.719Z"
+  },
+  "physicalFormCategory": {
+    "type": "Property",
+    "value": "byWeight",
+    "observedAt": "2026-02-16T14:20:46.719Z"
+  },
+  "imageURL": {
+    "type": "Property",
+    "value": "",
+    "observedAt": "2026-02-16T14:20:46.719Z"
+  },
+  "materialPrice": {
+    "type": "Property",
+    "value": 100,
+    "observedAt": "2026-02-16T14:20:46.719Z"
+  },
+  "availableFrom": {
+    "type": "Property",
+    "value": "2026-02-17",
+    "observedAt": "2026-02-16T14:20:46.719Z"
+  },
+  "materialAdType": {
+    "type": "Property",
+    "value": "Sell",
+    "observedAt": "2026-02-16T14:20:46.719Z"
+  },
+  "materialDescription": {
+    "type": "Property",
+    "value": "petg fillament palet",
+    "observedAt": "2026-02-16T14:20:46.719Z"
+  },
+  "materialAdStatus": {
+    "type": "Property",
+    "value": "Open",
+    "observedAt": "2026-02-16T14:20:46.719Z"
+  },
+  "materialQuantity": {
+    "type": "Property",
+    "value": 100,
+    "unitCode": "KGM",
+    "observedAt": "2026-02-16T14:20:46.719Z"
+  },
+  "ownedBy": {
+    "type": "Relationship",
+    "object": "urn:ngsi-ld:ownedBy:kostas_ed_material:4d42616f-df50-4ede-a781-f4eb7be82567",
+    "observedAt": "2026-02-16T14:20:46.719Z"
+  },
+  "productionFacility": {
+    "type": "Relationship",
+    "object": "urn:ngsi-ld:productionFacility:chania_kostas_storage:114402b3-d3e5-4076-b3f7-f21a50d36c4c",
+    "observedAt": "2026-02-16T14:20:46.719Z"
+  },
+  "materialToSellOrBuy": {
+    "type": "Property",
+    "value": "RM2001",
+    "observedAt": "2026-02-16T14:20:46.719Z"
+  },
+  "CountryCode": {
+    "type": "Property",
+    "value": "Greece",
+    "observedAt": "2026-02-16T14:20:46.719Z"
+  }
+}]

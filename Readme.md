@@ -33,9 +33,11 @@ We adhere to [Smart Data Models](https://smartdatamodels.org/), a global initiat
 ### CIRCULOOS Specific Models
 To address the specific needs of the circular economy in manufacturing, we have developed the [CIRCULOOS Data Model](https://github.com/european-dynamics-rnd/CIRCULOOS_Data_model). This repository hosts the definitions, schemas, and examples of the custom entities used within the CIRCULOOS platform, referencing and extending standard models where applicable.
 
+
 ## Learning Resources
 
-To better understand the underlying technologies of the CIRCULOOS platform, we recommend referencing the official FIWARE tutorials and documentation:
+To better understand the underlying technologies of the CIRCULOOS platform, we recommend referencing the following resources:
+- **[RAMP Marketplace & Onboarding Guide](./ramp-circuloos_data_platform/readme_ramp.md)**: How to use the RAMP Marketplace, register your organization, and onboard to CIRCULOOS.
 - **[NGSI-LD Step-by-Step Tutorials](https://github.com/FIWARE/tutorials.NGSI-LD)**: A comprehensive collection of tutorials for learning how to use NGSI-LD (Next Generation Service Interfaces - Linked Data) context brokers and IoT agents.
 - **[FIWARE Academy](https://fiware-academy.readthedocs.io/en/latest/)**: Video tutorials and slide decks validating FIWARE technologies.
 - **[Orion-LD Documentation](https://github.com/FIWARE/context.Orion-LD/blob/master/doc/manuals-ld/intro.md)**: The official administration and user guides for the Orion-LD Context Broker.
