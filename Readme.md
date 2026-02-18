@@ -37,7 +37,7 @@ To address the specific needs of the circular economy in manufacturing, we have 
 ## Learning Resources
 
 To better understand the underlying technologies of the CIRCULOOS platform, we recommend referencing the following resources:
-- **[RAMP Marketplace & Onboarding Guide](./ramp-circuloos_data_platform/readme_ramp.md)**: How to use the RAMP Marketplace, register your organization, and onboard to CIRCULOOS.
+- **[RAMP Marketplace & Onboarding Guide](./ramp-circuloos_data_platform/Readme.md)**: How to use the RAMP Marketplace, register your organization, and onboard to CIRCULOOS.
 - **[NGSI-LD Step-by-Step Tutorials](https://github.com/FIWARE/tutorials.NGSI-LD)**: A comprehensive collection of tutorials for learning how to use NGSI-LD (Next Generation Service Interfaces - Linked Data) context brokers and IoT agents.
 - **[FIWARE Academy](https://fiware-academy.readthedocs.io/en/latest/)**: Video tutorials and slide decks validating FIWARE technologies.
 - **[Orion-LD Documentation](https://github.com/FIWARE/context.Orion-LD/blob/master/doc/manuals-ld/intro.md)**: The official administration and user guides for the Orion-LD Context Broker.
