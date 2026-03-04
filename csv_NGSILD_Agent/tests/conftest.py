@@ -4,6 +4,7 @@ import os
 import sys
 import tempfile
 import pytest
+import openpyxl
 
 # Ensure the parent package is importable
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
@@ -110,6 +111,73 @@ def sample_csv_polygon(tmp_upload_dir):
         encoding="utf-8",
     )
     return str(csv_path)
+
+
+# ---------------------------------------------------------------------------
+# XLSX file helpers
+# ---------------------------------------------------------------------------
+
+def _write_xlsx(path, sheets):
+    """Write an xlsx file.  *sheets* is a dict {sheet_name: [row, ...]}.
+    Each row is a list/tuple of cell values."""
+    wb = openpyxl.Workbook()
+    first = True
+    for name, rows in sheets.items():
+        if first:
+            ws = wb.active
+            ws.title = name
+            first = False
+        else:
+            ws = wb.create_sheet(name)
+        for row in rows:
+            ws.append(list(row))
+    wb.save(path)
+
+
+@pytest.fixture()
+def sample_xlsx(tmp_upload_dir):
+    """Valid single-sheet XLSX with 2 rows."""
+    path = tmp_upload_dir / "sample.xlsx"
+    _write_xlsx(str(path), {
+        "Sheet1": [
+            ("id", "type", "observedAt", "color"),
+            ("urn:ngsi-ld:leather:001", "leather", "2024-06-01T10:00:00Z", "black"),
+            ("urn:ngsi-ld:leather:002", "leather", "2024-06-01T11:00:00Z", "red"),
+        ]
+    })
+    return str(path)
+
+
+@pytest.fixture()
+def sample_xlsx_multi_sheet(tmp_upload_dir):
+    """XLSX with 2 sheets – should be rejected."""
+    path = tmp_upload_dir / "multi.xlsx"
+    _write_xlsx(str(path), {
+        "Data": [("id", "type"), ("urn:x:1", "t")],
+        "Extra": [("a",), ("b",)],
+    })
+    return str(path)
+
+
+@pytest.fixture()
+def sample_xlsx_bad_headers(tmp_upload_dir):
+    """XLSX whose first two headers are not id/type."""
+    path = tmp_upload_dir / "bad.xlsx"
+    _write_xlsx(str(path), {
+        "Sheet1": [
+            ("name", "category", "value"),
+            ("foo", "bar", 1),
+        ]
+    })
+    return str(path)
+
+
+@pytest.fixture()
+def sample_xlsx_empty(tmp_upload_dir):
+    """XLSX with a single empty sheet."""
+    path = tmp_upload_dir / "empty.xlsx"
+    _write_xlsx(str(path), {"Sheet1": []})
+    return str(path)
 
 
 # ---------------------------------------------------------------------------

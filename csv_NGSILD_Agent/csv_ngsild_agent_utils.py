@@ -6,6 +6,7 @@ import os
 from datetime import datetime, timezone
 import urllib3
 import requests
+import openpyxl
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -115,21 +116,35 @@ def find_key_observedat(d):
     return None  # Return None if the key is not found
 
 
-def return_lastest_csv(UPLOAD_FOLDER,logging):
-    # Specify your folder path here
-    # Get a list of all JSON files in the folder
-    csv_files = glob.glob(os.path.join(UPLOAD_FOLDER, '*.csv'))
-
-    # Sort files by modification time in descending order
-    csv_files.sort(key=lambda x: os.path.getmtime(x), reverse=True)
-    if csv_files:
-        latest_csv_file = csv_files[0]
-        logging.debug(f"Latest csv file: {latest_csv_file}")
-        return latest_csv_file
+def return_lastest_upload(UPLOAD_FOLDER, logging):
+    """Return the most recently modified .csv or .xlsx file in the folder."""
+    files = glob.glob(os.path.join(UPLOAD_FOLDER, '*.csv')) + \
+            glob.glob(os.path.join(UPLOAD_FOLDER, '*.xlsx'))
+    files.sort(key=lambda x: os.path.getmtime(x), reverse=True)
+    if files:
+        latest = files[0]
+        logging.debug(f"Latest upload file: {latest}")
+        return latest
     else:
-        raise ValueError("No uploaded csv files found.")
+        raise ValueError("No uploaded csv/xlsx files found.")
 
-def load_csv_files_to_dict(csv_file,logging):
+
+def return_lastest_csv(UPLOAD_FOLDER, logging):
+    """Backward-compatible wrapper – delegates to return_lastest_upload."""
+    return return_lastest_upload(UPLOAD_FOLDER, logging)
+
+def load_file_to_dict(filepath, logging):
+    """Load a .csv or .xlsx file and return a list of row dicts.
+
+    Dispatches to the correct loader based on file extension.
+    """
+    ext = os.path.splitext(filepath)[1].lower()
+    if ext == '.xlsx':
+        return load_xlsx_file_to_dict(filepath, logging)
+    return load_csv_files_to_dict(filepath, logging)
+
+
+def load_csv_files_to_dict(csv_file, logging):
     # Create an empty list to store the dictionaries
     data = []
     with open(csv_file, mode='r', encoding='utf-8-sig') as file:
@@ -146,6 +161,44 @@ def load_csv_files_to_dict(csv_file,logging):
                 data.append(row)
         else:
             raise ValueError(f"The first two headers are not 'id' and 'type'. Header is:{headers}")
+    return data
+
+
+def load_xlsx_file_to_dict(xlsx_file, logging):
+    """Load an .xlsx file into a list of dicts (same format as load_csv_files_to_dict).
+
+    Validates that the workbook contains exactly 1 sheet.
+    The first row is treated as headers; subsequent rows become dicts.
+    """
+    wb = openpyxl.load_workbook(xlsx_file, read_only=True, data_only=True)
+    sheet_names = wb.sheetnames
+    if len(sheet_names) != 1:
+        wb.close()
+        raise ValueError(
+            f"The xlsx file must contain exactly 1 sheet, but found {len(sheet_names)}: {sheet_names}"
+        )
+    ws = wb.active
+    rows = list(ws.iter_rows(values_only=True))
+    wb.close()
+
+    if not rows:
+        raise ValueError("The xlsx file is empty.")
+
+    headers = [str(h) if h is not None else '' for h in rows[0]]
+    logging.debug(f"header for file:{xlsx_file} is {headers}")
+
+    if headers[:2] != ['id', 'type']:
+        raise ValueError(
+            f"The first two headers are not 'id' and 'type'. Header is:{headers}"
+        )
+
+    data = []
+    for row in rows[1:]:
+        row_dict = {}
+        for col_idx, header in enumerate(headers):
+            val = row[col_idx] if col_idx < len(row) else None
+            row_dict[header] = str(val) if val is not None else ''
+        data.append(row_dict)
     return data
 
 def generate_ngsild_entity(entity, context):

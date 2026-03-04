@@ -3,11 +3,12 @@ import os
 import glob
 from werkzeug.utils import secure_filename
 import csv_ngsild_agent_utils as utils
+import file_watcher
 
 
 app = Flask(__name__)
 UPLOAD_FOLDER = 'uploaded_files'
-ALLOWED_EXTENSIONS = {'csv'}
+ALLOWED_EXTENSIONS = {'csv', 'xlsx'}
 entity_ngsild_json_global = None
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -18,10 +19,10 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
            
 def generate_ngsi_ld_entities():
-    """Generate NGSI-LD entities from the latest uploaded CSV."""
+    """Generate NGSI-LD entities from the latest uploaded CSV or XLSX."""
     config = utils.get_config()
-    lastest_csv = utils.return_lastest_csv(UPLOAD_FOLDER, app.logger)
-    data = utils.load_csv_files_to_dict(lastest_csv, app.logger)
+    latest_file = utils.return_lastest_upload(UPLOAD_FOLDER, app.logger)
+    data = utils.load_file_to_dict(latest_file, app.logger)
     entity_ngsild_json = []
     json_fragments = []
     for entity_dict in data:
@@ -54,10 +55,10 @@ def handle_generate_ngsi_ld():
     global entity_ngsild_json_global
     try:
         entity_ngsild_json_str, entity_ngsild_json_global = generate_ngsi_ld_entities()
-        # Only clean up CSV files after successful generation
-        csv_files = glob.glob(os.path.join(UPLOAD_FOLDER, '*.csv'))
-        for csv_file in csv_files:
-            os.remove(csv_file)
+        # Only clean up uploaded files after successful generation
+        for pattern in ('*.csv', '*.xlsx'):
+            for f in glob.glob(os.path.join(UPLOAD_FOLDER, pattern)):
+                os.remove(f)
     except Exception as e:
         app.logger.error(f"An error occurred: {e}")
         entity_ngsild_json_str = f"{e} Please check if you have id and type"
@@ -82,7 +83,7 @@ def handle_check_connectivity():
 @app.route('/post-ngsi-ld', methods=['POST'])
 def handle_post_ngsi_ld():
     if entity_ngsild_json_global is None:
-        return jsonify({'status': 'error', 'message': 'Please upload your .csv file and push the button Generate NGSI-LD entities.'}), 400
+        return jsonify({'status': 'error', 'message': 'Please upload your .csv or .xlsx file and push the button Generate NGSI-LD entities.'}), 400
 
     try:
         responses = utils.post_ngsi_to_cb_with_token(entity_ngsild_json_global, app.logger)
@@ -98,4 +99,6 @@ def handle_post_ngsi_ld():
 if __name__ == '__main__':
     config = utils.get_config()
     port = config['CSV_AGENT_PORT']
+    # Start the background file watcher
+    file_watcher.start_watcher(log=app.logger)
     app.run(host='0.0.0.0', port=port)

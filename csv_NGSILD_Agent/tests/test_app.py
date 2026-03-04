@@ -5,7 +5,39 @@ import json
 import os
 from unittest.mock import MagicMock, patch
 
+import openpyxl
+import openpyxl
 import pytest
+
+
+# ---------------------------------------------------------------------------
+# Helpers to create in-memory XLSX files for testing
+# ---------------------------------------------------------------------------
+
+def _make_xlsx_bytes(rows):
+    """Create a single-sheet XLSX in memory and return its bytes."""
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    for row in rows:
+        ws.append(list(row))
+    buf = io.BytesIO()
+    wb.save(buf)
+    buf.seek(0)
+    return buf.read()
+
+
+def _make_xlsx_bytes_multi_sheet():
+    """Create a 2-sheet XLSX in memory and return its bytes."""
+    wb = openpyxl.Workbook()
+    ws1 = wb.active
+    ws1.title = "Data"
+    ws1.append(["id", "type"])
+    ws1.append(["urn:x:1", "t"])
+    wb.create_sheet("Extra")
+    buf = io.BytesIO()
+    wb.save(buf)
+    buf.seek(0)
+    return buf.read()
 
 
 # ===================================================================
@@ -47,6 +79,17 @@ class TestUploadFile:
     def test_valid_csv_upload_succeeds(self, client):
         csv_content = b"id,type,color\nurn:ngsi-ld:x:1,thing,red\n"
         data = {"file": (io.BytesIO(csv_content), "data.csv")}
+        resp = client.post("/upload", data=data, content_type="multipart/form-data")
+        assert resp.status_code == 200
+        body = resp.get_json()
+        assert body["status"] == "success"
+
+    def test_valid_xlsx_upload_succeeds(self, client):
+        xlsx_bytes = _make_xlsx_bytes([
+            ("id", "type", "color"),
+            ("urn:ngsi-ld:x:1", "thing", "red"),
+        ])
+        data = {"file": (io.BytesIO(xlsx_bytes), "data.xlsx")}
         resp = client.post("/upload", data=data, content_type="multipart/form-data")
         assert resp.status_code == 200
         body = resp.get_json()
@@ -106,6 +149,49 @@ class TestGenerateNgsiLd:
         client.post("/generate-ngsi-ld")
         assert flask_app.entity_ngsild_json_global is not None
         assert len(flask_app.entity_ngsild_json_global) == 1
+
+
+# ===================================================================
+# POST /generate-ngsi-ld  (XLSX)
+# ===================================================================
+
+class TestGenerateNgsiLdXlsx:
+    """XLSX-specific generation tests."""
+
+    @staticmethod
+    def _upload_xlsx(client, rows=None):
+        if rows is None:
+            rows = [
+                ("id", "type", "observedAt", "color"),
+                ("urn:ngsi-ld:leather:050", "leather", "2024-06-01T10:00:00Z", "black"),
+            ]
+        xlsx_bytes = _make_xlsx_bytes(rows)
+        data = {"file": (io.BytesIO(xlsx_bytes), "test.xlsx")}
+        client.post("/upload", data=data, content_type="multipart/form-data")
+
+    def test_success_returns_200(self, client):
+        self._upload_xlsx(client)
+        resp = client.post("/generate-ngsi-ld")
+        assert resp.status_code == 200
+        assert b"urn:ngsi-ld:leather:050" in resp.data
+
+    def test_cleans_xlsx_after_success(self, client):
+        import app as flask_app
+        import glob
+
+        self._upload_xlsx(client)
+        client.post("/generate-ngsi-ld")
+        remaining = glob.glob(os.path.join(flask_app.UPLOAD_FOLDER, "*.xlsx"))
+        assert len(remaining) == 0
+
+    def test_multi_sheet_xlsx_returns_error(self, client):
+        """An XLSX with >1 sheet should be rejected during generation."""
+        xlsx_bytes = _make_xlsx_bytes_multi_sheet()
+        data = {"file": (io.BytesIO(xlsx_bytes), "multi.xlsx")}
+        client.post("/upload", data=data, content_type="multipart/form-data")
+        resp = client.post("/generate-ngsi-ld")
+        assert resp.status_code == 200
+        assert b"exactly 1 sheet" in resp.data
 
 
 # ===================================================================

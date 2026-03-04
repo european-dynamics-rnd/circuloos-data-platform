@@ -100,8 +100,42 @@ class TestReturnLastestCsv:
 
     def test_raises_when_no_csv_files(self, tmp_upload_dir):
         logger = logging.getLogger("test")
-        with pytest.raises(ValueError, match="No uploaded csv files found"):
+        with pytest.raises(ValueError, match="No uploaded csv/xlsx files found"):
             utils.return_lastest_csv(str(tmp_upload_dir), logger)
+
+
+# ===================================================================
+# return_lastest_upload  (CSV + XLSX)
+# ===================================================================
+
+class TestReturnLastestUpload:
+    def test_returns_latest_csv(self, tmp_upload_dir):
+        logger = logging.getLogger("test")
+        f = tmp_upload_dir / "data.csv"
+        f.write_text("id,type\n")
+        result = utils.return_lastest_upload(str(tmp_upload_dir), logger)
+        assert result == str(f)
+
+    def test_returns_latest_xlsx(self, sample_xlsx, tmp_upload_dir):
+        logger = logging.getLogger("test")
+        result = utils.return_lastest_upload(str(tmp_upload_dir), logger)
+        assert result.endswith(".xlsx")
+
+    def test_returns_newest_across_types(self, tmp_upload_dir, sample_xlsx):
+        """When both csv and xlsx exist, return whichever is newest."""
+        logger = logging.getLogger("test")
+        csv_f = tmp_upload_dir / "old.csv"
+        csv_f.write_text("id,type\n")
+        os.utime(str(csv_f), (1000, 1000))
+        # xlsx was created later
+        os.utime(sample_xlsx, (3000, 3000))
+        result = utils.return_lastest_upload(str(tmp_upload_dir), logger)
+        assert result == sample_xlsx
+
+    def test_raises_when_empty(self, tmp_upload_dir):
+        logger = logging.getLogger("test")
+        with pytest.raises(ValueError, match="No uploaded csv/xlsx files found"):
+            utils.return_lastest_upload(str(tmp_upload_dir), logger)
 
 
 # ===================================================================
@@ -131,6 +165,61 @@ class TestLoadCsvFilesToDict:
         logger = logging.getLogger("test")
         data = utils.load_csv_files_to_dict(str(csv_path), logger)
         assert data[0]["id"] == "urn:ngsi-ld:x:1"
+
+
+# ===================================================================
+# load_xlsx_file_to_dict
+# ===================================================================
+
+class TestLoadXlsxFileToDict:
+    def test_valid_single_sheet_returns_list_of_dicts(self, sample_xlsx):
+        logger = logging.getLogger("test")
+        data = utils.load_xlsx_file_to_dict(sample_xlsx, logger)
+        assert len(data) == 2
+        assert data[0]["id"] == "urn:ngsi-ld:leather:001"
+        assert data[0]["type"] == "leather"
+        assert data[0]["color"] == "black"
+
+    def test_rejects_multi_sheet(self, sample_xlsx_multi_sheet):
+        logger = logging.getLogger("test")
+        with pytest.raises(ValueError, match="exactly 1 sheet"):
+            utils.load_xlsx_file_to_dict(sample_xlsx_multi_sheet, logger)
+
+    def test_rejects_bad_headers(self, sample_xlsx_bad_headers):
+        logger = logging.getLogger("test")
+        with pytest.raises(ValueError, match="not 'id' and 'type'"):
+            utils.load_xlsx_file_to_dict(sample_xlsx_bad_headers, logger)
+
+    def test_rejects_empty_file(self, sample_xlsx_empty):
+        logger = logging.getLogger("test")
+        with pytest.raises(ValueError, match="empty"):
+            utils.load_xlsx_file_to_dict(sample_xlsx_empty, logger)
+
+    def test_values_are_strings(self, sample_xlsx):
+        """All cell values should be converted to strings."""
+        logger = logging.getLogger("test")
+        data = utils.load_xlsx_file_to_dict(sample_xlsx, logger)
+        for row in data:
+            for v in row.values():
+                assert isinstance(v, str)
+
+
+# ===================================================================
+# load_file_to_dict (dispatcher)
+# ===================================================================
+
+class TestLoadFileToDict:
+    def test_dispatches_csv(self, sample_csv):
+        logger = logging.getLogger("test")
+        data = utils.load_file_to_dict(sample_csv, logger)
+        assert len(data) == 2
+        assert data[0]["id"] == "urn:ngsi-ld:leather:001"
+
+    def test_dispatches_xlsx(self, sample_xlsx):
+        logger = logging.getLogger("test")
+        data = utils.load_file_to_dict(sample_xlsx, logger)
+        assert len(data) == 2
+        assert data[0]["id"] == "urn:ngsi-ld:leather:001"
 
 
 # ===================================================================
