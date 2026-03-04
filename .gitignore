@@ -19,3 +19,5 @@ commands/entity_diagram_interactive.html
 commands/entity_diagram.png
 commands/expanded.json
 commands/debug-logs/
+csv_NGSILD_Agent/tests/__pycache__/
+csv_NGSILD_Agent/__pycache__/
