@@ -1,4 +1,3 @@
-version: "3.8"
 
 services:
   # @context file is served from here
@@ -32,7 +31,7 @@ services:
     # expose:
     #   - "${ORION_LD_PORT}:${ORION_LD_PORT}"
     ports:   # for communication outside docker environment BUT only localhost
-      - "127.0.0.1:${ORION_LD_PORT}:${ORION_LD_PORT}"
+      - "${ORION_LD_PORT}:${ORION_LD_PORT}"
     expose: # for monitoring via prometheus
       - 8000
     environment:
