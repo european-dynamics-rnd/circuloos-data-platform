@@ -21,3 +21,6 @@ commands/expanded.json
 commands/debug-logs/
 csv_NGSILD_Agent/tests/__pycache__/
 csv_NGSILD_Agent/__pycache__/
+csv_NGSILD_Agent/watch_folder/*
+!csv_NGSILD_Agent/watch_folder/.gitkeep
+!csv_NGSILD_Agent/watch_folder/reports/.gitkeep

@@ -1,5 +1,6 @@
 Flask==3.0.2
 ngsildclient==0.5.2
+openpyxl==3.1.5
 Requests==2.31.0
 urllib3==2.2.1
 Werkzeug==3.0.1
