@@ -3,10 +3,12 @@ import csv
 import glob
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 import urllib3
 import requests
-import sys
+import openpyxl
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 def post_ngsi_to_cb_with_token(entity_ngsild_json,logger):
@@ -27,19 +29,13 @@ def post_ngsi_to_cb_with_token(entity_ngsild_json,logger):
         endpoint=f"http://{config['NGSI_LD_CONTECT_BROKER']['HOSTNAME']}:{config['NGSI_LD_CONTECT_BROKER']['PORT']}/ngsi-ld/v1/entityOperations/upsert"
     # cilculoss_orion_ld_client=Client(hostname=NGSI_LD_CONTECT_BROKER_HOSTNAME ,port=NGSI_LD_CONTECT_BROKER_PORT, tenant=ORION_LD_TENANT)
     return_response=[]
+    # Batch all entities into a single upsert request
+    batch_payload = '[' + ','.join(e.to_json() for e in entity_ngsild_json) + ']'
+    logger.debug(str(batch_payload))
+    response = requests.post(endpoint, headers=headers, data=batch_payload)
+    response.raise_for_status()
     for ngsi_ld_json in entity_ngsild_json:
-        # response=cilculoss_orion_ld_client.upsert(ngsi_ld_json)
-        ngsi_ld_json_payload='['+ngsi_ld_json.to_json()+']'
-        # app.logger.info(endpoint)
-        # app.logger.info(headers)
-        logger.debug(str(ngsi_ld_json_payload))
-        response = requests.post(endpoint,headers=headers,data=ngsi_ld_json_payload)
-        response.raise_for_status()  # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
-        if not response.status_code // 100 == 2:
-            error_l=f"{datetime.now()} Error: post on endpoint {response.text}  status_code {response.status_code}"
-            raise ValueError(error_l)
-        else:
-            return_response.append(f" Id: {ngsi_ld_json['id']} uploaded to Orion-LD: {config['NGSI_LD_CONTECT_BROKER']['HOSTNAME']} correctly with response: {response.status_code} {response.text}")
+        return_response.append(f" Id: {ngsi_ld_json['id']} uploaded to Orion-LD: {config['NGSI_LD_CONTECT_BROKER']['HOSTNAME']} correctly with response: {response.status_code} {response.text}")
     return return_response
 
 def get_cb_info_with_token(logger):
@@ -62,17 +58,12 @@ def get_cb_info_with_token(logger):
     # app.logger.info(headers)
     response = requests.get(endpoint,headers=headers)
 
-    response.raise_for_status()  # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
-    if not response.status_code // 100 == 2:
-        error=f"{datetime.now()} Error: get on endpoint {response.text} status_code {response.status_code}"
-        raise ValueError(error)
-    else:
-        return(f"Successful\n{datetime.now()}\nResponse from {config['NGSI_LD_CONTECT_BROKER']['HOSTNAME']} \n {response.json()}")
+    response.raise_for_status()
+    return(f"Successful\n{datetime.now()}\nResponse from {config['NGSI_LD_CONTECT_BROKER']['HOSTNAME']} \n {response.json()}")
 
 
 
 def get_orion_token(config):
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     # Determine security mode based on the HOST
     REALM_NAME='fiware-server'
     CLIENT_ID='orion-pep'
@@ -89,12 +80,8 @@ def get_orion_token(config):
 
     # Make the POST request to the Keycloak token endpoint
     response = requests.post(url, data=data, verify=secure,  timeout=25)
-    response.raise_for_status()  # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
-    if response.status_code != 200:
-        error=f"{datetime.now()} Error : try to access: {url} response: {response.text}"
-        raise ValueError(error)
+    response.raise_for_status()
     # Extract the access token from the response
-    # print(response.json())
     token = response.json().get('access_token')
     return token
 
@@ -129,22 +116,35 @@ def find_key_observedat(d):
     return None  # Return None if the key is not found
 
 
-def return_lastest_csv(UPLOAD_FOLDER,logging):
-    # Specify your folder path here
-    # Get a list of all JSON files in the folder
-    csv_files = glob.glob(os.path.join(UPLOAD_FOLDER, '*.csv'))
-
-    # Sort files by modification time in descending order
-    csv_files.sort(key=lambda x: os.path.getmtime(x), reverse=True)
-    if csv_files:
-        latest_csv_file = csv_files[0]
-        logging.debug(f"Latest csv file: {latest_csv_file}")
-        return latest_csv_file
+def return_lastest_upload(UPLOAD_FOLDER, logging):
+    """Return the most recently modified .csv or .xlsx file in the folder."""
+    files = glob.glob(os.path.join(UPLOAD_FOLDER, '*.csv')) + \
+            glob.glob(os.path.join(UPLOAD_FOLDER, '*.xlsx'))
+    files.sort(key=lambda x: os.path.getmtime(x), reverse=True)
+    if files:
+        latest = files[0]
+        logging.debug(f"Latest upload file: {latest}")
+        return latest
     else:
-        raise ValueError("No uploaded csv files found.")
-    return None
+        raise ValueError("No uploaded csv/xlsx files found.")
 
-def load_csv_files_to_dict(csv_file,logging):
+
+def return_lastest_csv(UPLOAD_FOLDER, logging):
+    """Backward-compatible wrapper – delegates to return_lastest_upload."""
+    return return_lastest_upload(UPLOAD_FOLDER, logging)
+
+def load_file_to_dict(filepath, logging):
+    """Load a .csv or .xlsx file and return a list of row dicts.
+
+    Dispatches to the correct loader based on file extension.
+    """
+    ext = os.path.splitext(filepath)[1].lower()
+    if ext == '.xlsx':
+        return load_xlsx_file_to_dict(filepath, logging)
+    return load_csv_files_to_dict(filepath, logging)
+
+
+def load_csv_files_to_dict(csv_file, logging):
     # Create an empty list to store the dictionaries
     data = []
     with open(csv_file, mode='r', encoding='utf-8-sig') as file:
@@ -161,6 +161,44 @@ def load_csv_files_to_dict(csv_file,logging):
                 data.append(row)
         else:
             raise ValueError(f"The first two headers are not 'id' and 'type'. Header is:{headers}")
+    return data
+
+
+def load_xlsx_file_to_dict(xlsx_file, logging):
+    """Load an .xlsx file into a list of dicts (same format as load_csv_files_to_dict).
+
+    Validates that the workbook contains exactly 1 sheet.
+    The first row is treated as headers; subsequent rows become dicts.
+    """
+    wb = openpyxl.load_workbook(xlsx_file, read_only=True, data_only=True)
+    sheet_names = wb.sheetnames
+    if len(sheet_names) != 1:
+        wb.close()
+        raise ValueError(
+            f"The xlsx file must contain exactly 1 sheet, but found {len(sheet_names)}: {sheet_names}"
+        )
+    ws = wb.active
+    rows = list(ws.iter_rows(values_only=True))
+    wb.close()
+
+    if not rows:
+        raise ValueError("The xlsx file is empty.")
+
+    headers = [str(h) if h is not None else '' for h in rows[0]]
+    logging.debug(f"header for file:{xlsx_file} is {headers}")
+
+    if headers[:2] != ['id', 'type']:
+        raise ValueError(
+            f"The first two headers are not 'id' and 'type'. Header is:{headers}"
+        )
+
+    data = []
+    for row in rows[1:]:
+        row_dict = {}
+        for col_idx, header in enumerate(headers):
+            val = row[col_idx] if col_idx < len(row) else None
+            row_dict[header] = str(val) if val is not None else ''
+        data.append(row_dict)
     return data
 
 def generate_ngsild_entity(entity, context):
@@ -181,9 +219,9 @@ def generate_ngsild_entity(entity, context):
         try:
             date_obj = datetime.fromisoformat(iso_date_str)
         except ValueError:
-            date_obj=datetime.utcnow()
+            date_obj = datetime.now(timezone.utc)
     else:
-        date_obj=datetime.utcnow()
+        date_obj = datetime.now(timezone.utc)
     for key in keys:
         # TODO add Relationship, Polygon
         if  "_unitCode" not in key:
@@ -199,7 +237,7 @@ def generate_ngsild_entity(entity, context):
                     case key if "_Polygon" in key:
                         geojson_polygon = {
                             "type": "Polygon",
-                            "coordinates": str(value.replace('"',''))
+                            "coordinates": json.loads(value.replace('"', ''))
                         }
                         entity_ngsild.prop(key.replace("_Polygon", ""),geojson_polygon, observedat=date_obj)
                     case _:
@@ -209,24 +247,3 @@ def generate_ngsild_entity(entity, context):
         raise ValueError(f"You have {len(entity)} attributes {entity} remaining")
     return entity_ngsild
 
-def load_lastest_json_file(UPLOAD_FOLDER):
-    # Specify your folder path here
-    # Get a list of all JSON files in the folder
-    json_files = glob.glob(os.path.join(UPLOAD_FOLDER, '*.json'))
-
-    # Sort files by modification time in descending order
-    json_files.sort(key=lambda x: os.path.getmtime(x), reverse=True)
-
-    # Check if there are any JSON files in the folder
-    if json_files:
-        latest_json_file = json_files[0]
-        print(f"Latest JSON file: {latest_json_file}")
-
-        # Load the latest JSON file into a variable
-        with open(latest_json_file, 'r') as file:
-            json_data = json.load(file)
-        print("JSON data loaded successfully.")
-    else:
-        print("No JSON files found in the folder.")
-        json_data = None
-    return json_data

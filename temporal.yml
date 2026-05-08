@@ -1,4 +1,3 @@
-version: "3.8"
 services:
 
   circuloos-mintaka:
@@ -24,7 +23,7 @@ services:
       - LOGGERS_LEVELS_ROOT=DEBUG
       - CONTEXT_DEFAULT_URL=${CORE_CONTEXT} # if the VM does not have internet access Mintaka fails. Mintaka needs to download every time the context
     ports:
-      - "127.0.0.1:${MINTAKA_PORT}:${MINTAKA_PORT}"
+      - "${MINTAKA_PORT}:${MINTAKA_PORT}"
     networks:
       - circuloos
 

@@ -205,16 +205,40 @@ By default the following tools are disabled. To enable them uncomment the L13 of
 ```#CIRCULOOS_YML=" -f circuloos_custom_apps.yml"``` -> ```CIRCULOOS_YML=" -f circuloos_custom_apps.yml"```
 
 and stop (```./service.sh stop```), build the containers - will take some time (```./service.sh build```) and start again the applications (```./service.sh start```).
-# CSV to Orion-LD agent
-**Purpose**: Transform CSV data into NGSI-LD entities and upload to Orion-LD
+# CSV/XLSX to Orion-LD agent
+**Purpose**: Transform CSV or XLSX data into NGSI-LD entities and upload to Orion-LD
 
-A custom agent have been created to transform a CSV to NGSI-LD entities and send/POST them to the Orion-LD.
+A custom agent has been created to transform a CSV or XLSX file to NGSI-LD entities and send/POST them to the Orion-LD. There are two ways to use the agent: via the **web UI** or via the **watch folder** (automatic file processing).
 
-1. Create the csv file with the data that you want to add to the Orion-LD.    **IMPORTANT** the first 2 columns **MUST BE** id,type. See [csv_NGSILD_Agent/leatherProducts.csv](csv_NGSILD_Agent/leatherProducts.csv) for a csv file with 2 entities. To add timestamp for the data add a column "observedat" with the date time into a ISO8601 format ("2024-01-31T12:03:02Z"), otherwise the timestamp will be set to current date/time.
-2. Go to http://localhost:5000, click on "Browse..." to select a csv file. Next click "Upload".
-3. Click "Generate NGSI-LD entities". A JSON representation of the NGSI-LD of the csv entities will appear.
-4. Click "Post NGSI-LD entities to Orion-LD". The created NGSI-LD JSON will be send to the Orion-LD. A message with the IDs of the send to the Orion-LD will appear. 
-5. See the data send to the Orion-LD ```./getDataOrionSensors.sh circuloos_demo leather```
+## Web UI (manual upload)
+
+1. Create the CSV or XLSX file with the data that you want to add to the Orion-LD. **IMPORTANT**: the first 2 columns **MUST BE** `id`, `type`. XLSX files **must contain exactly 1 sheet**. See [csv_NGSILD_Agent/leatherProducts.csv](csv_NGSILD_Agent/leatherProducts.csv) for a CSV file with 2 entities. To add a timestamp for the data add a column `observedat` with the date/time in ISO 8601 format (`2024-01-31T12:03:02Z`), otherwise the timestamp will be set to the current date/time.
+2. Go to http://localhost:5000, click on "Browse..." to select a CSV or XLSX file. Next click "Upload".
+3. Click "Generate NGSI-LD entities". A JSON representation of the NGSI-LD entities will appear.
+4. Click "Post NGSI-LD entities to Orion-LD". The created NGSI-LD JSON will be sent to the Orion-LD. A message with the IDs of the entities sent will appear.
+5. See the data sent to the Orion-LD: ```./getDataOrionSensors.sh circuloos_demo leather```
+
+## Watch folder (automatic processing)
+
+The agent also monitors a local **watch folder** every 10 seconds (configurable via `WATCH_INTERVAL`). When a `.csv` or `.xlsx` file is dropped into the folder the agent will automatically:
+
+1. Load and convert the file to NGSI-LD entities.
+2. POST the entities to Orion-LD.
+3. Delete the source file.
+4. Generate a Markdown (`.md`) report in the `reports/` sub-folder containing the JSON-LD payload, the tenant used, and the Orion-LD response.
+
+**Default folder:** `csv_NGSILD_Agent/watch_folder/`  
+**Reports location:** `csv_NGSILD_Agent/watch_folder/reports/`
+
+The folder can be configured with the following environment variables:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `WATCH_FOLDER` | `watch_folder` | Directory to monitor for new files |
+| `WATCH_INTERVAL` | `10` | Scan interval in seconds |
+| `REPORT_FOLDER` | `watch_folder/reports` | Where `.md` reports are saved |
+
+When running via Docker, the watch folder is bind-mounted from the host so files can be dropped in from the host OS and reports appear there as well.
 
 ## Send data to the CIRCULOOS data platform 
 

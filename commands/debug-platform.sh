@@ -147,7 +147,6 @@ echo -e "Log file: ${GREEN}$LOG_FILE${NC}\n"
         MINTAKA_PORT=$(grep -E '^MINTAKA_PORT=' ../.env | cut -d'=' -f2 | tr -d ' ')
         TIMESCALE_PORT=$(grep -E '^TIMESCALE_PORT=' ../.env | cut -d'=' -f2 | tr -d ' ')
         KEYCLOAK_TLS_PORT=$(grep -E '^KEYCLOAK_TLS_PORT=' ../.env | cut -d'=' -f2 | tr -d ' ')
-        QUANTUMLEAP_PORT=$(grep -E '^QUANTUMLEAP_PORT=' ../.env | cut -d'=' -f2 | tr -d ' ')
         REDIS_PORT=$(grep -E '^REDIS_PORT=' ../.env | cut -d'=' -f2 | tr -d ' ')
         KONG_PORT=$(grep -E '^KONG_PORT=' ../.env | cut -d'=' -f2 | tr -d ' ')
         
@@ -157,7 +156,6 @@ echo -e "Log file: ${GREEN}$LOG_FILE${NC}\n"
         [ -n "$MINTAKA_PORT" ] && PORTS_TO_CHECK+=("$MINTAKA_PORT:Mintaka")
         [ -n "$TIMESCALE_PORT" ] && PORTS_TO_CHECK+=("$TIMESCALE_PORT:TimescaleDB")
         [ -n "$KEYCLOAK_TLS_PORT" ] && PORTS_TO_CHECK+=("$KEYCLOAK_TLS_PORT:Keycloak")
-        [ -n "$QUANTUMLEAP_PORT" ] && PORTS_TO_CHECK+=("$QUANTUMLEAP_PORT:QuantumLeap")
         [ -n "$REDIS_PORT" ] && PORTS_TO_CHECK+=("$REDIS_PORT:Redis")
         [ -n "$KONG_PORT" ] && PORTS_TO_CHECK+=("$KONG_PORT:Kong")
         
@@ -165,7 +163,7 @@ echo -e "Log file: ${GREEN}$LOG_FILE${NC}\n"
         PORTS_TO_CHECK+=("8000:Kong-Proxy" "8001:Kong-Admin" "8082:Keycloak-HTTP")
     else
         # Fallback to default ports if .env not found
-        PORTS_TO_CHECK=("8000:Kong-Proxy" "8001:Kong-Admin" "8082:Keycloak" "1026:Orion-LD" "8668:QuantumLeap" "5432:PostgreSQL" "27017:MongoDB")
+        PORTS_TO_CHECK=("8000:Kong-Proxy" "8001:Kong-Admin" "8082:Keycloak" "1026:Orion-LD" "5432:PostgreSQL" "27017:MongoDB")
     fi
     
     for port_info in "${PORTS_TO_CHECK[@]}"; do
